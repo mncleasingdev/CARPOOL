@@ -1,0 +1,144 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Root.master.cs" Inherits="DXMNCGUI_CARPOOL_SYSTEM.RootMaster" %>
+
+<%-- DXCOMMENT: Page Root.master is a master page that contains the root layout (it includes Header, Cental Area, and Footer) --%>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0" />
+    <title>MNCL Carpool Management System</title>
+    <link rel="stylesheet" type="text/css" href="Content/Site.css" />
+</head>
+<body runat="server" id="Body">
+    <form id="form1" runat="server">
+        <script type="text/javascript">
+            function updateHeaderMenuOrientation()
+            {
+                if(!window.headerMenu) return;
+                var orientation = headerPane.IsExpandable() ? 'Vertical' : 'Horizontal';
+                if(orientation !== headerMenu.GetOrientation()) 
+                    headerMenu.SetOrientation(orientation);
+            }
+        </script>
+        <dx:ASPxGlobalEvents runat="server">
+            <ClientSideEvents ControlsInitialized="updateHeaderMenuOrientation" BrowserWindowResized="updateHeaderMenuOrientation" />
+        </dx:ASPxGlobalEvents>
+        <dx:ASPxPanel ID="HeaderPane" runat="server" FixedPosition="WindowTop" ClientInstanceName="headerPane" CssClass="headerPane" Collapsible="true">
+            <SettingsAdaptivity CollapseAtWindowInnerWidth="500"/>
+            <Styles>
+                <Panel CssClass="panel"></Panel>
+                <ExpandedPanel CssClass="expandedPanel"></ExpandedPanel>
+                <ExpandBar CssClass="bar"></ExpandBar>
+            </Styles>
+            <PanelCollection>
+                <dx:PanelContent runat="server" SupportsDisabledAttribute="True">
+                    <div class="headerTop">
+                        <div class="templateTitle">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <dx:ASPxImage runat="server" ImageUrl="~/Content/Images/HeaderBanner.png" Height="35px"></dx:ASPxImage>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="loginControl">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <asp:LoginView ID="HeadLoginView" runat="server" EnableViewState="false">
+                                            <AnonymousTemplate>                                       
+                                                <dx:ASPxLabel ID="lblUserName" runat="server"  Font-Bold="false" Font-Names="Calibri" Font-Size="Small" ForeColor="WhiteSmoke">                                             
+                                                </dx:ASPxLabel>
+                                                |
+                                                <dx:ASPxHyperLink runat="server" ClientInstanceName="inkLogOut" Text="Log Out" Font-Names="Calibri" ForeColor="WhiteSmoke" Cursor="pointer">
+                                                    <ClientSideEvents Click="function(s, e) {clb.PerformCallback('LogOut');}"/>
+                                                </dx:ASPxHyperLink>
+                                                <dx:ASPxCallback ID="ASPxCallback" runat="server" ClientInstanceName="clb" oncallback="ASPxCallback_Callback">
+                                                </dx:ASPxCallback>
+                                            </AnonymousTemplate>
+                                            <LoggedInTemplate>
+                                                Welcome <span class="bold">
+                                                    <a runat="server" href="~/Account/Manage.aspx" title="Manage your account">
+                                                    <asp:LoginName ID="HeadLoginName" runat="server" />
+                                                    </a>                                        </span>! [
+                                                <asp:LoginStatus ID="HeadLoginStatus" runat="server" LogoutAction="Redirect" LogoutText="Log Out"
+                                                    LogoutPageUrl="~/" OnLoggingOut="HeadLoginStatus_LoggingOut"/>
+                                                ]
+                                            </LoggedInTemplate>
+                                        </asp:LoginView>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="headerMenu">
+                            <%-- DXCOMMENT: Configure the header menu --%>
+                            <dx:ASPxMenu ID="HeaderMenu" runat="server" CssClass="headerMenu" ClientInstanceName="headerMenu" ItemAutoWidth="False" Width="100%" Theme="Office2010Silver">
+                                <Items>
+                                    <dx:MenuItem Text="Home" Name="MenuHome" Image-Url="Content/Images/HomeIcon-16x16.png" NavigateUrl="Default.aspx"></dx:MenuItem>
+                                    <dx:MenuItem Text="Booking" Name="MenuBooking" Image-Url="Content/Images/BookIcon-16x16.png" NavigateUrl="Transactions/Booking/BookingList.aspx"></dx:MenuItem>
+                                    <dx:MenuItem Text="Settlement" Name="MenuSettlement" Image-Url="Content/Images/WorkListIcon-16x16.png" NavigateUrl="Transactions/Settlement/SettlementList.aspx"></dx:MenuItem>
+                                    <dx:MenuItem Text="History" Name="MenuHistory" Image-Url="Content/Images/WorkListIcon-16x16.png" Visible="false"></dx:MenuItem>
+                                    <dx:MenuItem Text="Reporting" Name="MenuReporting" Image-Url="Content/Images/WorkListIcon-16x16.png" NavigateUrl="Reporting/RptPenggunaanKendaraan/ReportPenggunaanKendaraan.aspx" Visible="false"></dx:MenuItem>
+                                    <dx:MenuItem Text="Update Password" Name="UpdatePassword" Image-Url="Content/Images/EditIcon-16x16.png" NavigateUrl="Maintenance/UserMaintenance/UserUpdatePass.aspx"></dx:MenuItem>
+                                    <dx:MenuItem Text="Maintenance" Name="MenuMaintenance" Image-Url="Content/Images/SettingIcon-16x16.png" Visible="false">
+                                        <Items>
+                                            <%--<dx:MenuItem Text="Access Right Maintenance" Name="AccessRightMaintenance"></dx:MenuItem>--%>
+                                            <%--<dx:MenuItem Text="Customer Maintenance" Name="CustomerMaintenance" NavigateUrl="DirectLoginDriver.aspx"></dx:MenuItem>--%>
+                                            <dx:MenuItem Text="Users Maintenance" Name="UsersMaintenance" NavigateUrl="Maintenance/UserMaintenance/UserMaintenance.aspx"></dx:MenuItem>
+                                            <dx:MenuItem Text="Item Maintenance" Name="ItemMaintenance" NavigateUrl="Maintenance/ItemMaintenance/FormItemMaintenance.aspx"></dx:MenuItem>
+                                            <dx:MenuItem Text="Vehicle Maintenance" Name="VehicleMaintenance" NavigateUrl="Maintenance/VehicleMaintenance/FormVehicleMaintenance.aspx"></dx:MenuItem>
+                                        </Items>
+                                    </dx:MenuItem>
+                                    <dx:MenuItem Text="About" Name="MenuAbout" Image-Url="Content/Images/AboutIcon-16x16.png"></dx:MenuItem>
+                                </Items>
+                                <ItemStyle HorizontalAlign="Justify"/>
+                                <SubMenuItemStyle HorizontalAlign="Left">
+                                    <HoverStyle BackColor="LightSkyBlue"></HoverStyle>
+                                </SubMenuItemStyle>
+                                <SettingsAdaptivity CollapseToSideMenuAtWindowInnerWidth="500" SideMenuExpandMode="OverlayContent"/>
+                            </dx:ASPxMenu>
+                        </div>
+                </dx:PanelContent>
+            </PanelCollection>
+            <ExpandBarTemplate>
+                <div class="templateTitle">
+                    <dx:ASPxImage runat="server" ImageUrl="~/Content/Images/HeaderBanner.png" Height="25px"></dx:ASPxImage>
+                </div>
+            </ExpandBarTemplate>
+        </dx:ASPxPanel>
+        <dx:ASPxPanel ID="SecondPanel" runat="server">
+            <SettingsAdaptivity CollapseAtWindowInnerWidth="500" />
+            <PanelCollection>
+                <dx:PanelContent runat="server" SupportsDisabledAttribute="True">
+                    <div>
+                    </div>
+                </dx:PanelContent>
+            </PanelCollection>
+        </dx:ASPxPanel>     
+        <dx:ASPxPanel ID="MainPane" runat="server" CssClass="mainContentPane">
+            <SettingsAdaptivity CollapseAtWindowInnerWidth="500" />
+            <PanelCollection>
+                <dx:PanelContent runat="server" SupportsDisabledAttribute="True">
+                    <asp:ContentPlaceHolder ID="Content" runat="server"/>
+                </dx:PanelContent>
+            </PanelCollection>
+        </dx:ASPxPanel>
+        <dx:ASPxPanel ID="FooterPane" runat="server" FixedPosition="WindowBottom" ClientInstanceName="footerPane" CssClass="footerPane">
+            <SettingsAdaptivity CollapseAtWindowInnerWidth="500" />
+            <Styles>
+                <Panel CssClass="panel"></Panel>
+            </Styles>
+            <PanelCollection>
+                <dx:PanelContent runat="server" SupportsDisabledAttribute="True">
+                        <div class="footerMenu"></div>
+                        <div class="copyright">
+                            <dx:ASPxLabel ID="ASPxLabel2" runat="server"></dx:ASPxLabel>
+                        </div>
+                </dx:PanelContent>
+            </PanelCollection>
+        </dx:ASPxPanel>
+    </form>
+</body>
+</html>
