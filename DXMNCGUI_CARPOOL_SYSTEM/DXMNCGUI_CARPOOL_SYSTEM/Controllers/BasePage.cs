@@ -117,6 +117,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers
             string url = "~/Account/Login.aspx";
             string updatedQueryString = "";
             var nameValues = HttpUtility.ParseQueryString("");
+
             nameValues.Set("SessionExpired", "Your session has expired...");
             updatedQueryString = bHome ? "" : "?" + nameValues.ToString();
             if (HttpContext.Current.Session["Username"] == DBNull.Value || HttpContext.Current.Session["Username"] == null)

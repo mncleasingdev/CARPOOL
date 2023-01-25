@@ -18,7 +18,7 @@ using DXMNCGUI_CARPOOL_SYSTEM.Controllers.Data;
 
 namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers
 {
-    public delegate void BeforeOpenLocalConnectionEventHandler(SqlLocalDBSetting dbSetting);
+    public delegate void BeforeOpenLocalConnectionEventHandler(SqlLocalDBSetting localdbSetting);
     [Serializable]
     public class SqlLocalDBSetting : IDisposable
     {
@@ -194,10 +194,10 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers
         [Obsolete("You should change to StartTransaction to make the coding simple yet elegant.")]
         public SqlLocalDBSetting BeginTransaction(bool alwaysUseTransaction, out SqlConnection conn, out SqlTransaction tran)
         {
-            SqlLocalDBSetting dbSetting = this.StartTransaction();
-            tran = dbSetting.myTransaction;
-            conn = dbSetting.myConnection;
-            return dbSetting;
+            SqlLocalDBSetting localdbSetting = this.StartTransaction();
+            tran = localdbSetting.myTransaction;
+            conn = localdbSetting.myConnection;
+            return localdbSetting;
         }
         public event BeforeOpenLocalConnectionEventHandler myBeforeOpenLocalConnectionEvent
         {
@@ -396,21 +396,21 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers
         }
         public SqlLocalDBSetting StartTransaction(int commandTimeout)
         {
-            SqlLocalDBSetting dbSetting = this.Copy();
-            dbSetting.CommandTimeOut = commandTimeout;
-            dbSetting.myLevel = this.myLevel + 1;
+            SqlLocalDBSetting localdbSetting = this.Copy();
+            localdbSetting.CommandTimeOut = commandTimeout;
+            localdbSetting.myLevel = this.myLevel + 1;
             if (this.myLevel == 0)
-                dbSetting.OpenConnection();
+                localdbSetting.OpenConnection();
             else if (this.myTransaction == null || this.myTransaction.Connection == null)
             {
                 throw new InvalidOperationException("The transaction is end, cannot start new transaction.");
             }
             else
             {
-                dbSetting.myConnection = this.myConnection;
-                dbSetting.myTransaction = this.myTransaction;
+                localdbSetting.myConnection = this.myConnection;
+                localdbSetting.myTransaction = this.myTransaction;
             }
-            return dbSetting;
+            return localdbSetting;
         }
         public void Commit()
         {
@@ -480,12 +480,12 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers
             }
             else
             {
-                SqlLocalDBSetting dbSetting = this.myLevel == 0 ? this.StartTransaction() : this;
+                SqlLocalDBSetting localdbSetting = this.myLevel == 0 ? this.StartTransaction() : this;
                 try
                 {
-                    object obj = dbSetting.CreateCommand(cmdText, parameters).ExecuteScalar();
+                    object obj = localdbSetting.CreateCommand(cmdText, parameters).ExecuteScalar();
                     if (this.myLevel == 0)
-                        dbSetting.Commit();
+                        localdbSetting.Commit();
                     return obj;
                 }
                 catch (SqlException ex)
@@ -495,7 +495,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers
                 finally
                 {
                     if (this.myLevel == 0)
-                        dbSetting.EndTransaction();
+                        localdbSetting.EndTransaction();
                 }
                 return (object)null;
             }
@@ -508,12 +508,12 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers
             }
             else
             {
-                SqlLocalDBSetting dbSetting = this.myLevel == 0 ? this.StartTransaction() : this;
+                SqlLocalDBSetting localdbSetting = this.myLevel == 0 ? this.StartTransaction() : this;
                 try
                 {
-                    int num = dbSetting.CreateCommand(cmdText, parameters).ExecuteNonQuery();
+                    int num = localdbSetting.CreateCommand(cmdText, parameters).ExecuteNonQuery();
                     if (this.myLevel == 0)
-                        dbSetting.Commit();
+                        localdbSetting.Commit();
                     return num;
                 }
                 catch (SqlException ex)
@@ -523,7 +523,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers
                 finally
                 {
                     if (this.myLevel == 0)
-                        dbSetting.EndTransaction();
+                        localdbSetting.EndTransaction();
                 }
                 return 0;
             }
@@ -579,15 +579,15 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers
             }
             else
             {
-                SqlLocalDBSetting dbSetting = this.myLevel == 0 ? this.StartTransaction() : this;
+                SqlLocalDBSetting localdbSetting = this.myLevel == 0 ? this.StartTransaction() : this;
                 try
                 {
-                    SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(dbSetting.CreateCommand(cmdText, parameters));
+                    SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(localdbSetting.CreateCommand(cmdText, parameters));
                     if (loadSchema)
                         sqlDataAdapter.MissingSchemaAction = MissingSchemaAction.AddWithKey;
                     int num = sqlDataAdapter.Fill(table);
                     if (this.myLevel == 0)
-                        dbSetting.Commit();
+                        localdbSetting.Commit();
                     return num;
                 }
                 catch (SqlException ex)
@@ -597,7 +597,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers
                 finally
                 {
                     if (this.myLevel == 0)
-                        dbSetting.EndTransaction();
+                        localdbSetting.EndTransaction();
                 }
                 return 0;
             }
@@ -616,15 +616,15 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers
             }
             else
             {
-                SqlLocalDBSetting dbSetting = this.myLevel == 0 ? this.StartTransaction() : this;
+                SqlLocalDBSetting localdbSetting = this.myLevel == 0 ? this.StartTransaction() : this;
                 try
                 {
-                    SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(dbSetting.CreateCommand(cmdText, parameters));
+                    SqlDataAdapter sqlDataAdapter = new SqlDataAdapter(localdbSetting.CreateCommand(cmdText, parameters));
                     if (loadSchema)
                         sqlDataAdapter.MissingSchemaAction = MissingSchemaAction.AddWithKey;
                     int num = sqlDataAdapter.Fill(ds, tableName);
                     if (this.myLevel == 0)
-                        dbSetting.Commit();
+                        localdbSetting.Commit();
                     return num;
                 }
                 catch (SqlException ex)
@@ -634,7 +634,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers
                 finally
                 {
                     if (this.myLevel == 0)
-                        dbSetting.EndTransaction();
+                        localdbSetting.EndTransaction();
                 }
                 return 0;
             }
@@ -649,12 +649,12 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers
             }
             else
             {
-                SqlLocalDBSetting dbSetting = this.myLevel == 0 ? this.StartTransaction() : this;
+                SqlLocalDBSetting localdbSetting = this.myLevel == 0 ? this.StartTransaction() : this;
                 try
                 {
-                    new SqlDataAdapter(dbSetting.CreateCommand(selectCmdText, new object[0])).FillSchema(table, SchemaType.Source);
+                    new SqlDataAdapter(localdbSetting.CreateCommand(selectCmdText, new object[0])).FillSchema(table, SchemaType.Source);
                     if (this.myLevel == 0)
-                        dbSetting.Commit();
+                        localdbSetting.Commit();
                 }
                 catch (SqlException ex)
                 {
@@ -663,7 +663,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers
                 finally
                 {
                     if (this.myLevel == 0)
-                        dbSetting.EndTransaction();
+                        localdbSetting.EndTransaction();
                 }
             }
         }
@@ -681,12 +681,12 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers
             }
             else
             {
-                SqlLocalDBSetting dbSetting = this.myLevel == 0 ? this.StartTransaction() : this;
+                SqlLocalDBSetting localdbSetting = this.myLevel == 0 ? this.StartTransaction() : this;
                 try
                 {
-                    new SqlDataAdapter(dbSetting.CreateCommand(selectCmdText, new object[0])).FillSchema(ds, SchemaType.Source, tableName);
+                    new SqlDataAdapter(localdbSetting.CreateCommand(selectCmdText, new object[0])).FillSchema(ds, SchemaType.Source, tableName);
                     if (this.myLevel == 0)
-                        dbSetting.Commit();
+                        localdbSetting.Commit();
                 }
                 catch (SqlException ex)
                 {
@@ -695,7 +695,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers
                 finally
                 {
                     if (this.myLevel == 0)
-                        dbSetting.EndTransaction();
+                        localdbSetting.EndTransaction();
                 }
             }
         }
@@ -709,14 +709,14 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers
             }
             else
             {
-                SqlLocalDBSetting dbSetting = this.myLevel == 0 ? this.StartTransaction() : this;
+                SqlLocalDBSetting localdbSetting = this.myLevel == 0 ? this.StartTransaction() : this;
                 try
                 {
-                    SqlDataAdapter adapter = new SqlDataAdapter(dbSetting.CreateCommand(selectCmdText, new object[0]));
+                    SqlDataAdapter adapter = new SqlDataAdapter(localdbSetting.CreateCommand(selectCmdText, new object[0]));
                     SqlCommandBuilder sqlCommandBuilder = new SqlCommandBuilder(adapter);
                     int num = adapter.Update(table);
                     if (this.myLevel == 0)
-                        dbSetting.Commit();
+                        localdbSetting.Commit();
                     return num;
                 }
                 catch (SqlException ex)
@@ -726,7 +726,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers
                 finally
                 {
                     if (this.myLevel == 0)
-                        dbSetting.EndTransaction();
+                        localdbSetting.EndTransaction();
                 }
                 return 0;
             }
@@ -755,11 +755,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers
         [Obsolete("You should use StartTransaction instead. CopyForTransaction method will be removed in the future.")]
         public SqlLocalDBSetting CopyForTransaction()
         {
-            SqlLocalDBSetting dbSetting = this.Copy();
-            dbSetting.myLevel = this.myLevel + 1;
-            dbSetting.myConnection = this.myConnection;
-            dbSetting.myTransaction = this.myTransaction;
-            return dbSetting;
+            SqlLocalDBSetting localdbSetting = this.Copy();
+            localdbSetting.myLevel = this.myLevel + 1;
+            localdbSetting.myConnection = this.myConnection;
+            localdbSetting.myTransaction = this.myTransaction;
+            return localdbSetting;
         }
     }
 }

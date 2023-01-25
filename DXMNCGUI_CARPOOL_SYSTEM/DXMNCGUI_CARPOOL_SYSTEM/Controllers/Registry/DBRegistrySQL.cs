@@ -11,9 +11,9 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers.Registry
     {
         public override long IncOne(int regID, long startValue)
         {
-            using (SqlDBSetting dbSetting = this.myDBSetting.StartTransaction())
+            using (SqlLocalDBSetting localdbSetting = this.myLocalDBSetting.StartTransaction())
             {
-                DataTable dataTable = dbSetting.GetDataTable("SELECT * FROM [dbo].[Registry] WITH (UPDLOCK, ROWLOCK) WHERE RegID=" + (object)regID, false, new object[0]);
+                DataTable dataTable = localdbSetting.GetDataTable("SELECT * FROM [dbo].[Registry] WITH (UPDLOCK, ROWLOCK) WHERE RegID=" + (object)regID, false, new object[0]);
                 long num1;
                 if (dataTable.Rows.Count > 0)
                 {
@@ -30,8 +30,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers.Registry
                     num1 = 1L;
                     dataTable.Rows.Add(row);
                 }
-                dbSetting.SimpleSaveDataTable(dataTable, "SELECT * FROM [dbo].[Registry]");
-                dbSetting.Commit();
+                localdbSetting.SimpleSaveDataTable(dataTable, "SELECT * FROM [dbo].[Registry]");
+                localdbSetting.Commit();
                 return num1;
             }
         }

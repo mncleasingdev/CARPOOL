@@ -67,6 +67,24 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking {
         protected global::DevExpress.Web.ASPxLabel lblmessage;
         
         /// <summary>
+        /// Layout_DecisionNote control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::DevExpress.Web.LayoutItemNestedControlContainer Layout_DecisionNote;
+        
+        /// <summary>
+        /// DecisionNote control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::DevExpress.Web.ASPxMemo DecisionNote;
+        
+        /// <summary>
         /// LayoutItemNestedControlContainer8 control.
         /// </summary>
         /// <remarks>
@@ -220,15 +238,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking {
         protected global::DevExpress.Web.ASPxTextBox txtStatus;
         
         /// <summary>
-        /// lbl1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.ASPxLabel lbl1;
-        
-        /// <summary>
         /// txtDocNo control.
         /// </summary>
         /// <remarks>
@@ -355,15 +364,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking {
         protected global::DevExpress.Web.ASPxGridView gvPersonDetail;
         
         /// <summary>
-        /// cbDriver control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.ASPxComboBox cbDriver;
-        
-        /// <summary>
         /// deEstPickupTime control.
         /// </summary>
         /// <remarks>
@@ -445,67 +445,13 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking {
         protected global::DevExpress.Web.ASPxButton btnAdminApprove;
         
         /// <summary>
-        /// txtActDriverName control.
+        /// gvApproval control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::DevExpress.Web.ASPxTextBox txtActDriverName;
-        
-        /// <summary>
-        /// deActPickupTime control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.ASPxDateEdit deActPickupTime;
-        
-        /// <summary>
-        /// deActArrivalTime control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.ASPxDateEdit deActArrivalTime;
-        
-        /// <summary>
-        /// mmActRemark control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.ASPxMemo mmActRemark;
-        
-        /// <summary>
-        /// btnDriverPickUp control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.ASPxButton btnDriverPickUp;
-        
-        /// <summary>
-        /// btnDriverReject control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.ASPxButton btnDriverReject;
-        
-        /// <summary>
-        /// btnDriverFinish control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.ASPxButton btnDriverFinish;
+        protected global::DevExpress.Web.ASPxGridView gvApproval;
         
         /// <summary>
         /// btnTestMap control.
@@ -515,6 +461,24 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::DevExpress.Web.ASPxButton btnTestMap;
+        
+        /// <summary>
+        /// btnApprove control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::DevExpress.Web.ASPxButton btnApprove;
+        
+        /// <summary>
+        /// btnReject control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::DevExpress.Web.ASPxButton btnReject;
         
         /// <summary>
         /// btnSubmit control.
@@ -535,13 +499,13 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking {
         protected global::DevExpress.Web.ASPxButton btnCancel;
         
         /// <summary>
-        /// btnReject control.
+        /// btnFinish control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::DevExpress.Web.ASPxButton btnReject;
+        protected global::DevExpress.Web.ASPxButton btnFinish;
         
         /// <summary>
         /// btnBack control.

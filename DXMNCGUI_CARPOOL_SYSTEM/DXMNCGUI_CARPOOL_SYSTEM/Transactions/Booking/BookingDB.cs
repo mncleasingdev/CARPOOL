@@ -11,19 +11,26 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
     public class BookingDB
     {
         protected internal SqlDBSetting myDBSetting;
+        protected internal SqlLocalDBSetting myLocalDBSetting;
         protected SqlDBSession myDBSession;
         protected DataTable myBrowseTable;
         protected DataTable myBrowseTableApproval;
+        protected DataTable myBrowseTableSchedule;
         protected DataTable myDataTableAllMaster;
         protected DBRegistry myDBReg;
         internal BookingDB()
         {
             myBrowseTable = new DataTable();
             myBrowseTableApproval = new DataTable();
+            myBrowseTableSchedule = new DataTable();
         }
         public SqlDBSetting DBSetting
         {
             get { return myDBSetting; }
+        }
+        public SqlLocalDBSetting LocalDBSetting
+        {
+            get { return myLocalDBSetting; }
         }
         public SqlDBSession DBSession
         {
@@ -36,12 +43,13 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 return this.myDBReg;
             }
         }     
-        public static BookingDB Create(SqlDBSetting dbSetting, SqlDBSession dbSession)
+        public static BookingDB Create(SqlDBSetting dbSetting, SqlDBSession dbSession, SqlLocalDBSetting localDBSetting)
         {
             BookingDB aBooking = (BookingDB)null; ;
             aBooking = new BookingSql();
             aBooking.myDBSetting = dbSetting;
             aBooking.myDBSession = dbSession;
+            aBooking.myLocalDBSetting = localDBSetting;
             return aBooking;
         }
         public DataTable DataTableAllMaster
@@ -55,6 +63,10 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
         public DataTable BrowseTableApproval
         {
             get { return myBrowseTableApproval; }
+        }
+        public DataTable BrowseTableSchedule
+        {
+            get { return myBrowseTableSchedule; }
         }
         public virtual void Sendmail(string strapprovalID, string strapprovalName, BookingEntity Booking, string strsubject, string strbody, SqlDBSetting dbsetting, bool bsender, bool breject, string strrejectnote, string traveltype, Int64 itravelKey)
         {
@@ -71,9 +83,13 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
         {
             return null;
         }
+        public virtual DataTable LoadBrowseTableSchedule(string UserName)
+        {
+            return null;
+        }
         public BookingEntity Entity(DXCType type)
         {
-            myDBReg = DBRegistry.Create(myDBSetting);
+            myDBReg = DBRegistry.Create(myLocalDBSetting);
             DataSet dataSet = LoadData(0);
 
             DataRow rowuser = dataSet.Tables["User"].NewRow();
@@ -106,13 +122,13 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
         {
             return this.myDBReg.IncOne((IRegistryID)new BookingHeaderDriverDocKey());
         }
-        private void InitUserRow(DataRow row, DXCType type)
+        public void InitUserRow(DataRow row, DXCType type)
         {
             row.BeginEdit();
             DateTime mydate = myDBSetting.GetServerTime();
-            DataRow myrow = myDBSetting.GetDataTable("SELECT * FROM [dbo].[MasterUser] WHERE EMAIL=?", false, myDBSession.LoginEmail).Rows[0];
+            DataRow myrow = myDBSetting.GetDataTable("SELECT * FROM [dbo].[Master_User] WHERE USER_ID=? AND IS_ACTIVE_FLAG=1", false, myDBSession.LoginEmail).Rows[0];
             row["DocKey"] = DocKeyUniqueKey();
-            row["DocNo"] = "NEW";
+            row["DocNo"] = "NEED APPROVAL";
             row["DocDate"] = mydate;
             row["DocType"] = "";
             row["Note"] = DBNull.Value;
@@ -121,8 +137,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             row["Remark3"] = DBNull.Value;
             row["Remark4"] = DBNull.Value;
             row["EmployeeName"] = myrow["USER_NAME"].ToString();
-            row["EmployeeCompanyName"] = myrow["CompanyName"].ToString();
-            row["Status"] = "NEW";
+            row["EmployeeCompanyName"] = "MNC Leasing";//myrow["CompanyName"].ToString();
+            row["Status"] = "NEED APPROVAL";
             row["NumberOfSeat"] = DBNull.Value;
             row["RequestStartTime"] = DBNull.Value;
             row["RequestFinishTime"] = DBNull.Value;
@@ -130,12 +146,12 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             row["RequestDestLoc"] = DBNull.Value;
             row["RequestPickAddress"] = DBNull.Value;
             row["RequestDestAddress"] = DBNull.Value;
-            row["Department"] = myrow["Department"].ToString();
+            row["Department"] = "HEAD OFFICE";//myrow["Department"].ToString();
             row["TripDetails"] = DBNull.Value;
             row["IsSettlement"] = "F";
-            row["Hp"] = myrow["Hp"].ToString();
-            row["NeedApproval"] = myrow["NeedApproval"].ToString();
-            row["Approver"] = myrow["Approver"].ToString();
+            row["Hp"] = "";//myrow["Hp"].ToString();
+            row["NeedApproval"] = "";//myrow["NeedApproval"].ToString();
+            row["Approver"] = "";
             row.EndEdit();
         }
         private void InitAdminRow(DataRow row, long sourcekey, DXCType type)
@@ -176,7 +192,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
         }
         public BookingEntity GetEntity(long headerid)
         {
-            myDBReg = DBRegistry.Create(myDBSetting);
+            myDBReg = DBRegistry.Create(myLocalDBSetting);
 
             DataSet ds = LoadData(headerid);
             if (ds.Tables[0].Rows.Count == 0)
@@ -185,23 +201,28 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
         }
         public BookingEntity Edit(long headerid, DXCAction action)
         {
-            myDBReg = DBRegistry.Create(myDBSetting);
+            myDBReg = DBRegistry.Create(myLocalDBSetting);
             return this.InternalEdit(this.LoadData(headerid), action);
         }
         public BookingEntity Grab(long headerid, DXCAction action)
         {
-            myDBReg = DBRegistry.Create(myDBSetting);
+            myDBReg = DBRegistry.Create(myLocalDBSetting);
             return this.InternalEdit(this.LoadData(headerid), action);
         }
         public BookingEntity Approve(long headerid, DXCAction action)
         {
-            myDBReg = DBRegistry.Create(myDBSetting);
+            myDBReg = DBRegistry.Create(myLocalDBSetting);
             return this.InternalEdit(this.LoadData(headerid), action);
         }
         public BookingEntity View(long headerid)
         {
-            myDBReg = DBRegistry.Create(myDBSetting);
+            myDBReg = DBRegistry.Create(myLocalDBSetting);
             return this.InternalView(this.LoadData(headerid));
+        }
+        public BookingEntity Approve(long headerid)
+        {
+            myDBReg = DBRegistry.Create(myLocalDBSetting);
+            return this.InternalApprove(this.LoadData(headerid));
         }
         public void UpdateAllMaster(DataTable sourceTable)
         {
@@ -240,6 +261,18 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 return new BookingEntity(this, newDataSet, DXCAction.View);
             }
         }
+        private BookingEntity InternalApprove(DataSet newDataSet)
+        {
+            if (newDataSet.Tables["User"].Rows.Count == 0)
+            {
+                return (BookingEntity)null;
+            }
+            else
+            {
+                long docKey = Convert.ToInt64(newDataSet.Tables["User"].Rows[0]["DocKey"]);
+                return new BookingEntity(this, newDataSet, DXCAction.Approve);
+            }
+        }
         private BookingEntity InternalEdit(DataSet newDataSet, DXCAction action)
         {
             if (newDataSet.Tables["User"].Rows.Count == 0)
@@ -252,13 +285,13 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 return new BookingEntity(this, newDataSet, action);
             }
         }
-        public void SaveEntity(BookingEntity entity, string strDocName, SaveAction saveaction, string strUpline, string strID, string strName)
+        public void SaveEntity(BookingEntity entity, string strDocName, SaveAction saveaction, string strUpline, string strID, string strName, string approver)
         {
             if (entity.DocNo.ToString().Length == 0)
                 throw new EmptyDocNoException();
 
 
-            SaveData(entity, entity.myDataSet, strDocName, saveaction, strUpline, strID, strName);
+            SaveData(entity, entity.myDataSet, strDocName, saveaction, strUpline, strID, strName, approver);
             LoadBrowseTable(false, false, myDBSession.LoginUserID, "");
             try
             {
@@ -301,7 +334,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
         public virtual void Delete(long headerid)
         {
         }
-        protected virtual void SaveData(BookingEntity Booking, DataSet ds, string strDocName, SaveAction saveaction, string strUpline, string userID, string userName)
+        protected virtual void SaveData(BookingEntity Booking, DataSet ds, string strDocName, SaveAction saveaction, string strUpline, string userID, string userName, string approver)
         {
         }
         protected virtual void SaveDetail(DataSet ds, SaveAction saveaction)

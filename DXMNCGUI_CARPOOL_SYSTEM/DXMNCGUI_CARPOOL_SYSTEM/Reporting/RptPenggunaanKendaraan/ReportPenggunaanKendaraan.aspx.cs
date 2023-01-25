@@ -17,6 +17,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Reporting.RptPenggunaanKendaraan
             get { isValidLogin(false); return (SqlDBSetting)HttpContext.Current.Session["myDBSetting" + this.ViewState["_PageID"]]; }
             set { HttpContext.Current.Session["myDBSetting" + this.ViewState["_PageID"]] = value; }
         }
+        protected SqlLocalDBSetting myLocalDBSetting
+        {
+            get { isValidLogin(false); return (SqlLocalDBSetting)HttpContext.Current.Session["myLocalDBSetting" + this.ViewState["_PageID"]]; }
+            set { HttpContext.Current.Session["myLocalDBSetting" + this.ViewState["_PageID"]] = value; }
+        }
         protected SqlDBSession myDBSession
         {
             get { isValidLogin(false); return (SqlDBSession)HttpContext.Current.Session["myDBSession" + this.ViewState["_PageID"]]; }
@@ -37,6 +42,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Reporting.RptPenggunaanKendaraan
                 this.ViewState["_PageID"] = Guid.NewGuid();
                 myDBSetting = dbsetting;
                 myDBSession = dbsession;
+                myLocalDBSetting = localdbsetting;
 
                 myHeaderTable = new DataTable();
                 GetMainData();
@@ -61,7 +67,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Reporting.RptPenggunaanKendaraan
         protected void GetMainData()
         {
             string ssql = "exec dbo.spGetListReport";
-            myHeaderTable = myDBSetting.GetDataTable(ssql, false);
+            myHeaderTable = myLocalDBSetting.GetDataTable(ssql, false);
             gvMain.DataSource = myHeaderTable;
             gvMain.DataBind();
         }

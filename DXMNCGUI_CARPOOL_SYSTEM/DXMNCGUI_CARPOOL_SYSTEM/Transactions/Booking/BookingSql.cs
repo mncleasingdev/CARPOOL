@@ -12,23 +12,33 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
 {
     public class BookingSql : BookingDB
     {
+        protected AccesRight accessright
+        {
+            get { return (AccesRight)HttpContext.Current.Session["accessright"]; }
+            set { HttpContext.Current.Session["accessright"] = value; }
+        }
+
         public override DataTable LoadBrowseTable(bool bViewAll, bool bViewAllperDept, string userID, string department)
         {
             if (!bViewAll)
             {
                 myBrowseTable.Clear();
-                myDBSetting.LoadDataTable(myBrowseTable, "SELECT * FROM dbo.Booking WHERE EmployeeName=? ORDER BY DocDate DESC", true, userID);
+                myLocalDBSetting.LoadDataTable(myBrowseTable, "SELECT * FROM dbo.Booking WHERE EmployeeName=? ORDER BY DocDate DESC", true, userID);
             }
             else
             {
                 myBrowseTable.Clear();
-                myDBSetting.LoadDataTable(myBrowseTable, "SELECT * FROM dbo.Booking ORDER BY DocDate DESC", true);
+                myLocalDBSetting.LoadDataTable(myBrowseTable, @"SELECT CASE WHEN a.approver +' - ' + b.DESCS IS NULL 
+                                                                THEN a.Approver ELSE a.approver +' - ' + b.DESCS 
+                                                                END as NextApprover,* 
+                                                                FROM dbo.Booking a
+                                                                left join IFINANCING_GOLIVE..SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE ORDER BY DocDate DESC", true);
             }
 
             if (bViewAllperDept)
             {
                 myBrowseTable.Clear();
-                myDBSetting.LoadDataTable(myBrowseTable, "SELECT * FROM dbo.Booking WHERE EmployeeName=? OR Department=? ORDER BY DocDate DESC", true, userID, department);
+                myLocalDBSetting.LoadDataTable(myBrowseTable, "SELECT * FROM dbo.Booking WHERE EmployeeName=? OR Department=? ORDER BY DocDate DESC", true, userID, department);
             }
 
             DataColumn[] keyHeader = new DataColumn[1];
@@ -44,27 +54,45 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                         INNER JOIN [dbo].[BookingAdmin] B
                         ON A.DocKey = B.SourceKey
                         WHERE A.Status IN ('ON SCHEDULE', 'PICKUP') AND B.DriverName=? ORDER BY A.DocDate";
-            myDBSetting.LoadDataTable(myBrowseTable, sQuery, true, DriverName);
+            myLocalDBSetting.LoadDataTable(myBrowseTable, sQuery, true, DriverName);
             DataColumn[] keyHeader = new DataColumn[1];
             keyHeader[0] = myBrowseTable.Columns["DocKey"];
             myBrowseTable.PrimaryKey = keyHeader;
             return myBrowseTable;
         }
-        public override DataTable LoadBrowseTableApproval(string sEmailAddress)
+        public override DataTable LoadBrowseTableApproval(string UserCode)
         {
             string sQuery = "";
+            string cmdID = "";
             myBrowseTableApproval.Clear();
-            sQuery = @"SELECT A.* FROM dbo.Booking A
-                        WHERE A.Status IN ('WAITING APPROVAL') AND A.Approver=? ORDER BY A.DocDate";
-            myDBSetting.LoadDataTable(myBrowseTableApproval, sQuery, true, sEmailAddress);
+            if (accessright.IsAccessibleByUserID(UserCode, "IS_GA"))
+            {
+                cmdID = "IS_GA";
+            }
+
+            sQuery = "EXEC GetApprovalBooking ?, ?";
+            myLocalDBSetting.LoadDataTable(myBrowseTableApproval, sQuery, true, UserCode, cmdID);
+
             DataColumn[] keyHeader = new DataColumn[1];
             keyHeader[0] = myBrowseTableApproval.Columns["DocKey"];
             myBrowseTableApproval.PrimaryKey = keyHeader;
             return myBrowseTableApproval;
         }
+
+        public override DataTable LoadBrowseTableSchedule(string UserCode)
+        {
+            string sQuery = "";
+            sQuery = "EXEC getOnScheduleBook ?";
+            myLocalDBSetting.LoadDataTable(myBrowseTableSchedule, sQuery, true, UserCode);
+
+            DataColumn[] keyHeader = new DataColumn[1];
+            keyHeader[0] = myBrowseTableSchedule.Columns["DocKey"];
+            myBrowseTableSchedule.PrimaryKey = keyHeader;
+            return myBrowseTableSchedule;
+        }
         protected override DataSet LoadData(long headerid)
         {
-            SqlConnection myconn = new SqlConnection(myDBSetting.ConnectionString);
+            SqlConnection myconn = new SqlConnection(myLocalDBSetting.ConnectionString);
             DataSet dataSet = new DataSet();
 
             DataTable myUserTable = new DataTable();
@@ -73,7 +101,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             DataTable myDriverTable = new DataTable();
 
             string sQueryUser = "SELECT * FROM [dbo].[Booking] WHERE DocKey=@DocKey";
-            string sQueryUserDetail = "SELECT * FROM [dbo].[BookingDetail] WHERE DocKey=@DocKey ORDER BY Seq";
+            //string sQueryUserDetail = @"SELECT A.CODE AS NIK, A.DESCS AS Nama, c.USERGROUPDESC AS Jabatan, A.Email FROM SYS_TBLEMPLOYEE a
+            //                            left join MASTER_USER_COMPANY_GROUP b on a.HEAD = b.USER_ID
+            //                            left join MASTER_GROUP c on b.GROUP_CODE = c.USERGROUP
+            //                            where a.isactive = 1 AND ID=@DocKey";
+            string sQueryUserDetail = "SELECT DtlKey,Dockey,Seq,NIK,Name,Jabatan,Email FROM [dbo].[BookingDetail] WHERE Dockey=@DocKey";
             string sQueryAdmin = "SELECT * FROM [dbo].[BookingAdmin] WHERE SourceKey=@SourceKey";
             string sQueryDriver = "SELECT * FROM [dbo].[BookingDriver] WHERE SourceKey=@SourceKey";
 
@@ -137,64 +169,84 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
         }
         public override void Delete(long headerid)
         {
-            SqlDBSetting dbSetting = this.myDBSetting.StartTransaction();
+            SqlLocalDBSetting localdbSetting = this.myLocalDBSetting.StartTransaction();
             try
             {
-                dbSetting.ExecuteNonQuery("DELETE FROM [dbo].[Application] WHERE DocKey=?", (object)headerid);
-                dbSetting.Commit();
+                localdbSetting.ExecuteNonQuery("DELETE FROM [dbo].[Application] WHERE DocKey=?", (object)headerid);
+                localdbSetting.Commit();
 
             }
             catch (SqlException ex)
             {
-                dbSetting.Rollback();
+                localdbSetting.Rollback();
                 throw new ArgumentException(ex.Message);
             }
             catch (HttpUnhandledException ex)
             {
-                dbSetting.Rollback();
+                localdbSetting.Rollback();
                 throw new ArgumentException(ex.Message);
             }
             catch (Exception ex)
             {
-                dbSetting.Rollback();
+                localdbSetting.Rollback();
                 throw new ArgumentException(ex.Message);
             }
             finally
             {
-                dbSetting.EndTransaction();
+                localdbSetting.EndTransaction();
             }
         }
-        protected override void SaveData(BookingEntity Booking, DataSet ds, string strDocName, SaveAction saveaction, string strUpline, string userID, string userName)
+        protected override void SaveData(BookingEntity Booking, DataSet ds, string strDocName, SaveAction saveaction, string strUpline, string userID, string userName, string approver)
         {
-            SqlDBSetting dbSetting = this.myDBSetting.StartTransaction();
-            SqlConnection con = new SqlConnection(dbSetting.ConnectionString);
-            DateTime Mydate = myDBSetting.GetServerTime();
+            SqlLocalDBSetting localdbSetting = this.myLocalDBSetting.StartTransaction();
+            SqlConnection con = new SqlConnection(localdbSetting.ConnectionString);
+            DateTime Mydate = myLocalDBSetting.GetServerTime();
             DataRow dataRow = ds.Tables["User"].Rows[0];
             DataRow dataAdminRow = ds.Tables["Admin"].Rows[0];
             DataRow dataDriverRow = ds.Tables["Driver"].Rows[0];
             try
             {
-                dbSetting.StartTransaction();
+                localdbSetting.StartTransaction();
                 if (saveaction == SaveAction.Save)
                 {
-                    if (dataRow["DocNo"].ToString().ToUpper() == "NEW")
-                    {
-                        DataRow[] myrowDocNo = dbSetting.GetDataTable("select * from DocNoFormat", false, "").Select("DocType='BK'", "", DataViewRowState.CurrentRows);
+                    //if (dataRow["DocNo"].ToString().ToUpper() == "NEED APPROVAL")
+                    //{
+                        DataRow[] myrowDocNo = localdbSetting.GetDataTable("select * from DocNoFormat", false, "").Select("DocType='BK'", "", DataViewRowState.CurrentRows);
                         if (myrowDocNo != null)
                         {
                             dataRow["DocNo"] = Document.FormatDocumentNo(myrowDocNo[0]["Format"].ToString(), System.Convert.ToInt32(myrowDocNo[0]["NextNo"]), DBSetting.GetServerTime());
-                            dbSetting.ExecuteNonQuery("Update DocNoFormat set NextNo=NextNo+1 Where DocType=?", strDocName);
+                            localdbSetting.ExecuteNonQuery("Update DocNoFormat set NextNo=NextNo+1 Where DocType=?", strDocName);
                         }
-                    }
-                    if(dataRow["NeedApproval"].ToString() == "T")
-                    {
-                        dataRow["Status"] = "WAITING APPROVAL";
-                    }
+                  //  }
+                    //if(dataRow["NeedApproval"].ToString() == "T")
+                    //{
+                    //    dataRow["Status"] = "WAITING APPROVAL";
+                    //}
+                }
+                if (saveaction == SaveAction.Save)
+                {
+                    dataRow["Approver"] = approver;
+                }
+
+                if (saveaction == SaveAction.Approve)
+                {
+                    dataRow["Status"] = "NEED APPROVAL";
+                    dataRow["Approver"] = "IS_GA";
+                    dataRow["LastModifiedBy"] = userName;
+                    dataRow["LastModifiedDateTime"] = Mydate;
+                }
+                if (saveaction == SaveAction.Reject)
+                {
+                    dataRow["Status"] = "REJECTED";
+                    dataRow["Approver"] = "-";
+                    dataRow["LastModifiedBy"] = userName;
+                    dataRow["LastModifiedDateTime"] = Mydate;
                 }
                 if (saveaction == SaveAction.Cancel)
                 {
                     dataRow["Status"] = "CANCELLED";
                     dataRow["Cancelled"] = "T";
+                    dataRow["Approver"] = "-";
                     dataRow["CancelledBy"] = userName;
                     dataRow["CancelledDateTime"] = Mydate;
                     dataRow["LastModifiedBy"] = userName;
@@ -203,163 +255,166 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
 
                 if (saveaction == SaveAction.HoldByAdmin)
                 {
-                    dataRow["Status"] = "HOLD BY DISPATCHER";
+                    dataRow["Status"] = "HOLD BY GA";
                     dataRow["LastModifiedBy"] = userName;
                     dataRow["LastModifiedDateTime"] = Mydate;
                 }
                 if (saveaction == SaveAction.RejectByAdmin)
                 {
-                    dataRow["Status"] = "REJECTED BY DISPATCHER";
+                    dataRow["Status"] = "REJECTED BY GA";
+                    dataRow["Approver"] = "-";
                     dataRow["LastModifiedBy"] = userName;
                     dataRow["LastModifiedDateTime"] = Mydate;
                 }
                 if (saveaction == SaveAction.ApproveByAdmin)
                 {
-                    dataRow["Status"] = "ON SCHEDULE";
+                    dataRow["Status"] = "ON SCHEDULE";                    
                     dataRow["LastModifiedBy"] = userName;
                     dataRow["LastModifiedDateTime"] = Mydate;
-                    SendSMS(Booking, saveaction);
+                   // SendSMS(Booking, saveaction);
                 }
 
-                if (saveaction == SaveAction.PickupByDriver)
-                {
-                    dataRow["Status"] = "PICKUP";
-                    dataRow["LastModifiedBy"] = userName;
-                    dataRow["LastModifiedDateTime"] = Mydate;
+                //if (saveaction == SaveAction.PickupByDriver)
+                //{
+                //    dataRow["Status"] = "PICKUP";
+                //    dataRow["LastModifiedBy"] = userName;
+                //    dataRow["LastModifiedDateTime"] = Mydate;
 
-                    dataDriverRow["DriverName"] = userName;
-                    dataDriverRow["ActualPickDateTime"] = Mydate;
-                    dataDriverRow["LastModifiedBy"] = userName;
-                    dataDriverRow["LastModifiedDateTime"] = Mydate;
-                }
-                if (saveaction == SaveAction.RejectByDriver)
-                {
-                    dataRow["Status"] = "REJECTED BY DRIVER";
-                    dataRow["LastModifiedBy"] = userName;
-                    dataRow["LastModifiedDateTime"] = Mydate;
+                //    dataDriverRow["DriverName"] = userName;
+                //    dataDriverRow["ActualPickDateTime"] = Mydate;
+                //    dataDriverRow["LastModifiedBy"] = userName;
+                //    dataDriverRow["LastModifiedDateTime"] = Mydate;
+                //}
+                //if (saveaction == SaveAction.RejectByDriver)
+                //{
+                //    dataRow["Status"] = "REJECTED BY DRIVER";
+                //    dataRow["LastModifiedBy"] = userName;
+                //    dataRow["LastModifiedDateTime"] = Mydate;
 
-                    dataDriverRow["LastModifiedBy"] = userName;
-                    dataDriverRow["LastModifiedDateTime"] = Mydate;
-                }
+                //    dataDriverRow["LastModifiedBy"] = userName;
+                //    dataDriverRow["LastModifiedDateTime"] = Mydate;
+                //}
                 if (saveaction == SaveAction.FinishByDriver)
                 {
                     dataRow["Status"] = "FINISH";
                     dataRow["LastModifiedBy"] = userName;
                     dataRow["LastModifiedDateTime"] = Mydate;
+                    dataRow["Approver"] = "";
 
                     dataDriverRow["DriverName"] = userName;
                     dataDriverRow["ActualArriveDateTime"] = Mydate;
                     dataDriverRow["LastModifiedBy"] = userName;
                     dataDriverRow["LastModifiedDateTime"] = Mydate;
 
-                    dbSetting.ExecuteNonQuery("UPDATE [dbo].[MasterCar] SET Kilometer=? WHERE CarLicense=?", (object)dataDriverRow["CurrentKilometer"], (object)dataAdminRow["CarLicensePlate"]);
+                   // localdbSetting.ExecuteNonQuery("UPDATE [dbo].[MasterCar] SET Kilometer=? WHERE CarLicense=?", (object)dataDriverRow["CurrentKilometer"], (object)dataAdminRow["CarLicensePlate"]);
                 }
 
-                if (Booking.DocKey != null)
-                {
-                    ClearDetail(Booking, saveaction);
-                }
-                dbSetting.SimpleSaveDataTable(ds.Tables["User"], "SELECT * FROM [dbo].[Booking]");
-                dbSetting.SimpleSaveDataTable(ds.Tables["Admin"], "SELECT * FROM [dbo].[BookingAdmin]");
-                dbSetting.SimpleSaveDataTable(ds.Tables["Driver"], "SELECT * FROM [dbo].[BookingDriver]");
-                SaveDetail(ds, saveaction);
+                //if (Booking.DocKey != null)
+                //{
+                //    ClearDetail(Booking, saveaction);
+                //}
+                localdbSetting.ExecuteNonQuery("UPDATE [dbo].[MasterCar] SET Kilometer=? WHERE CarLicense=?", (object)dataDriverRow["CurrentKilometer"], (object)dataAdminRow["CarLicensePlate"]);
+                localdbSetting.SimpleSaveDataTable(ds.Tables["User"], "SELECT * FROM [dbo].[Booking]");
+                localdbSetting.SimpleSaveDataTable(ds.Tables["Admin"], "SELECT * FROM [dbo].[BookingAdmin]");
+                localdbSetting.SimpleSaveDataTable(ds.Tables["Driver"], "SELECT * FROM [dbo].[BookingDriver]");
+                //SaveDetail(ds, saveaction);
 
                 Booking.strErrorGenTicket = "null";
                 if (Booking.strErrorGenTicket == "null")
                 {
-                    dbSetting.Commit();
+                    localdbSetting.Commit();
                 }
                 else
                 {
-                    dbSetting.Rollback();
+                    localdbSetting.Rollback();
                     throw new ArgumentException(Booking.strErrorGenTicket);
                 }
             }
             catch (SqlException ex)
             {
-                dbSetting.Rollback();
+                localdbSetting.Rollback();
                 throw new ArgumentException(ex.Message);
             }
             catch (HttpUnhandledException ex)
             {
-                dbSetting.Rollback();
+                localdbSetting.Rollback();
                 throw new ArgumentException(ex.Message);
             }
             catch (Exception ex)
             {
-                dbSetting.Rollback();
+                localdbSetting.Rollback();
                 throw new ArgumentException(ex.Message);
             }
             finally
             {
-                dbSetting.EndTransaction();
+                localdbSetting.EndTransaction();
             }
         }
-        protected override void SaveDetail(DataSet ds, SaveAction saveaction)
-        {
-            SqlConnection myconn = new SqlConnection(DBSetting.ConnectionString);
-            myconn.Open();
-            SqlTransaction trans = myconn.BeginTransaction();
-            try
-            {
-                foreach (DataRow dataRow in ds.Tables["UserDetail"].Rows)
-                {
+        //protected override void SaveDetail(DataSet ds, SaveAction saveaction)
+        //{
+        //    SqlConnection myconn = new SqlConnection(LocalDBSetting.ConnectionString);
+        //    myconn.Open();
+        //    SqlTransaction trans = myconn.BeginTransaction();
+        //    try
+        //    {
+        //        foreach (DataRow dataRow in ds.Tables["UserDetail"].Rows)
+        //        {
 
-                    SqlCommand sqlCommand = new SqlCommand("INSERT INTO [dbo].[BookingDetail] (DtlKey, DocKey, Seq, Name, Gender, Status, Remark1, Remark2, Remark3) VALUES (@DtlKey, @DocKey, @Seq, @Name, @Gender ,@Status, @Remark1, @Remark2, @Remark3)");
-                    sqlCommand.Connection = myconn;
-                    sqlCommand.Transaction = trans;
+        //            SqlCommand sqlCommand = new SqlCommand("INSERT INTO [dbo].[BookingDetail] (DtlKey, DocKey, Seq, Name, Gender, Status, Remark1, Remark2, Remark3) VALUES (@DtlKey, @DocKey, @Seq, @Name, @Gender ,@Status, @Remark1, @Remark2, @Remark3)");
+        //            sqlCommand.Connection = myconn;
+        //            sqlCommand.Transaction = trans;
 
-                    var varRemark1 = dataRow["Remark1"];
-                    var varRemark2 = dataRow["Remark2"];
-                    var varRemark3 = dataRow["Remark3"];
+        //            var varRemark1 = dataRow["Remark1"];
+        //            var varRemark2 = dataRow["Remark2"];
+        //            var varRemark3 = dataRow["Remark3"];
 
-                    SqlParameter sqlParameter1 = sqlCommand.Parameters.Add("@DtlKey", SqlDbType.Int);
-                    sqlParameter1.Value = dataRow.Field<int>("DtlKey");
-                    sqlParameter1.Direction = ParameterDirection.Input;
-                    SqlParameter sqlParameter2 = sqlCommand.Parameters.Add("@DocKey", SqlDbType.Int);
-                    sqlParameter2.Value = dataRow.Field<int>("DocKey");
-                    sqlParameter2.Direction = ParameterDirection.Input;
-                    SqlParameter sqlParameter3 = sqlCommand.Parameters.Add("@Seq", SqlDbType.Int);
-                    sqlParameter3.Value = dataRow.Field<int>("Seq");
-                    sqlParameter3.Direction = ParameterDirection.Input;
-                    SqlParameter sqlParameter4 = sqlCommand.Parameters.Add("@Name", SqlDbType.NVarChar, 50);
-                    sqlParameter4.Value = dataRow.Field<string>("Name");
-                    sqlParameter4.Direction = ParameterDirection.Input;
-                    SqlParameter sqlParameter5 = sqlCommand.Parameters.Add("@Gender", SqlDbType.NVarChar, 1);
-                    sqlParameter5.Value = dataRow.Field<string>("Gender");
-                    sqlParameter5.Direction = ParameterDirection.Input;
-                    SqlParameter sqlParameter6 = sqlCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 50);
-                    sqlParameter6.Value = dataRow.Field<string>("Status");
-                    sqlParameter6.Direction = ParameterDirection.Input;
-                    SqlParameter sqlParameter7 = sqlCommand.Parameters.Add("@Remark1", SqlDbType.NVarChar);
-                    sqlParameter7.Value = varRemark1;
-                    sqlParameter7.Direction = ParameterDirection.Input;
-                    SqlParameter sqlParameter8 = sqlCommand.Parameters.Add("@Remark2", SqlDbType.NVarChar);
-                    sqlParameter8.Value = varRemark2;
-                     sqlParameter8.Direction = ParameterDirection.Input;
-                    SqlParameter sqlParameter9 = sqlCommand.Parameters.Add("@Remark3", SqlDbType.NVarChar);
-                    sqlParameter9.Value = varRemark3;
-                    sqlParameter9.Direction = ParameterDirection.Input;
+        //            SqlParameter sqlParameter1 = sqlCommand.Parameters.Add("@DtlKey", SqlDbType.Int);
+        //            sqlParameter1.Value = dataRow.Field<int>("DtlKey");
+        //            sqlParameter1.Direction = ParameterDirection.Input;
+        //            SqlParameter sqlParameter2 = sqlCommand.Parameters.Add("@DocKey", SqlDbType.Int);
+        //            sqlParameter2.Value = dataRow.Field<int>("DocKey");
+        //            sqlParameter2.Direction = ParameterDirection.Input;
+        //            SqlParameter sqlParameter3 = sqlCommand.Parameters.Add("@Seq", SqlDbType.Int);
+        //            sqlParameter3.Value = dataRow.Field<int>("Seq");
+        //            sqlParameter3.Direction = ParameterDirection.Input;
+        //            SqlParameter sqlParameter4 = sqlCommand.Parameters.Add("@Name", SqlDbType.NVarChar, 50);
+        //            sqlParameter4.Value = dataRow.Field<string>("Name");
+        //            sqlParameter4.Direction = ParameterDirection.Input;
+        //            SqlParameter sqlParameter5 = sqlCommand.Parameters.Add("@Gender", SqlDbType.NVarChar, 1);
+        //            sqlParameter5.Value = dataRow.Field<string>("Gender");
+        //            sqlParameter5.Direction = ParameterDirection.Input;
+        //            SqlParameter sqlParameter6 = sqlCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 50);
+        //            sqlParameter6.Value = dataRow.Field<string>("Status");
+        //            sqlParameter6.Direction = ParameterDirection.Input;
+        //            SqlParameter sqlParameter7 = sqlCommand.Parameters.Add("@Remark1", SqlDbType.NVarChar);
+        //            sqlParameter7.Value = varRemark1;
+        //            sqlParameter7.Direction = ParameterDirection.Input;
+        //            SqlParameter sqlParameter8 = sqlCommand.Parameters.Add("@Remark2", SqlDbType.NVarChar);
+        //            sqlParameter8.Value = varRemark2;
+        //             sqlParameter8.Direction = ParameterDirection.Input;
+        //            SqlParameter sqlParameter9 = sqlCommand.Parameters.Add("@Remark3", SqlDbType.NVarChar);
+        //            sqlParameter9.Value = varRemark3;
+        //            sqlParameter9.Direction = ParameterDirection.Input;
 
-                    sqlCommand.ExecuteNonQuery();
-                }
-                trans.Commit();
-            }
-            catch (Exception ex)
-            {
-                trans.Rollback();
-                throw new ArgumentException(ex.Message);
-            }
-            finally
-            {
-                myconn.Close();
-            }
-        }
+        //            sqlCommand.ExecuteNonQuery();
+        //        }
+        //        trans.Commit();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        trans.Rollback();
+        //        throw new ArgumentException(ex.Message);
+        //    }
+        //    finally
+        //    {
+        //        myconn.Close();
+        //    }
+        //}
         protected override void SaveHistory(BookingEntity Booking, DataSet ds, SaveAction saveaction, string userID, string userName, DateTime myLastApprove, string myLastState)
         {
             int imyDiffTime;
-            DateTime Mydate = myDBSetting.GetServerTime();
-            SqlConnection myconn = new SqlConnection(myDBSetting.ConnectionString);
+            DateTime Mydate = myLocalDBSetting.GetServerTime();
+            SqlConnection myconn = new SqlConnection(myLocalDBSetting.ConnectionString);
             SqlCommand sqlCommand = new SqlCommand("INSERT INTO [dbo].[ApplicationHistory] (DocKey, Status, TransByID, TransBy, TransDate, DiffTime, FromStatus) VALUES (@DocKey, @Status, @TransByID, @TransBy, @TransDate ,@DiffTime, @FromStatus)");
             sqlCommand.Connection = myconn;
             try
@@ -412,8 +467,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
         }
         protected override void SaveComment(BookingEntity Booking, SaveAction saveaction, string userFullName, string userComment)
         {
-            DateTime Mydate = myDBSetting.GetServerTime();
-            SqlConnection myconn = new SqlConnection(myDBSetting.ConnectionString);
+            DateTime Mydate = myLocalDBSetting.GetServerTime();
+            SqlConnection myconn = new SqlConnection(myLocalDBSetting.ConnectionString);
             SqlCommand sqlCommand = new SqlCommand("INSERT INTO [dbo].[ApplicationCommentHistory] (SourceDocKey, DocNo, CommentBy, CommentNote, CommentDate) VALUES (@SourceDocKey, @DocNo, @CommentBy, @CommentNote, @CommentDate)");
             sqlCommand.Connection = myconn;
             try
@@ -456,7 +511,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
         }
         protected override void DeleteWorkingList(BookingEntity Booking, string myID)
         {
-            SqlConnection myconn = new SqlConnection(myDBSetting.ConnectionString);
+            SqlConnection myconn = new SqlConnection(myLocalDBSetting.ConnectionString);
             SqlCommand sqlCommand = new SqlCommand("DELETE WorkList WHERE Source=@Source AND NeedApproveByID=@NeedApproveByID");
             sqlCommand.Connection = myconn;
             try
@@ -492,7 +547,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
         {
             try
             {
-                DBSetting.ExecuteNonQuery("UPDATE dbo.WorkList SET WorkList.Source = (SELECT DocKey FROM dbo.ChangeDataList WHERE WorkList.TicketNo=ChangeDataList.TicketNo)");
+                LocalDBSetting.ExecuteNonQuery("UPDATE dbo.WorkList SET WorkList.Source = (SELECT DocKey FROM dbo.ChangeDataList WHERE WorkList.TicketNo=ChangeDataList.TicketNo)");
             }
             catch (SqlException ex)
             {
@@ -516,7 +571,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             try
             {
                 object obj = null;
-                obj = myDBSetting.ExecuteScalar("SELECT A.StateDescription FROM [dbo].[ApplicationWorkflowScheme] A WHERE A.Seq = (SELECT Seq + 1 FROM [dbo].[ApplicationWorkflowScheme] WHERE StateDescription=?)", myLastStatus);
+                obj = myLocalDBSetting.ExecuteScalar("SELECT A.StateDescription FROM [dbo].[ApplicationWorkflowScheme] A WHERE A.Seq = (SELECT Seq + 1 FROM [dbo].[ApplicationWorkflowScheme] WHERE StateDescription=?)", myLastStatus);
                 if (obj != null && obj != DBNull.Value)
                 {
                     myNextStatus = obj.ToString();
@@ -542,7 +597,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
         }
         protected override void ClearDetail(BookingEntity Booking, SaveAction saveaction)
         {
-            SqlConnection myconn = new SqlConnection(myDBSetting.ConnectionString);
+            SqlConnection myconn = new SqlConnection(myLocalDBSetting.ConnectionString);
             SqlCommand sqlCommand = new SqlCommand("DELETE [dbo].[BookingDetail] WHERE DocKey=@DocKey");
             sqlCommand.Connection = myconn;
             try
@@ -575,15 +630,15 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             string sRedaksi1 = "Hallo Customer, Booking anda sudah diproses oleh dispatcher : " + Booking.DocNo.ToString() + ", terima kasih.";
             string sAddress1 = @"http://" + "www.etracker.cc/bulksms/mesapi.aspx?user=MNCLEASING&pass=P@$$w0rD@MNC&type=0&to=" + Booking.Hp.ToString() + "&from=MNC%20LEASING&text=" + sRedaksi1 + "&servid=MNC001";
             new WebClient().DownloadString(sAddress1);
-            myDBSetting.ExecuteNonQuery("INSERT INTO SMSHist VALUES (?,?,?,?)", (object)Booking.DocNo, (object)myDBSetting.GetServerTime(), (object)Booking.Hp, (object)sRedaksi1);
+            myLocalDBSetting.ExecuteNonQuery("INSERT INTO SMSHist VALUES (?,?,?,?)", (object)Booking.DocNo, (object)myLocalDBSetting.GetServerTime(), (object)Booking.Hp, (object)sRedaksi1);
 
-            object obj = myDBSetting.ExecuteScalar("select top 1 Hp from MasterUser WHERE user_name=?", (object)Booking.AdminDriverName);
+            object obj = myLocalDBSetting.ExecuteScalar("select top 1 Hp from MasterUser WHERE user_name=?", (object)Booking.AdminDriverName);
             if (obj != null && obj != DBNull.Value)
             {
                 string sRedaksi2 = "Hallo Driver, anda mendapatkan order " + Booking.DocNo.ToString() + "Silahkan buka aplikasi carpool untuk mengetahui detail trip.";
                 string sAddress2 = @"http://" + "www.etracker.cc/bulksms/mesapi.aspx?user=MNCLEASING&pass=P@$$w0rD@MNC&type=0&to=" + obj.ToString() + "&from=MNC%20LEASING&text=" + sRedaksi2 + "&servid=MNC001";
                 new WebClient().DownloadString(sAddress2);
-                myDBSetting.ExecuteNonQuery("INSERT INTO SMSHist VALUES (?,?,?,?)", (object)Booking.DocNo, (object)myDBSetting.GetServerTime(), (object)obj, (object)sRedaksi2);
+                myLocalDBSetting.ExecuteNonQuery("INSERT INTO SMSHist VALUES (?,?,?,?)", (object)Booking.DocNo, (object)myLocalDBSetting.GetServerTime(), (object)obj, (object)sRedaksi2);
             }
         }
     }

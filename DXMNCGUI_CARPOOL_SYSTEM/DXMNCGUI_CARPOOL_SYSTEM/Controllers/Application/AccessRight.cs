@@ -39,18 +39,22 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers
 
         public SqlDBSetting DBSetting
         {
-            get
-            {
-                return this.myDBSetting;
-            }
+            //get
+            //{
+            //    return this.myDBSetting;
+            //}
+            get { return (SqlDBSetting)HttpContext.Current.Session["SqlDBSetting"]; }
+            set { HttpContext.Current.Session["SqlDBSetting"] = value; }
         }
 
         public SqlLocalDBSetting LocalDBSetting
         {
-            get
-            {
-                return this.myLocalDBSetting;
-            }
+            //get
+            //{
+            //    return this.myLocalDBSetting;
+            //}
+            get { return (SqlLocalDBSetting)HttpContext.Current.Session["SqlLocalDBSetting"]; }
+            set { HttpContext.Current.Session["SqlLocalDBSetting"] = value; }
         }
 
         public string USER_NAME
@@ -354,20 +358,31 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers
             bool flag = false;
             try
             {
-                SqlConnection connection = new SqlConnection(this.myLocalDBSetting.ConnectionString);
+                SqlConnection connection = new SqlConnection(this.LocalDBSetting.ConnectionString);
                 try
                 {
                     connection.Open();
-                    SqlCommand sqlCommand = new SqlCommand("SELECT COUNT(*) FROM AccessRight WHERE CmdID=@CmdID AND Email=@Email", connection);
-                    sqlCommand.Parameters.AddWithValue("@CmdID", (object)cmdID);
-                    sqlCommand.Parameters.AddWithValue("@Email", (object)userID);
-                    if (System.Convert.ToInt32(sqlCommand.ExecuteScalar()) == 0)
+                    SqlCommand sqlCommand = new SqlCommand("SELECT COUNT(*) FROM AccessRight WHERE CmdID='"+ cmdID + "' AND NIK='"+ userID + "'" , connection);
+                    //SqlCommand sqlCommand = new SqlCommand(@"SELECT COUNT(DISTINCT A.DESCS)
+                    //                                         FROM SYS_TBLEMPLOYEE a
+                    //                                         LEFT JOIN MASTER_USER_COMPANY_GROUP b on a.HEAD = b.USER_ID
+                    //                                         LEFT JOIN MASTER_GROUP c on b.GROUP_CODE = c.USERGROUP 
+                    //                                         WHERE b.GROUP_CODE LIKE '%'+@cmdID+'%' AND a.CODE=@UserID", connection);
+                    //sqlCommand.Parameters.AddWithValue("@CmdID", (object)cmdID);
+                    //sqlCommand.Parameters.AddWithValue("@UserID", (object)userID);
+                    if (System.Convert.ToInt32(sqlCommand.ExecuteScalar()) > 0)
                     {
-                        sqlCommand.CommandText = "SELECT COUNT(*) FROM AccessRight where Email=@Email AND CmdID=@CmdID";
-                        flag = System.Convert.ToInt32(sqlCommand.ExecuteScalar()) > 0;
-                    }
-                    else
+                        //sqlCommand.CommandText = "SELECT COUNT(*) FROM AccessRight where NIK=@userID AND CmdID=@CmdID";
+                        //sqlCommand.CommandText = @"SELECT COUNT(DISTINCT A.DESCS)
+                        //                                     FROM SYS_TBLEMPLOYEE a
+                        //                                     LEFT JOIN MASTER_USER_COMPANY_GROUP b on a.HEAD = b.USER_ID
+                        //                                     LEFT JOIN MASTER_GROUP c on b.GROUP_CODE = c.USERGROUP 
+                        //                                     WHERE a.CODE=@UserID";
+                        //flag = System.Convert.ToInt32(sqlCommand.ExecuteScalar()) > 0;
                         flag = true;
+                    }
+                    //else
+                    //    flag = true;
                 }
                 catch (SqlException ex)
                 {

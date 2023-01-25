@@ -40,13 +40,13 @@ namespace DXMNCGUI_CARPOOL_SYSTEM {
         protected global::DevExpress.Web.ASPxImage ImageLogoLogin;
         
         /// <summary>
-        /// txtEmail control.
+        /// txtID control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::DevExpress.Web.ASPxTextBox txtEmail;
+        protected global::DevExpress.Web.ASPxTextBox txtID;
         
         /// <summary>
         /// txtPassword control.

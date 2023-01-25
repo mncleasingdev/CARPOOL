@@ -39,16 +39,16 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers.Registry
         {
         }
 
-        public static DBRegistry Create(SqlLocalDBSetting dbSetting)
+        public static DBRegistry Create(SqlLocalDBSetting localdbSetting)
         {
-            if (dbSetting.ServerType == DBServerType.SQL2000)
+            if (localdbSetting.ServerType == DBServerType.SQL2000)
             {
                 DBRegistry dbRegistry = (DBRegistry)new DBRegistrySQL();
-                dbRegistry.myLocalDBSetting = dbSetting;
+                dbRegistry.myLocalDBSetting = localdbSetting;
                 return dbRegistry;
             }
             else
-                throw new ArgumentException("Server type: " + (object)dbSetting.ServerType + " not supported.");
+                throw new ArgumentException("Server type: " + (object)localdbSetting.ServerType + " not supported.");
         }
         public static DBRegistry Create(SqlDBSetting dbSetting)
         {

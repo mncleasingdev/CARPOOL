@@ -11,6 +11,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
     public class SettlementDB
     {
         protected internal SqlDBSetting myDBSetting;
+        protected internal SqlLocalDBSetting myLocalDBSetting;
         protected SqlDBSession myDBSession;
         protected DataTable myBrowseTable;
         protected DataTable myBrowseTableApproval;
@@ -25,6 +26,10 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
         {
             get { return myDBSetting; }
         }
+        public SqlLocalDBSetting LocalDBSetting
+        {
+            get { return myLocalDBSetting; }
+        }
         public SqlDBSession DBSession
         {
             get { return myDBSession; }
@@ -36,11 +41,12 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 return this.myDBReg;
             }
         }
-        public static SettlementDB Create(SqlDBSetting dbSetting, SqlDBSession dbSession)
+        public static SettlementDB Create(SqlDBSetting dbSetting, SqlDBSession dbSession, SqlLocalDBSetting localdbsetting)
         {
             SettlementDB aSettlement = (SettlementDB)null; ;
             aSettlement = new SettlementSql();
             aSettlement.myDBSetting = dbSetting;
+            aSettlement.myLocalDBSetting = localdbsetting;
             aSettlement.myDBSession = dbSession;
             return aSettlement;
         }
@@ -69,7 +75,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
         }
         public SettlementEntity Entity(DXCType type)
         {
-            myDBReg = DBRegistry.Create(myDBSetting);
+            myDBReg = DBRegistry.Create(myLocalDBSetting);
             DataSet dataSet = LoadData(0);
 
             DataRow row = dataSet.Tables["Header"].NewRow();
@@ -143,10 +149,10 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
         {
             row.BeginEdit();
             DateTime mydate = myDBSetting.GetServerTime();
-            DataRow myrow = myDBSetting.GetDataTable("SELECT * FROM [dbo].[MasterUser] WHERE EMAIL=?", false, myDBSession.LoginEmail).Rows[0];
+            DataRow myrow = myDBSetting.GetDataTable("SELECT * FROM [dbo].[Master_User] WHERE USER_ID=? AND IS_ACTIVE_FLAG=1", false, myDBSession.LoginEmail).Rows[0];
             row["DocKey"] = DocKeyUniqueKey();
             row["SourceKey"] = DBNull.Value;
-            row["DocNo"] = "NEW";
+            row["DocNo"] = "NEED APPROVAL";
             row["DocDate"] = mydate;
             row["BookNo"] = DBNull.Value;
             row["BookDate"] = DBNull.Value;
@@ -176,7 +182,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             row["CancelledReason"] = DBNull.Value;
             row["NeedApproval"] = "F";
             row["Approver"] = DBNull.Value;
-            row["Status"] = "NEW";
+            row["Status"] = "NEED APPROVAL";
             row.EndEdit();
         }
         public void UpdateAllMaster(DataTable sourceTable)
@@ -204,13 +210,13 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                     dataRow.Delete();
             }
         }
-        public void SaveEntity(SettlementEntity entity, string strDocName, SaveAction saveaction, string strUserName, bool IsApproval)
+        public void SaveEntity(SettlementEntity entity, string strDocName, SaveAction saveaction, string strUserName, string approver)
         {
             if (entity.DocNo.ToString().Length == 0)
                 throw new EmptyDocNoException();
 
 
-            SaveData(entity, entity.myDataSet, strDocName, saveaction, strUserName, IsApproval);
+            SaveData(entity, entity.myDataSet, strDocName, saveaction, strUserName, approver);
             LoadBrowseTable(false, myDBSession.LoginUserID);
             try
             {
@@ -247,7 +253,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
         public virtual void Delete(long headerid)
         {
         }
-        protected virtual void SaveData(SettlementEntity Settlement, DataSet ds, string strDocName, SaveAction saveaction, string strUserName, bool IsApproval)
+        protected virtual void SaveData(SettlementEntity Settlement, DataSet ds, string strDocName, SaveAction saveaction, string strUserName, string approver)
         { }
         protected virtual void SaveDetail(DataSet ds, SaveAction saveaction)
         { }

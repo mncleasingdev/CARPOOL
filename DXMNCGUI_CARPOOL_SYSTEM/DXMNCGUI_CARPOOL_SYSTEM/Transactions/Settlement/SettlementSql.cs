@@ -16,11 +16,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             myBrowseTable.Clear();
             if (!bViewAll)
             {
-                myDBSetting.LoadDataTable(myBrowseTable, "SELECT * FROM dbo.Settlement WHERE CreatedBy=? AND BookNo is not null ORDER BY DocDate DESC", true, userID);
+                myLocalDBSetting.LoadDataTable(myBrowseTable, "SELECT * FROM dbo.Settlement WHERE CreatedBy=? AND BookNo is not null ORDER BY DocDate DESC", true, userID);
             }
             else
             {
-                myDBSetting.LoadDataTable(myBrowseTable, "SELECT * FROM dbo.Settlement WHERE BookNo is not null ORDER BY DocDate DESC", true);
+                myLocalDBSetting.LoadDataTable(myBrowseTable, "SELECT * FROM dbo.Settlement WHERE BookNo is not null ORDER BY DocDate DESC", true);
             }
             DataColumn[] keyHeader = new DataColumn[1];
             keyHeader[0] = myBrowseTable.Columns["DocKey"];
@@ -32,8 +32,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             string sQuery = "";
             myBrowseTableApproval.Clear();
             sQuery = @"SELECT A.* FROM dbo.Settlement A
-                        WHERE A.Status IN ('WAITING APPROVAL') AND A.Approver=? AND BookNo is not null ORDER BY A.DocDate";
-            myDBSetting.LoadDataTable(myBrowseTableApproval, sQuery, true, sEmailAddress);
+                        WHERE A.Status IN ('NEED APPROVAL') AND A.Approver=? AND BookNo is not null ORDER BY A.DocDate";
+            myLocalDBSetting.LoadDataTable(myBrowseTableApproval, sQuery, true, sEmailAddress);
             DataColumn[] keyHeader = new DataColumn[1];
             keyHeader[0] = myBrowseTableApproval.Columns["DocKey"];
             myBrowseTableApproval.PrimaryKey = keyHeader;
@@ -41,7 +41,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
         }
         protected override DataSet LoadData(long headerid)
         {
-            SqlConnection myconn = new SqlConnection(myDBSetting.ConnectionString);
+            SqlConnection myconn = new SqlConnection(myLocalDBSetting.ConnectionString);
             DataSet dataSet = new DataSet();
             DataTable myHeaderTable = new DataTable();
             DataTable myDetailTable = new DataTable();
@@ -78,58 +78,62 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
         }
         public override void Delete(long headerid)
         {
-            SqlDBSetting dbSetting = this.myDBSetting.StartTransaction();
+            SqlLocalDBSetting localdbSetting = this.myLocalDBSetting.StartTransaction();
             try
             {
-                dbSetting.ExecuteNonQuery("DELETE FROM [dbo].[Settlement] WHERE DocKey=?", (object)headerid);
-                dbSetting.Commit();
+                localdbSetting.ExecuteNonQuery("DELETE FROM [dbo].[Settlement] WHERE DocKey=?", (object)headerid);
+                localdbSetting.Commit();
 
             }
             catch (SqlException ex)
             {
-                dbSetting.Rollback();
+                localdbSetting.Rollback();
                 throw new ArgumentException(ex.Message);
             }
             catch (HttpUnhandledException ex)
             {
-                dbSetting.Rollback();
+                localdbSetting.Rollback();
                 throw new ArgumentException(ex.Message);
             }
             catch (Exception ex)
             {
-                dbSetting.Rollback();
+                localdbSetting.Rollback();
                 throw new ArgumentException(ex.Message);
             }
             finally
             {
-                dbSetting.EndTransaction();
+                localdbSetting.EndTransaction();
             }
         }
-        protected override void SaveData(SettlementEntity Settlement, DataSet ds, string strDocName, SaveAction saveaction, string strUserName, bool IsApproval)
+        protected override void SaveData(SettlementEntity Settlement, DataSet ds, string strDocName, SaveAction saveaction, string strUserName, string approver)
         {
-            SqlDBSetting dbSetting = this.myDBSetting.StartTransaction();
-            SqlConnection con = new SqlConnection(dbSetting.ConnectionString);
-            DateTime Mydate = myDBSetting.GetServerTime();
+            SqlLocalDBSetting localdbSetting = this.myLocalDBSetting.StartTransaction();
+            SqlConnection con = new SqlConnection(localdbSetting.ConnectionString);
+            DateTime Mydate = myLocalDBSetting.GetServerTime();
             DataRow dataRow = ds.Tables["Header"].Rows[0];
             try
             {
-                dbSetting.StartTransaction();
+                localdbSetting.StartTransaction();
                 if (saveaction == SaveAction.Save)
                 {
-                    if (dataRow["DocNo"].ToString().ToUpper() == "NEW")
-                    {
+                    //if (dataRow["DocNo"].ToString().ToUpper() == "NEED APPROVAL")
+                    //{
                         dataRow["DocDate"] = Mydate;
-                        DataRow[] myrowDocNo = dbSetting.GetDataTable("select * from DocNoFormat", false, "").Select("DocType='ST'", "", DataViewRowState.CurrentRows);
+                        DataRow[] myrowDocNo = localdbSetting.GetDataTable("select * from DocNoFormat", false, "").Select("DocType='ST'", "", DataViewRowState.CurrentRows);
                         if (myrowDocNo != null)
                         {
                             dataRow["DocNo"] = Document.FormatDocumentNo(myrowDocNo[0]["Format"].ToString(), System.Convert.ToInt32(myrowDocNo[0]["NextNo"]), DBSetting.GetServerTime());
-                            dbSetting.ExecuteNonQuery("Update DocNoFormat set NextNo=NextNo+1 Where DocType=?", strDocName);
+                            localdbSetting.ExecuteNonQuery("Update DocNoFormat set NextNo=NextNo+1 Where DocType=?", strDocName);
                         }
-                    }
-                    if (dataRow["Status"].ToString().ToUpper() == "NEW" && IsApproval)
-                    {
-                        dataRow["Status"] = "WAITING APPROVAL";
-                    }
+                    //}
+                    //if (dataRow["Status"].ToString().ToUpper() == "NEW" && IsApproval)
+                    //{
+                    //    dataRow["Status"] = "WAITING APPROVAL";
+                    //}
+                }
+                if (saveaction == SaveAction.Save)
+                {
+                    dataRow["Approver"] = approver;
                 }
                 if (saveaction == SaveAction.Cancel)
                 {
@@ -142,13 +146,16 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 }
                 if (saveaction == SaveAction.Approve)
                 {
-                    dataRow["Status"] = "APPROVED BY SUPERIOR";
+                    //dataRow["Status"] = "APPROVED BY SUPERIOR";
+                    dataRow["Status"] = "APPROVED";
                     dataRow["LastModifiedBy"] = strUserName;
                     dataRow["LastModifiedDateTime"] = Mydate;
+                    
                 }
                 if (saveaction == SaveAction.Reject)
                 {
-                    dataRow["Status"] = "REJECTED BY SUPERIOR";
+                    //dataRow["Status"] = "REJECTED BY SUPERIOR";
+                    dataRow["Status"] = "REJECTED";
                     dataRow["LastModifiedBy"] = strUserName;
                     dataRow["LastModifiedDateTime"] = Mydate;
                 }
@@ -156,8 +163,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 {
                     ClearDetail(Settlement, saveaction);
                 }
-                dbSetting.SimpleSaveDataTable(ds.Tables["Header"], "SELECT * FROM [dbo].[Settlement]");
-                SaveDetail(ds, saveaction);
+                localdbSetting.SimpleSaveDataTable(ds.Tables["Header"], "SELECT * FROM [dbo].[Settlement]");
+                //SaveDetail(ds, saveaction);
                 if (saveaction == SaveAction.Approve)
                 {
                     UpdateBookingData(ds, saveaction);
@@ -166,37 +173,37 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 Settlement.strErrorGenTicket = "null";
                 if (Settlement.strErrorGenTicket == "null")
                 {
-                    dbSetting.Commit();
+                    localdbSetting.Commit();
                 }
                 else
                 {
-                    dbSetting.Rollback();
+                    localdbSetting.Rollback();
                     throw new ArgumentException(Settlement.strErrorGenTicket);
                 }
             }
             catch (SqlException ex)
             {
-                dbSetting.Rollback();
+                localdbSetting.Rollback();
                 throw new ArgumentException(ex.Message);
             }
             catch (HttpUnhandledException ex)
             {
-                dbSetting.Rollback();
+                localdbSetting.Rollback();
                 throw new ArgumentException(ex.Message);
             }
             catch (Exception ex)
             {
-                dbSetting.Rollback();
+                localdbSetting.Rollback();
                 throw new ArgumentException(ex.Message);
             }
             finally
             {
-                dbSetting.EndTransaction();
+                localdbSetting.EndTransaction();
             }
         }
         protected override void SaveDetail(DataSet ds, SaveAction saveaction)
         {
-            SqlConnection myconn = new SqlConnection(DBSetting.ConnectionString);
+            SqlConnection myconn = new SqlConnection(myLocalDBSetting.ConnectionString);
             myconn.Open();
             SqlTransaction trans = myconn.BeginTransaction();
             try
@@ -273,7 +280,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
         }
         protected override void UpdateBookingData(DataSet ds, SaveAction saveaction)
         {
-            SqlConnection myconn = new SqlConnection(DBSetting.ConnectionString);
+            SqlConnection myconn = new SqlConnection(myLocalDBSetting.ConnectionString);
             myconn.Open();
             SqlTransaction trans = myconn.BeginTransaction();
             try
@@ -304,35 +311,35 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 myconn.Close();
             }
         }
-        protected override void ClearDetail(SettlementEntity Settlement, SaveAction saveaction)
-        {
-            SqlConnection myconn = new SqlConnection(myDBSetting.ConnectionString);
-            SqlCommand sqlCommand = new SqlCommand("DELETE [dbo].[SettlementDetail] WHERE DocKey=@DocKey");
-            sqlCommand.Connection = myconn;
-            try
-            {
-                myconn.Open();
-                SqlParameter sqlParameter1 = sqlCommand.Parameters.Add("@DocKey", SqlDbType.Int);
-                sqlParameter1.Value = Settlement.DocKey;
-                sqlCommand.ExecuteNonQuery();
-            }
-            catch (SqlException ex)
-            {
-                throw new ArgumentException(ex.Message);
-            }
-            catch (HttpUnhandledException ex)
-            {
-                throw new ArgumentException(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                throw new ArgumentException(ex.Message);
-            }
-            finally
-            {
-                myconn.Close();
-                myconn.Dispose();
-            }
-        }
+        //protected override void ClearDetail(SettlementEntity Settlement, SaveAction saveaction)
+        //{
+        //    SqlConnection myconn = new SqlConnection(myLocalDBSetting.ConnectionString);
+        //    SqlCommand sqlCommand = new SqlCommand("DELETE [dbo].[SettlementDetail] WHERE DocKey=@DocKey");
+        //    sqlCommand.Connection = myconn;
+        //    try
+        //    {
+        //        myconn.Open();
+        //        SqlParameter sqlParameter1 = sqlCommand.Parameters.Add("@DocKey", SqlDbType.Int);
+        //        sqlParameter1.Value = Settlement.DocKey;
+        //        sqlCommand.ExecuteNonQuery();
+        //    }
+        //    catch (SqlException ex)
+        //    {
+        //        throw new ArgumentException(ex.Message);
+        //    }
+        //    catch (HttpUnhandledException ex)
+        //    {
+        //        throw new ArgumentException(ex.Message);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new ArgumentException(ex.Message);
+        //    }
+        //    finally
+        //    {
+        //        myconn.Close();
+        //        myconn.Dispose();
+        //    }
+        //}
     }
 }

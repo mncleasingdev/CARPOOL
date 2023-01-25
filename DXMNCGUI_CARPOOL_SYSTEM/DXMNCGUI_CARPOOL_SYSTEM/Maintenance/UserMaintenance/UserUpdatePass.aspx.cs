@@ -18,6 +18,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Maintenance.UserMaintenance
             get { isValidLogin(); return (SqlLocalDBSetting)HttpContext.Current.Session["myLocalDBSetting" + HttpContext.Current.Session["UserID"]]; }
             set { HttpContext.Current.Session["myLocalDBSetting" + HttpContext.Current.Session["UserID"]] = value; }
         }
+        protected SqlDBSetting myDBSetting
+        {
+            get { isValidLogin(); return (SqlDBSetting)HttpContext.Current.Session["myDBSetting" + HttpContext.Current.Session["UserID"]]; }
+            set { HttpContext.Current.Session["myDBSetting" + HttpContext.Current.Session["UserID"]] = value; }
+        }
         protected SqlDBSession myDBSession
         {
             get { isValidLogin(false); return (SqlDBSession)HttpContext.Current.Session["myDBSession" + HttpContext.Current.Session["UserID"]]; }
@@ -42,7 +47,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Maintenance.UserMaintenance
         private string GeneratePassword(string myEncryption)
         {
             string myString = string.Empty;
-            SqlConnection myconn = new SqlConnection(myLocalDBSetting.ConnectionString);
+            SqlConnection myconn = new SqlConnection(myDBSetting.ConnectionString);
             myconn.Open();
             SqlTransaction trans = myconn.BeginTransaction();
             try
@@ -79,6 +84,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Maintenance.UserMaintenance
             if (!Page.IsPostBack)
             {
                 myLocalDBSetting = localdbsetting;
+                myDBSetting = dbsetting;
                 myDBSession = dbsession;
 
                 bChangePass = false;
@@ -95,7 +101,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Maintenance.UserMaintenance
         {
             string email = this.Email;
 
-            myLocalDBSetting.ExecuteNonQuery("UPDATE MasterUser SET USER_PASSWORD=? WHERE EMAIL=?", (object)newPassword, (object)email);
+            myDBSetting.ExecuteNonQuery("UPDATE MASTER_USER SET USER_PASSWORD=? WHERE USER_ID=?", (object)newPassword, (object)email);
         }
 
         protected void cplMain_Callback(object source, DevExpress.Web.CallbackEventArgs e)

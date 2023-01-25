@@ -16,10 +16,10 @@ namespace DXMNCGUI_CARPOOL_SYSTEM
     {
         private Boolean fIsEntryValid()
         {
-            if ("" == txtEmail.Text)
+            if ("" == txtID.Text)
             {
-                lblMessage.Text = "Email must be filled!";
-                txtEmail.Focus();
+                lblMessage.Text = "User Id must be filled!";
+                txtID.Focus();
                 return false;
             }
             else if ("" == txtPassword.Text)
@@ -33,10 +33,10 @@ namespace DXMNCGUI_CARPOOL_SYSTEM
         private void mInitialize()
         {
             String strClientScript = "if(event.keyCode==13){ " + Page.ClientScript.GetPostBackEventReference(this, "Login", false) + "; }";
-            txtEmail.Attributes.Add("onkeydown", strClientScript);
+            txtID.Attributes.Add("onkeydown", strClientScript);
             txtPassword.Attributes.Add("onkeydown", strClientScript);
             lblMessage.Text = "";
-            txtEmail.Focus();
+            txtID.Focus();
             this.mExtractQueryString();
             Connection();
         }
@@ -101,13 +101,13 @@ namespace DXMNCGUI_CARPOOL_SYSTEM
             this.dbsession.UseEncryptedPassword = true;
 
 
-            if (this.dbsession.Login(txtEmail.Text, txtPassword.Text))
+            if (this.dbsession.Login(txtID.Text, txtPassword.Text))
             {
                 this.UserID = this.dbsession.LoginUserID.ToUpper();
                 this.Email = this.dbsession.LoginEmail.ToUpper();
                 this.SessionID = Guid.NewGuid();
                 accessright = AccesRight.Create(localdbsetting, this.UserID);
-                object obj = dbsetting.ExecuteScalar("SELECT USER_NAME FROM [dbo].[MasterUser] WHERE EMAIL=?", (object)this.Email);
+                object obj = dbsetting.ExecuteScalar("SELECT USER_NAME FROM [dbo].[MASTER_USER] WHERE USER_ID=? AND IS_ACTIVE_FLAG=1", (object)this.Email);
                 if (obj != null && obj != DBNull.Value)
                 {
                     this.UserName = obj.ToString();

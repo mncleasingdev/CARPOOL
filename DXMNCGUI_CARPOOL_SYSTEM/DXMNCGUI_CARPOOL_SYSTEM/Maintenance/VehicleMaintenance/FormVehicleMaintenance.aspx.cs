@@ -18,6 +18,12 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Maintenance.VehicleMaintenance
             get { isValidLogin(); return (SqlDBSetting)HttpContext.Current.Session["myDBSetting" + HttpContext.Current.Session["UserID"]]; }
             set { HttpContext.Current.Session["myDBSetting" + HttpContext.Current.Session["UserID"]] = value; }
         }
+        protected SqlLocalDBSetting myLocalDBSetting
+        {
+            get { isValidLogin(); return (SqlLocalDBSetting)HttpContext.Current.Session["myLocalDBSetting" + HttpContext.Current.Session["UserID"]]; }
+            set { HttpContext.Current.Session["myLocalDBSetting" + HttpContext.Current.Session["UserID"]] = value; }
+        }
+
         protected SqlDBSession myDBSession
         {
             get { isValidLogin(false); return (SqlDBSession)HttpContext.Current.Session["myDBSession" + HttpContext.Current.Session["UserID"]]; }
@@ -41,10 +47,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Maintenance.VehicleMaintenance
             {
                 myDBSetting = dbsetting;
                 myDBSession = dbsession;
+                myLocalDBSetting = localdbsetting;
 
                 myMainDataSet = new DataSet();
                 myMainDataTable = new DataTable();
-                myMainDataTable = myDBSetting.GetDataTable("SELECT * FROM [dbo].[MasterCar] ORDER BY CarName", false);
+                myMainDataTable = myLocalDBSetting.GetDataTable("SELECT * FROM [dbo].[MasterCar] ORDER BY CarName", false);
                 myMainDataTable.PrimaryKey = new DataColumn[] { myMainDataTable.Columns["CarCode"] };
                 myMainDataSet.Tables.AddRange(new DataTable[] { myMainDataTable });
                 Session["myMainDataSet"] = myMainDataSet;
@@ -76,8 +83,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Maintenance.VehicleMaintenance
             DataRow row = mytable.NewRow();
             try
             {
-                DataRow[] myrowDocNo = myDBSetting.GetDataTable("select * from DocNoFormat", false, "").Select("DocType='CAR'", "", DataViewRowState.CurrentRows);
-                e.NewValues["CarCode"] = Document.FormatDocumentNo(myrowDocNo[0]["Format"].ToString(), System.Convert.ToInt32(myrowDocNo[0]["NextNo"]), myDBSetting.GetServerTime());
+                DataRow[] myrowDocNo = myLocalDBSetting.GetDataTable("select * from DocNoFormat", false, "").Select("DocType='CAR'", "", DataViewRowState.CurrentRows);
+                e.NewValues["CarCode"] = Document.FormatDocumentNo(myrowDocNo[0]["Format"].ToString(), System.Convert.ToInt32(myrowDocNo[0]["NextNo"]), myLocalDBSetting.GetServerTime());
             }
             catch { }
             IDictionaryEnumerator enumerator = e.NewValues.GetEnumerator();
@@ -93,19 +100,19 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Maintenance.VehicleMaintenance
                 row["IsActive"] = row["IsActive"] == DBNull.Value || row["IsActive"] == null ? "F" : "T";
                 mytable.Rows.Add(row);
 
-                myDBSetting.StartTransaction();
-                myDBSetting.SimpleSaveDataTable(mytable, "SELECT * FROM [dbo].[MasterCar]");
-                myDBSetting.ExecuteNonQuery("Update DocNoFormat set NextNo=NextNo+1 Where DocType='CAR'");
-                myDBSetting.Commit();
+                myLocalDBSetting.StartTransaction();
+                myLocalDBSetting.SimpleSaveDataTable(mytable, "SELECT * FROM [dbo].[MasterCar]");
+                myLocalDBSetting.ExecuteNonQuery("Update DocNoFormat set NextNo=NextNo+1 Where DocType='CAR'");
+                myLocalDBSetting.Commit();
 
             }
             catch (Exception ex)
             {
-                myDBSetting.Rollback();
+                myLocalDBSetting.Rollback();
             }
             finally
             {
-                myDBSetting.EndTransaction();
+                myLocalDBSetting.EndTransaction();
             }
         }
         protected void gvMain_RowUpdating(object sender, DevExpress.Web.Data.ASPxDataUpdatingEventArgs e)
@@ -123,12 +130,12 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Maintenance.VehicleMaintenance
 
             try
             {
-                myDBSetting.StartTransaction();
-                myDBSetting.SimpleSaveDataTable(mytable, "SELECT * FROM [dbo].[MasterCar]");
-                myDBSetting.Commit();
+                myLocalDBSetting.StartTransaction();
+                myLocalDBSetting.SimpleSaveDataTable(mytable, "SELECT * FROM [dbo].[MasterCar]");
+                myLocalDBSetting.Commit();
             }
-            catch { myDBSetting.Rollback(); }
-            finally { myDBSetting.EndTransaction(); }
+            catch { myLocalDBSetting.Rollback(); }
+            finally { myLocalDBSetting.EndTransaction(); }
         }
         protected void gvMain_RowDeleting(object sender, DevExpress.Web.Data.ASPxDataDeletingEventArgs e)
         {
@@ -139,12 +146,12 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Maintenance.VehicleMaintenance
             DataTable mytable = myMainDataSet.Tables[0];
             try
             {
-                myDBSetting.StartTransaction();
-                myDBSetting.ExecuteNonQuery("DELETE [dbo].[MasterCar] WHERE CarCode=?", e.Keys[gvMain.KeyFieldName]);
-                myDBSetting.Commit();
+                myLocalDBSetting.StartTransaction();
+                myLocalDBSetting.ExecuteNonQuery("DELETE [dbo].[MasterCar] WHERE CarCode=?", e.Keys[gvMain.KeyFieldName]);
+                myLocalDBSetting.Commit();
             }
-            catch { myDBSetting.Rollback(); }
-            finally { myDBSetting.EndTransaction(); }
+            catch { myLocalDBSetting.Rollback(); }
+            finally { myLocalDBSetting.EndTransaction(); }
         }
     }
 }

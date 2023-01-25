@@ -89,7 +89,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
         public DataTable LoadDocNoFormatTable()
         {
             DataTable mytable = new DataTable();
-            mytable = mySettlementCommand.DBSetting.GetDataTable("select * from DocNoFormat where DOCTYPE='ST'", false);
+            mytable = mySettlementCommand.myLocalDBSetting.GetDataTable("select * from DocNoFormat where DOCTYPE='ST'", false);
             return mytable;
         }
 
@@ -116,7 +116,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             }
         }
 
-        public void Save(string userID, string userName, string strDocName, SaveAction saveaction, bool IsApproval)
+        public void Save(string userID, string userName, string strDocName, SaveAction saveaction, string approver)
         {
             if (saveaction == SaveAction.Cancel)
             {
@@ -124,7 +124,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             }
             if (saveaction == SaveAction.Approve)
             {
-                this.myRow["Status"] = "APPROVED";
+                this.myRow["Status"] = "COMPLETE";
             }
             if (saveaction == SaveAction.Reject)
             {
@@ -146,7 +146,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                     if (this.myRow["CreatedBy"].ToString().Length == 0)
                         this.myRow["CreatedBy"] = this.myRow["LastModifiedUser"];
                     this.myRow.EndEdit();
-                    mySettlementCommand.SaveEntity(this, strDocName, saveaction, userName, IsApproval);
+                    mySettlementCommand.SaveEntity(this, strDocName, saveaction, userName, approver);
                 }
                 this.myAction = DXCAction.View;
             }

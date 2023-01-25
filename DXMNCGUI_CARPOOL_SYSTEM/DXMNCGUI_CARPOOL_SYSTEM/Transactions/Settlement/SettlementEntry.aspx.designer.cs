@@ -58,6 +58,24 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement {
         protected global::DevExpress.Web.ASPxLabel lblmessage;
         
         /// <summary>
+        /// Layout_DecisionNote control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::DevExpress.Web.LayoutItemNestedControlContainer Layout_DecisionNote;
+        
+        /// <summary>
+        /// DecisionNote control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::DevExpress.Web.ASPxMemo DecisionNote;
+        
+        /// <summary>
         /// LayoutItemNestedControlContainer8 control.
         /// </summary>
         /// <remarks>
@@ -139,15 +157,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement {
         protected global::DevExpress.Web.ASPxDateEdit deDocDate;
         
         /// <summary>
-        /// txtBookNo control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.ASPxTextBox txtBookNo;
-        
-        /// <summary>
         /// luBookNo control.
         /// </summary>
         /// <remarks>
@@ -175,15 +184,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement {
         protected global::DevExpress.Web.ASPxTextBox txtDriver;
         
         /// <summary>
-        /// chkNeedApproval control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.ASPxCheckBox chkNeedApproval;
-        
-        /// <summary>
         /// deBookingDate control.
         /// </summary>
         /// <remarks>
@@ -209,15 +209,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::DevExpress.Web.ASPxTextBox txtCarType;
-        
-        /// <summary>
-        /// txtApprover control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.ASPxTextBox txtApprover;
         
         /// <summary>
         /// txtBookingType control.
@@ -353,6 +344,24 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::DevExpress.Web.ASPxSpinEdit seTotal;
+        
+        /// <summary>
+        /// gvApproval control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::DevExpress.Web.ASPxGridView gvApproval;
+        
+        /// <summary>
+        /// btnApprove control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::DevExpress.Web.ASPxButton btnApprove;
         
         /// <summary>
         /// btnSubmit control.

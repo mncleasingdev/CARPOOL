@@ -19,6 +19,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             get { isValidLogin(); return (SqlDBSetting)HttpContext.Current.Session["myDBSetting" + HttpContext.Current.Session["UserID"]]; }
             set { HttpContext.Current.Session["myDBSetting" + HttpContext.Current.Session["UserID"]] = value; }
         }
+        protected SqlLocalDBSetting myLocalDBSetting
+        {
+            get { isValidLogin(); return (SqlLocalDBSetting)HttpContext.Current.Session["myLocalDBSetting" + HttpContext.Current.Session["UserID"]]; }
+            set { HttpContext.Current.Session["myLocalDBSetting" + HttpContext.Current.Session["UserID"]] = value; }
+        }
         protected SqlDBSession myDBSession
         {
             get { isValidLogin(false); return (SqlDBSession)HttpContext.Current.Session["myDBSession" + HttpContext.Current.Session["UserID"]]; }
@@ -52,14 +57,26 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 this.ViewState["_PageID"] = Guid.NewGuid();
                 isValidLogin();
                 myDBSetting = dbsetting;
+                myLocalDBSetting = localdbsetting;
                 myDBSession = dbsession;
                 myMainTable = new DataTable();
-                this.mySettlementDB = SettlementDB.Create(myDBSetting, dbsession);
-                if (accessright.IsAccessibleByUserID(Email, "IS_ADMIN"))
+                this.mySettlementDB = SettlementDB.Create(myDBSetting, dbsession, localdbsetting);
+
+                //if (accessright.IsAccessibleByUserID(Email, "IS_ADMIN"))
+                if (accessright.IsAccessibleByUserID(Email, "IS_GA"))
                 {
                     myMainTable = this.mySettlementDB.LoadBrowseTable(true, UserName);
                 }
+                else
+                {
+                    myMainTable = this.mySettlementDB.LoadBrowseTable(false, UserName);
+                }
                 gvMain.DataBind();
+                GetApprovalTable();
+                gvApprovalList.DataBind();
+
+                btnApprovalList.Text += " (" + Convert.ToString(myApprovalTable.Rows.Count) + ")";
+
                 accessable();
 
                 if (this.Request.QueryString["DocKey"] != null)
@@ -75,6 +92,14 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 setEnabledButton();
             }
         }
+
+        protected void GetApprovalTable()
+        {
+            string ssql = "exec GetApprovalSettlement ?";
+            myApprovalTable = myLocalDBSetting.GetDataTable(ssql, false, Email);
+        }
+
+
         protected void accessable()
         {
         }
@@ -86,7 +111,14 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
         }
         private void refreshdatagrid()
         {
-            myMainTable = this.mySettlementDB.LoadBrowseTable(true, UserName);
+            if (accessright.IsAccessibleByUserID(Email, "IS_GA"))
+            {
+                myMainTable = this.mySettlementDB.LoadBrowseTable(true, UserName);
+            }
+            else
+            {
+                myMainTable = this.mySettlementDB.LoadBrowseTable(false, UserName);
+            }
             gvMain.DataSource = myMainTable;
             gvMain.DataBind();
         }
@@ -172,6 +204,21 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 case "REFRESH":
                     refreshdatagrid();
                     break;
+                case "SHOW":
+                    var nameValues = HttpUtility.ParseQueryString(Request.QueryString.ToString());
+
+                    DataRow myapprovalrow = gvApprovalList.GetDataRow(gvApprovalList.FocusedRowIndex);
+                    DataRow myrow = gvMain.GetDataRow(gvMain.FocusedRowIndex);
+                    string updatedQueryString = "";
+
+                    nameValues.Set("DocKey", myapprovalrow["DocKey"].ToString());
+                    updatedQueryString = "?" + nameValues.ToString();
+
+                    nameValues.Set("Action", "Approval");
+                    updatedQueryString = "?" + nameValues.ToString();
+                    //Response.Redirect("RequestReleaseDoc.aspx" + updatedQueryString);
+                    ASPxWebControl.RedirectOnCallback("~/Transactions/Settlement/SettlementEntry.aspx" + updatedQueryString);
+                    break;
                 case "APPROVE":
                     SaveApprove(SaveAction.Approve);
                     cplMain.JSProperties["cpAlertMessage"] = "This settlement has been approved..";
@@ -205,7 +252,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 myDBSetting = dbsetting;
                 myDBSession = dbsession;
                 myApprovalTable = new DataTable();
-                this.mySettlementDB = SettlementDB.Create(myDBSetting, dbsession);
+                this.mySettlementDB = SettlementDB.Create(myDBSetting, dbsession, localdbsetting);
                 myApprovalTable = this.mySettlementDB.LoadBrowseTableApproval(Email);
             }
             gvApprovalList.DataSource = myApprovalTable;
@@ -229,12 +276,12 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             DataRow myrow = gvApprovalList.GetDataRow(gvApprovalList.FocusedRowIndex);
             try
             {
-                this.mySettlementDB = SettlementDB.Create(myDBSetting, myDBSession);
+                this.mySettlementDB = SettlementDB.Create(myDBSetting, myDBSession, localdbsetting);
                 mySettlementEntity = this.mySettlementDB.View(Convert.ToInt32(myrow["DocKey"]));
             }
             catch
             { }
-            mySettlementEntity.Save(UserID, UserName, "BK", saveAction, true);
+            mySettlementEntity.Save(UserID, UserName, "BK", saveAction, "");
             return bSave;
         }
     }

@@ -105,11 +105,14 @@
         }
         function gvApprovalList_CustomButtonClick(s, e) {
             switch (e.buttonID) {
-                case "btnApprove":
-                    gvApprovalList.GetRowValues(e.visibleIndex, "DocKey;", cplMain.PerformCallback("APPROVE_CONFIRM;APPROVE_CONFIRM"));
-                    break;
-                case "btnReject":
-                    gvApprovalList.GetRowValues(e.visibleIndex, "DocKey;", cplMain.PerformCallback("REJECT_CONFIRM;REJECT_CONFIRM"));
+                //case "btnApprove":
+                //    gvApprovalList.GetRowValues(e.visibleIndex, "DocKey;", cplMain.PerformCallback("APPROVE_CONFIRM;APPROVE_CONFIRM"));
+                //    break;
+                //case "btnReject":
+                //    gvApprovalList.GetRowValues(e.visibleIndex, "DocKey;", cplMain.PerformCallback("REJECT_CONFIRM;REJECT_CONFIRM"));
+                //    break;
+                case "btnShow":
+                    cplMain.PerformCallback("SHOW;SHOW");
                     break;
             }
         }
@@ -208,7 +211,13 @@
                                             <dx:GridViewBandColumn Caption="Action">
                                                 <HeaderStyle Font-Bold="true" HorizontalAlign="Center"/>
                                                 <Columns>
-                                                    <dx:GridViewCommandColumn ButtonType="Button" VisibleIndex="5" Caption=" " Width="6%">
+                                                    <dx:GridViewCommandColumn ButtonType="Button" VisibleIndex="7" Caption=" " Width="6%">
+                                                        <HeaderStyle Font-Bold="true" />
+                                                        <CustomButtons>
+                                                        <dx:GridViewCommandColumnCustomButton ID="btnShow" Text="Show"></dx:GridViewCommandColumnCustomButton>
+                                                        </CustomButtons>
+                                                    </dx:GridViewCommandColumn>
+                                                    <%--<dx:GridViewCommandColumn ButtonType="Button" VisibleIndex="5" Caption=" " Width="6%">
                                                         <HeaderStyle Font-Bold="true" />
                                                         <CustomButtons>
                                                         <dx:GridViewCommandColumnCustomButton ID="btnApprove" Text="Approve"></dx:GridViewCommandColumnCustomButton>
@@ -219,7 +228,7 @@
                                                         <CustomButtons>
                                                         <dx:GridViewCommandColumnCustomButton ID="btnReject" Text="Reject"></dx:GridViewCommandColumnCustomButton>
                                                         </CustomButtons>
-                                                    </dx:GridViewCommandColumn>
+                                                    </dx:GridViewCommandColumn>--%>
                                                 </Columns>
                                             </dx:GridViewBandColumn>
                                         </Columns>
@@ -342,6 +351,12 @@
                                             <HeaderStyle Font-Bold="true" />
                                         </dx:GridViewDataSpinEditColumn>
                                         <dx:GridViewDataTextColumn Name="colStatus" Caption="Status" FieldName="Status" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="7" Width="10%">
+                                            <HeaderStyle Font-Bold="true" />
+                                        </dx:GridViewDataTextColumn>
+                                        <dx:GridViewDataTextColumn Name="colCreatedBy" Caption="Created By" FieldName="CreatedBy" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="8" Width="10%">
+                                            <HeaderStyle Font-Bold="true" />
+                                        </dx:GridViewDataTextColumn>
+                                        <dx:GridViewDataTextColumn Name="colCreatedDateTime" Caption="Created Date" FieldName="CreatedDateTime" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="8" Width="10%">
                                             <HeaderStyle Font-Bold="true" />
                                         </dx:GridViewDataTextColumn>
                                     </Columns>

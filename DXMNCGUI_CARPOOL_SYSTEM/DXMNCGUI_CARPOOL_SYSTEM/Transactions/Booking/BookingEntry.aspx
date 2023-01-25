@@ -41,6 +41,41 @@
                         lblmessage.SetText(cplMain.cplblmessage);
                     }
                     break;
+                case "APPROVE":
+                    apcalert.SetContentHtml(cplMain.cpAlertMessage);
+                    apcalert.Show();
+                    break;
+                case "APPROVECONFIRM":
+                    if (cplMain.cplblmessageError.length > 0) {
+                        apcalert.SetContentHtml(cplMain.cplblmessageError);
+                        apcalert.Show();
+                        break;
+                    }
+
+                    if (ASPxClientEdit.ValidateGroup("ValidationSave")) {
+                        DecisionNote.SetVisible(true);
+                        apcconfirm.Show();
+                        lblmessage.SetText(cplMain.cplblmessage);
+                    }
+                    break;
+                case "REJECT":
+                    apcalert.SetContentHtml(cplMain.cpAlertMessage);
+                    apcalert.Show();
+                    break;
+                case "REJECTCONFIRM":
+                    if (cplMain.cplblmessageError.length > 0) {
+                        apcalert.SetContentHtml(cplMain.cplblmessageError);
+                        apcalert.Show();
+                        break;
+                    }
+
+                    if (ASPxClientEdit.ValidateGroup("ValidationSave")) {
+                        DecisionNote.SetVisible(true);
+                        apcconfirm.Show();
+                        lblmessage.SetText(cplMain.cplblmessage);
+                    }
+
+                    break;
                 case "CANCEL":
                     apcalert.SetContentHtml(cplMain.cpAlertMessage);
                     apcalert.Show();
@@ -103,53 +138,63 @@
                     }
                     break;
 
-                case "DRIVER_PICKUP":
+                //case "DRIVER_PICKUP":
+                //    apcalert.SetContentHtml(cplMain.cpAlertMessage);
+                //    apcalert.Show();
+                //    break;
+                //case "DRIVER_PICKUP_CONFIRM":
+                //    if (cplMain.cplblmessageError.length > 0) {
+                //        apcalert.SetContentHtml(cplMain.cplblmessageError);
+                //        apcalert.Show();
+                //        break;
+                //    }
+                //    if (ASPxClientEdit.ValidateGroup("ValidationSave")) {
+                //        apcconfirm.Show();
+                //        lblmessage.SetText(cplMain.cplblmessage);
+                //    }
+                //    break;
+                //case "DRIVER_REJECT":
+                //    apcalert.SetContentHtml(cplMain.cpAlertMessage);
+                //    apcalert.Show();
+                //    break;
+                //case "DRIVER_REJECT_CONFIRM":
+                //    if (cplMain.cplblmessageError.length > 0) {
+                //        apcalert.SetContentHtml(cplMain.cplblmessageError);
+                //        apcalert.Show();
+                //        break;
+                //    }
+                //    if (ASPxClientEdit.ValidateGroup("ValidationSave")) {
+                //        apcconfirm.Show();
+                //        lblmessage.SetText(cplMain.cplblmessage);
+                //    }
+                //    break;
+                case "FINISH":
                     apcalert.SetContentHtml(cplMain.cpAlertMessage);
                     apcalert.Show();
                     break;
-                case "DRIVER_PICKUP_CONFIRM":
+                case "FINISH_CONFIRM":
                     if (cplMain.cplblmessageError.length > 0) {
                         apcalert.SetContentHtml(cplMain.cplblmessageError);
                         apcalert.Show();
                         break;
                     }
-                    if (ASPxClientEdit.ValidateGroup("ValidationSave")) {
-                        apcconfirm.Show();
-                        lblmessage.SetText(cplMain.cplblmessage);
-                    }
-                    break;
-                case "DRIVER_REJECT":
-                    apcalert.SetContentHtml(cplMain.cpAlertMessage);
-                    apcalert.Show();
-                    break;
-                case "DRIVER_REJECT_CONFIRM":
-                    if (cplMain.cplblmessageError.length > 0) {
-                        apcalert.SetContentHtml(cplMain.cplblmessageError);
-                        apcalert.Show();
-                        break;
-                    }
-                    if (ASPxClientEdit.ValidateGroup("ValidationSave")) {
-                        apcconfirm.Show();
-                        lblmessage.SetText(cplMain.cplblmessage);
-                    }
-                    break;
-                case "DRIVER_FINISH":
-                    apcalert.SetContentHtml(cplMain.cpAlertMessage);
-                    apcalert.Show();
-                    break;
-                case "DRIVER_FINISH_CONFIRM":
-                    if (cplMain.cplblmessageError.length > 0) {
-                        apcalert.SetContentHtml(cplMain.cplblmessageError);
-                        apcalert.Show();
-                        break;
-                    }
-                    if (ASPxClientEdit.ValidateGroup("ValidationSave")) {
-                        apcconfirm.Show();
-                        lblmessage.SetText(cplMain.cplblmessage);
-                    }
-                    break;
+                //    if (ASPxClientEdit.ValidateGroup("ValidationSave")) {
+                //        apcconfirm.Show();
+                //        lblmessage.SetText(cplMain.cplblmessage);
+                //    }
+                //    break;
 
             }
+        }
+        function gvApproval_EndCallback(s, e) {
+            if (s.cpCmd == "INSERT" || s.cpCmd == "UPDATE" || s.cpCmd == "DELETE") {
+                s.cpCmd = "";
+            }
+        }
+        function OnNameChangedApproval(s, e) {
+            gvApproval.GetEditor("colNIK").SetValue(s.GetSelectedItem().GetColumnText('NIK'));
+            gvApproval.GetEditor("colEmail").SetValue(s.GetSelectedItem().GetColumnText('Email'));
+            gvApproval.GetEditor("colJabatan").SetValue(s.GetSelectedItem().GetColumnText('Jabatan'));
         }
         function OnCarTypeChanged(s, e)
         {
@@ -160,6 +205,13 @@
         {
             txtLicensePlate.SetValue(selectedValues[0]);
             txtLastKM.SetValue(selectedValues[1]);
+        }
+        function OnNameChanged(s, e) {
+            gvPersonDetail.GetEditor("colDtlKey").SetValue(s.GetSelectedItem().GetColumnText('DtlKey'));
+            gvPersonDetail.GetEditor("colName").SetValue(s.GetSelectedItem().GetColumnText('Name'))
+            gvPersonDetail.GetEditor("colNIK").SetValue(s.GetSelectedItem().GetColumnText('NIK'));
+            gvPersonDetail.GetEditor("colEmail").SetValue(s.GetSelectedItem().GetColumnText('Email'));
+            gvPersonDetail.GetEditor("colJabatan").SetValue(s.GetSelectedItem().GetColumnText('Jabatan'));
         }
     </script>
     <script type="text/javascript" src="https://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0&amp;s=1"></script>
@@ -228,6 +280,14 @@
                         </dx:LayoutItem>
                         <dx:EmptyLayoutItem></dx:EmptyLayoutItem>
                         <dx:EmptyLayoutItem></dx:EmptyLayoutItem>
+                        <dx:LayoutItem ShowCaption="False" ColSpan="2">
+                            <LayoutItemNestedControlCollection>
+                                <dx:LayoutItemNestedControlContainer ID="Layout_DecisionNote" runat="server">
+                                    <dx:ASPxMemo runat="server" ID="DecisionNote" ClientInstanceName="DecisionNote" ClientVisible="false" Width="250px" Height="60px" Theme="Aqua">
+                                    </dx:ASPxMemo>
+                                </dx:LayoutItemNestedControlContainer>
+                            </LayoutItemNestedControlCollection>
+                        </dx:LayoutItem>
                         <dx:LayoutItem ShowCaption="False">
                             <LayoutItemNestedControlCollection>
                                 <dx:LayoutItemNestedControlContainer ID="LayoutItemNestedControlContainer8" runat="server">
@@ -308,7 +368,7 @@
     <dx:ASPxFormLayout ID="ASPxFormLayout1" runat="server" BackColor="WhiteSmoke">
         <SettingsAdaptivity AdaptivityMode="SingleColumnWindowLimit" SwitchToSingleColumnAtWindowInnerWidth="800" />
         <Items>
-            <dx:LayoutGroup Name="LayoutGroupBookingEntry" GroupBoxDecoration="Box" Caption="Detail Booking - For Customer Only" Width="100%" ColCount="3">
+            <dx:LayoutGroup Name="LayoutGroupBookingEntry" GroupBoxDecoration="Box" Caption="Detail Booking" Width="100%" ColCount="3">
                 <GroupBoxStyle>
                     <Caption ForeColor="SteelBlue" Font-Size="Larger" Font-Bold="true" Font-Names="Calibri" BackColor="WhiteSmoke"></Caption>
                 </GroupBoxStyle>
@@ -337,7 +397,7 @@
                     <dx:LayoutItem ShowCaption="false" Caption="" Width="40%" HorizontalAlign="Right">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
-                                <dx:ASPxLabel runat="server" ID="lbl1" ClientInstanceName="lbl1" Text="*Customers only need to fill in 'Detail Booking' section." ForeColor="SteelBlue" Font-Names="Calibri" Font-Size="Small" Font-Italic="true"></dx:ASPxLabel>
+                                <%--<dx:ASPxLabel runat="server" ID="lbl1" ClientInstanceName="lbl1" Text="*Customers only need to fill in 'Detail Booking' section." ForeColor="SteelBlue" Font-Names="Calibri" Font-Size="Small" Font-Italic="true"></dx:ASPxLabel>--%>
                             </dx:LayoutItemNestedControlContainer>
                         </LayoutItemNestedControlCollection>
                     </dx:LayoutItem>
@@ -536,7 +596,8 @@
                                                     OnRowInserting="gvPersonDetail_RowInserting"
                                                     OnRowUpdating="gvPersonDetail_RowUpdating"
                                                     OnRowDeleting="gvPersonDetail_RowDeleting" 
-                                                    OnCustomColumnDisplayText="gvPersonDetail_CustomColumnDisplayText">
+                                                    OnCustomColumnDisplayText="gvPersonDetail_CustomColumnDisplayText"
+                                                    OnCellEditorInitialize="gvPersonDetail_CellEditorInitialize">
                                                     <SettingsAdaptivity AdaptivityMode="HideDataCellsWindowLimit" AllowOnlyOneAdaptiveDetailExpanded="True" HideDataCellsAtWindowInnerWidth="700"></SettingsAdaptivity>
                                                     <ClientSideEvents />
                                                     <Settings ShowFilterRow="false" ShowGroupPanel="false" ShowFilterRowMenu="false" ShowFilterBar="Auto" ShowHeaderFilterButton="false" />
@@ -555,47 +616,41 @@
                                                         <DeleteButton ButtonType="Button" Styles-Style-Width="75px"></DeleteButton>
                                                     </SettingsCommandButton>
                                                     <Columns>
-                                                        <dx:GridViewCommandColumn Name="ClmnCommand" ShowApplyFilterButton="true" ShowClearFilterButton="true" ShowDeleteButton="True" ShowEditButton="True" ShowInCustomizationForm="True" ShowNewButtonInHeader="True" VisibleIndex="0">
+                                                        <dx:GridViewCommandColumn Name="ClmnCommand" ShowApplyFilterButton="true" ShowClearFilterButton="true" Width="2%" ShowDeleteButton="True" ShowEditButton="True" ShowInCustomizationForm="True" ShowNewButtonInHeader="True" VisibleIndex="0">
                                                         </dx:GridViewCommandColumn>
-                                                        <dx:GridViewDataTextColumn Name="colNo" Caption="No" ReadOnly="True" UnboundType="String" VisibleIndex="1" Width="2%" Visible="false">
+                                                        <dx:GridViewDataTextColumn Name="colDtlKey" Caption="DtlKey" FieldName="DtlKey" VisibleIndex="1" Width="2%" Visible="true">
+                                                            <HeaderStyle Font-Bold="true" ForeColor="#003399" />
+                                                        </dx:GridViewDataTextColumn>
+                                                        <dx:GridViewDataTextColumn Name="colNIK" Caption="NIK" FieldName="NIK" VisibleIndex="2" ReadOnly="True" UnboundType="String" Width="2%" Visible="True">
                                                             <HeaderStyle Font-Bold="true" ForeColor="#003399" />
                                                             <Settings AllowAutoFilter="False" AllowAutoFilterTextInputTimer="False"
                                                                 AllowDragDrop="False" AllowGroup="False" AllowHeaderFilter="False"
                                                                 AllowSort="False" />
                                                         </dx:GridViewDataTextColumn>
-                                                        <dx:GridViewDataTextColumn Name="colDtlKey" Caption="DtlKey" FieldName="DtlKey" Width="20%" Visible="false">
-                                                            <HeaderStyle Font-Bold="true" ForeColor="#003399" />
-                                                        </dx:GridViewDataTextColumn>
-                                                        <dx:GridViewDataTextColumn Name="colName" Caption="Name" FieldName="Name" Width="20%">
-                                                            <HeaderStyle Font-Bold="true" ForeColor="#003399" />
-                                                        </dx:GridViewDataTextColumn>
-                                                        <dx:GridViewDataComboBoxColumn Name="colGender" Caption="M / F" FieldName="Gender" Width="10%">
-                                                            <HeaderStyle Font-Bold="true" ForeColor="#003399" />
-                                                            <PropertiesComboBox>
-                                                                <Items>
-                                                                    <dx:ListEditItem Text="MALE" Value="MALE" />
-                                                                    <dx:ListEditItem Text="FEMALE" Value="FEMALE" />
-                                                                </Items>
-                                                            </PropertiesComboBox>
-                                                        </dx:GridViewDataComboBoxColumn>
-                                                        <dx:GridViewDataComboBoxColumn Name="colPersonStatus" Caption="Status" FieldName="Status" ReadOnly="false" ShowInCustomizationForm="true" Width="10%">
-                                                            <HeaderStyle Font-Bold="true" ForeColor="#003399" />
-                                                            <PropertiesComboBox ClientInstanceName="colPersonStatus"
-                                                                TextField="StatusDesc" ValueField="StatusDesc" IncrementalFilteringMode="StartsWith"
-                                                                DropDownStyle="DropDownList"
-                                                                TextFormatString="{0}" DataSourceID="sdsPersonStatus">
+                                                        <dx:GridViewDataComboBoxColumn Name="colName" FieldName="Name" VisibleIndex="3" ShowInCustomizationForm="True" Caption="Name" Width="10%">
+                                                            <HeaderStyle Font-Bold="true" ForeColor="#003399"/>
+                                                            <PropertiesComboBox EnableCallbackMode="true" ClientInstanceName="colName" DropDownRows="10" IncrementalFilteringDelay="500" IncrementalFilteringMode="Contains" DisplayFormatString="{2}" TextFormatString="{2}" DropDownStyle="DropDownList" ValueField="Name" TextField="Name" Width="100%">
+                                                                <ClientSideEvents SelectedIndexChanged="function(s,e) {OnNameChanged(s);}" />
+                                                                <ItemStyle Wrap="True"></ItemStyle>
                                                                 <Columns>
-                                                                    <dx:ListBoxColumn Caption="Status" FieldName="StatusDesc"></dx:ListBoxColumn>
+                                                                    <dx:ListBoxColumn FieldName="DtlKey" Caption="DtlKey" Width="300px" />
+                                                                    <dx:ListBoxColumn FieldName="NIK" Caption="NIK" Width="300px" />
+                                                                    <dx:ListBoxColumn FieldName="Name" Caption="Name" Width="300px" />
+                                                                    <dx:ListBoxColumn FieldName="Email" Caption="Email" Width="300px" />
+                                                                    <dx:ListBoxColumn FieldName="Jabatan" Caption="Jabatan" Width="300px" />
                                                                 </Columns>
+                                                                <ValidationSettings ValidateOnLeave="true" ValidationGroup="ValidationSave" Display="Dynamic" ErrorDisplayMode="ImageWithText">
+                                                                    <RequiredField ErrorText="* Value can't be empty." IsRequired="true" />
+                                                                </ValidationSettings>
                                                             </PropertiesComboBox>
                                                         </dx:GridViewDataComboBoxColumn>
-                                                        <dx:GridViewDataTextColumn Name="colRemark1" Caption="Remark 1" FieldName="Remark1" Width="20%" PropertiesTextEdit-NullText="...">
+                                                         <dx:GridViewDataTextColumn Name="colJabatan" Caption="Jabatan" FieldName="Jabatan" VisibleIndex="4" ReadOnly="True" UnboundType="String" Width="2%" Visible="True">
                                                             <HeaderStyle Font-Bold="true" ForeColor="#003399" />
+                                                            <Settings AllowAutoFilter="False" AllowAutoFilterTextInputTimer="False"
+                                                                AllowDragDrop="False" AllowGroup="False" AllowHeaderFilter="False"
+                                                                AllowSort="False" />
                                                         </dx:GridViewDataTextColumn>
-                                                        <dx:GridViewDataTextColumn Name="colRemark2" Caption="Remark 2" FieldName="Remark2" Width="20%" PropertiesTextEdit-NullText="...">
-                                                            <HeaderStyle Font-Bold="true" ForeColor="#003399" />
-                                                        </dx:GridViewDataTextColumn>
-                                                        <dx:GridViewDataTextColumn Name="colRemark3" Caption="Remark 3" FieldName="Remark3" Width="20%" PropertiesTextEdit-NullText="...">
+                                                        <dx:GridViewDataTextColumn Name="colEmail" Caption="Email" FieldName="Email" VisibleIndex="5" ReadOnly="false" ShowInCustomizationForm="true" Width="10%">
                                                             <HeaderStyle Font-Bold="true" ForeColor="#003399" />
                                                         </dx:GridViewDataTextColumn>
                                                     </Columns>
@@ -609,12 +664,12 @@
                     </dx:TabbedLayoutGroup>
                 </Items>
             </dx:LayoutGroup>
-            <dx:LayoutGroup Name="LayoutGroupAdminEntry" GroupBoxDecoration="Box" Caption="Estimated Booking - For Administrator Only" Width="50%" ColCount="3">
+            <dx:LayoutGroup Name="LayoutGroupAdminEntry" GroupBoxDecoration="Box" Caption="Estimated Booking" Width="50%" ColCount="3">
                 <GroupBoxStyle>
                     <Caption ForeColor="SteelBlue" Font-Size="Larger" Font-Bold="true" Font-Names="Calibri" BackColor="WhiteSmoke"></Caption>
                 </GroupBoxStyle>
                 <Items>
-                    <dx:LayoutItem ShowCaption="True" Caption="Driver" Width="50%">
+                    <%--<dx:LayoutItem ShowCaption="True" Caption="Driver" Width="50%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
                                 <dx:ASPxComboBox
@@ -634,7 +689,7 @@
                                 </dx:ASPxComboBox>
                             </dx:LayoutItemNestedControlContainer>
                         </LayoutItemNestedControlCollection>
-                    </dx:LayoutItem>
+                    </dx:LayoutItem>--%>
                     <dx:LayoutItem ShowCaption="True" Caption="Est. Pickup Time" Width="50%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
@@ -725,7 +780,7 @@
                     <dx:LayoutItem ShowCaption="true" Caption="" Width="100%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
-                                <dx:ASPxButton runat="server" ID="btnAdminOnHold" ClientInstanceName="btnAdminOnHold" Text="Hold" ForeColor="DarkSlateBlue" AutoPostBack="false" UseSubmitBehavior="false" Width="25%" Theme="Office2010Blue" Border-BorderColor="WhiteSmoke" Border-BorderWidth="2" Border-BorderStyle="Outset">
+                                <dx:ASPxButton runat="server" ID="btnAdminOnHold" ClientInstanceName="btnAdminOnHold" Text="Hold" ForeColor="DarkSlateBlue" AutoPostBack="false" UseSubmitBehavior="false" Width="25%" Theme="Office2010Blue" Border-BorderColor="WhiteSmoke" Border-BorderWidth="2" Border-BorderStyle="Outset" ClientVisible="false">
                                     <ClientSideEvents Click="function(s,e) { cplMain.PerformCallback('ADMIN_PENDING_CONFIRM;' + 'ADMIN_PENDING_CONFIRM'); }" />
                                 </dx:ASPxButton>
                             </dx:LayoutItemNestedControlContainer>
@@ -734,7 +789,7 @@
                     <dx:LayoutItem ShowCaption="true" Caption="" Width="100%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
-                                <dx:ASPxButton runat="server" ID="btnAdminReject" ClientInstanceName="btnAdminReject" Text="Reject" ForeColor="Red" AutoPostBack="false" UseSubmitBehavior="false" Width="25%" Theme="Office2010Blue" Border-BorderColor="WhiteSmoke" Border-BorderWidth="2" Border-BorderStyle="Outset">
+                                <dx:ASPxButton runat="server" ID="btnAdminReject" ClientInstanceName="btnAdminReject" Text="Reject" ForeColor="Red" AutoPostBack="false" UseSubmitBehavior="false" Width="25%" Theme="Office2010Blue" Border-BorderColor="WhiteSmoke" Border-BorderWidth="2" Border-BorderStyle="Outset" ClientVisible="false">
                                     <ClientSideEvents Click="function(s,e) { cplMain.PerformCallback('ADMIN_REJECT_CONFIRM;' + 'ADMIN_REJECT_CONFIRM'); }" />
                                 </dx:ASPxButton>
                             </dx:LayoutItemNestedControlContainer>
@@ -743,7 +798,7 @@
                     <dx:LayoutItem ShowCaption="true" Caption="" Width="100%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
-                                <dx:ASPxButton runat="server" ID="btnAdminApprove" ClientInstanceName="btnAdminApprove" Text="Approve" ForeColor="DarkSlateBlue" AutoPostBack="false" UseSubmitBehavior="false" Width="25%" Theme="Office2010Blue" Border-BorderColor="WhiteSmoke" Border-BorderWidth="2" Border-BorderStyle="Outset">
+                                <dx:ASPxButton runat="server" ID="btnAdminApprove" ClientInstanceName="btnAdminApprove" Text="Approve" ForeColor="DarkSlateBlue" AutoPostBack="false" UseSubmitBehavior="false" Width="25%" Theme="Office2010Blue" Border-BorderColor="WhiteSmoke" Border-BorderWidth="2" Border-BorderStyle="Outset" ClientVisible="false">
                                     <ClientSideEvents Click="function(s,e) { cplMain.PerformCallback('ADMIN_APPROVE_CONFIRM;' + 'ADMIN_APPROVE_CONFIRM'); }" />
                                 </dx:ASPxButton>
                             </dx:LayoutItemNestedControlContainer>
@@ -751,7 +806,124 @@
                     </dx:LayoutItem>
                 </Items>
             </dx:LayoutGroup>
-            <dx:LayoutGroup Name="LayoutGroupActualEntry" GroupBoxDecoration="Box" Caption="Actual Booking - For Driver Only" Width="50%" ColCount="1">
+            <dx:LayoutGroup Name="LayoutGroupApproval" ShowCaption="True" Caption="Approval" GroupBoxDecoration="Box" ColCount="1" Width="100%">
+                <GroupBoxStyle>
+                    <Caption ForeColor="SteelBlue" Font-Size="Larger" Font-Bold="true" Font-Names="Calibri" BackColor="WhiteSmoke"></Caption>
+                </GroupBoxStyle>
+                      <Items>
+                            <dx:LayoutItem ShowCaption="False" Width="100%">
+                                <LayoutItemNestedControlCollection>
+                                    <dx:LayoutItemNestedControlContainer>
+                                        <dx:ASPxGridView
+                                            runat="server"
+                                            ID="gvApproval"
+                                            ClientInstanceName="gvApproval"
+                                            Width="100%"
+                                            KeyFieldName="DtlKey"
+                                            AutoGenerateColumns="False"
+                                            EnableCallBacks="true"
+                                            EnablePagingCallbackAnimation="true"
+                                            EnableTheming="True"
+                                            Theme="Office2010Blue" Font-Size="Small" Font-Names="Calibri"
+                                            OnDataBinding="gvApproval_DataBinding"
+                                            OnRowInserting="gvApproval_RowInserting"
+                                            OnRowUpdating="gvApproval_RowUpdating"
+                                            OnRowDeleting="gvApproval_RowDeleting"
+                                            OnCustomCallback="gvApproval_CustomCallback"
+                                            OnAutoFilterCellEditorInitialize="gvApproval_AutoFilterCellEditorInitialize" OnCellEditorInitialize="gvApproval_CellEditorInitialize"
+                                            OnCustomColumnDisplayText="gvApproval_CustomColumnDisplayText">
+                                            <SettingsAdaptivity AdaptivityMode="HideDataCellsWindowLimit" AllowOnlyOneAdaptiveDetailExpanded="True" HideDataCellsAtWindowInnerWidth="700"></SettingsAdaptivity>
+                                            <ClientSideEvents EndCallback="gvApproval_EndCallback" />
+                                            <Settings ShowFilterRow="false" ShowGroupPanel="false" ShowFilterRowMenu="false" ShowFilterBar="Auto" ShowHeaderFilterButton="false" />
+                                            <SettingsBehavior AllowFocusedRow="True" AllowSelectByRowClick="True" FilterRowMode="OnClick" EnableRowHotTrack="true" />
+                                            <SettingsDataSecurity AllowDelete="true" AllowEdit="true" AllowInsert="true" />
+                                            <SettingsSearchPanel Visible="false" />
+                                            <SettingsFilterControl ViewMode="VisualAndText" AllowHierarchicalColumns="true" ShowAllDataSourceColumns="true" MaxHierarchyDepth="1" />
+                                            <SettingsPager PageSize="5" AllButton-Visible="true" Summary-Visible="true" Visible="true"></SettingsPager>
+                                            <SettingsText ConfirmDelete="Are you really want to Delete?" />
+                                            <SettingsEditing Mode="Inline" NewItemRowPosition="Bottom"></SettingsEditing>
+                                            <SettingsCommandButton>
+                                                <NewButton ButtonType="Button" Text="Add New" Styles-Style-Width="75px">
+                                                </NewButton>
+                                                <EditButton Text="Edit" ButtonType="Button" Styles-Style-Width="75px"></EditButton>
+                                                <UpdateButton Text="Save" ButtonType="Button" Styles-Style-Width="75px"></UpdateButton>
+                                                <CancelButton ButtonType="Button" Styles-Style-Width="75px"></CancelButton>
+                                                <DeleteButton ButtonType="Button" Styles-Style-Width="75px"></DeleteButton>
+                                            </SettingsCommandButton>
+                                            <Columns>
+                                                <dx:GridViewDataTextColumn Name="colNo" Caption="No" ReadOnly="True" UnboundType="String" VisibleIndex="0" Width="2%">
+                                                    <HeaderStyle Font-Bold="true" ForeColor="#003399" />
+                                                    <Settings AllowAutoFilter="False" AllowAutoFilterTextInputTimer="False"
+                                                        AllowDragDrop="False" AllowGroup="False" AllowHeaderFilter="False"
+                                                        AllowSort="False" />
+                                                </dx:GridViewDataTextColumn>
+                                                <dx:GridViewCommandColumn Name="ClmnCommand" ShowApplyFilterButton="true" ShowClearFilterButton="true" ShowDeleteButton="True" ShowEditButton="True" ShowInCustomizationForm="True" ShowNewButtonInHeader="True" VisibleIndex="1" Width="10%">
+                                                    <HeaderStyle Font-Bold="true" ForeColor="#003399" />
+                                                </dx:GridViewCommandColumn>
+                                                <dx:GridViewDataTextColumn Name="colDtlAppKey" Caption="DtlKey" FieldName="DtlKey" ReadOnly="True" Visible="false" VisibleIndex="2">
+                                                    <HeaderStyle Font-Bold="true" ForeColor="#003399" />
+                                                </dx:GridViewDataTextColumn>
+                                                <dx:GridViewDataTextColumn Name="colDocKey" Caption="DocKey" FieldName="DocKey" ReadOnly="True" ShowInCustomizationForm="true" Visible="false" VisibleIndex="3">
+                                                    <HeaderStyle Font-Bold="true" ForeColor="#003399" />
+                                                </dx:GridViewDataTextColumn>
+                                                <dx:GridViewDataTextColumn Name="colSeq" Caption="Seq" FieldName="Seq" ReadOnly="True" ShowInCustomizationForm="true" Visible="false" VisibleIndex="4">
+                                                    <HeaderStyle Font-Bold="true" ForeColor="#003399" />
+                                                </dx:GridViewDataTextColumn>
+                                                <dx:GridViewDataTextColumn Name="colNIK" FieldName="NIK" ShowInCustomizationForm="True" Caption="NIK" ReadOnly="true" Width="10%">
+                                                    <HeaderStyle Font-Bold="true" ForeColor="#003399" />
+                                                </dx:GridViewDataTextColumn>
+                                                <dx:GridViewDataComboBoxColumn Name="colNama" FieldName="Nama" ShowInCustomizationForm="True" Caption="Nama" Width="10%">
+                                                   <HeaderStyle Font-Bold="true" ForeColor="#003399" />
+                                                    <PropertiesComboBox EnableCallbackMode="true" ClientInstanceName="colNama" DropDownRows="10" IncrementalFilteringDelay="500" IncrementalFilteringMode="Contains" DisplayFormatString="{1}" TextFormatString="{1}" DropDownStyle="DropDownList" ValueField="Nama" TextField="Nama" Width="100%">
+                                                        <ClientSideEvents SelectedIndexChanged="function(s,e) {OnNameChangedApproval(s);}" />
+                                                        <ItemStyle Wrap="True"></ItemStyle>
+                                                        <Columns>
+                                                            <dx:ListBoxColumn FieldName="NIK" Caption="NIK" Width="300px" />
+                                                            <dx:ListBoxColumn FieldName="Nama" Caption="Nama" Width="300px" />
+                                                            <dx:ListBoxColumn FieldName="Email" Caption="Email" Width="300px" />
+                                                            <dx:ListBoxColumn FieldName="Jabatan" Caption="Jabatan" Width="300px" />
+                                                        </Columns>
+                                                        <ValidationSettings ValidateOnLeave="true" ValidationGroup="ValidationSave" Display="Dynamic" ErrorDisplayMode="ImageWithText">
+                                                            <RequiredField ErrorText="* Value can't be empty." IsRequired="true" />
+                                                        </ValidationSettings>
+                                                    </PropertiesComboBox>
+                                                </dx:GridViewDataComboBoxColumn>
+                                                <dx:GridViewDataTextColumn Name="colJabatan" FieldName="Jabatan" Caption="Jabatan" Width="10%">
+                                                   <HeaderStyle Font-Bold="true" ForeColor="#003399" />
+                                                </dx:GridViewDataTextColumn>
+                                                <dx:GridViewDataCheckColumn Name="colIsDecision" FieldName="IsDecision" ShowInCustomizationForm="True" Caption="Decision?" ReadOnly="true" Width="5%">
+                                                    <HeaderStyle Font-Bold="true" ForeColor="#003399" />
+                                                    <PropertiesCheckEdit ValueChecked="T" ValueGrayed="N" ClientInstanceName="colIsApprove" ValueType="System.Char" ValueUnchecked="F"></PropertiesCheckEdit>
+                                                </dx:GridViewDataCheckColumn>
+                                                <dx:GridViewDataMemoColumn Name="colTypeApproval" FieldName="TypeApproval" Caption="Type Approval" ReadOnly="true" Width="10%">
+                                                    <HeaderStyle Font-Bold="true" ForeColor="#003399" />
+                                                </dx:GridViewDataMemoColumn>
+                                                <dx:GridViewDataTextColumn Name="colDecisionState" FieldName="DecisionState" Caption="State" ReadOnly="true" Width="10%">
+                                                   <HeaderStyle Font-Bold="true" ForeColor="#003399" />
+                                                </dx:GridViewDataTextColumn>
+                                                <dx:GridViewDataMemoColumn Name="colDecisionNote" FieldName="DecisionNote" Caption="Decision Note" ReadOnly="true" Width="10%">
+                                                    <HeaderStyle Font-Bold="true" ForeColor="#003399" />
+                                                </dx:GridViewDataMemoColumn>
+                                                <dx:GridViewDataDateColumn Name="colDecisionDate" FieldName="DecisionDate" Caption="Decision Date" PropertiesDateEdit-DisplayFormatString="dd/MM/yyyy hh:mm:ss tt" ReadOnly="true" Width="10%">
+                                                    <HeaderStyle Font-Bold="true" ForeColor="#003399" />
+                                                </dx:GridViewDataDateColumn>
+                                                <dx:GridViewDataTextColumn Name="colEmail" FieldName="Email" Caption="Email" ReadOnly="true" Width="10%">
+                                                    <HeaderStyle Font-Bold="true" ForeColor="#003399" />
+                                                </dx:GridViewDataTextColumn>
+                                            </Columns>
+                                        </dx:ASPxGridView>
+                                    </dx:LayoutItemNestedControlContainer>
+                                </LayoutItemNestedControlCollection>
+                            </dx:LayoutItem>
+                            <dx:LayoutItem Name="txtNotesApproval" ShowCaption="False">
+                                <LayoutItemNestedControlCollection>
+                                    <dx:LayoutItemNestedControlContainer>
+                                    </dx:LayoutItemNestedControlContainer>
+                                </LayoutItemNestedControlCollection>
+                            </dx:LayoutItem>
+                        </Items>
+            </dx:LayoutGroup>
+           <%-- <dx:LayoutGroup Name="LayoutGroupActualEntry" GroupBoxDecoration="Box" Caption="Actual Booking - For Driver Only" Width="50%" ColCount="1">
                 <GroupBoxStyle>
                     <Caption ForeColor="SteelBlue" Font-Size="Larger" Font-Bold="true" Font-Names="Calibri" BackColor="WhiteSmoke"></Caption>
                 </GroupBoxStyle>
@@ -825,8 +997,8 @@
                         </LayoutItemNestedControlCollection>
                     </dx:LayoutItem>
                 </Items>
-            </dx:LayoutGroup>
-            <dx:EmptyLayoutItem Width="80%"></dx:EmptyLayoutItem>
+            </dx:LayoutGroup>--%>
+            <dx:EmptyLayoutItem Width="70%"></dx:EmptyLayoutItem>
             <dx:LayoutItem ShowCaption="False" Width="10%" Visible="false">
                 <LayoutItemNestedControlCollection>
                     <dx:LayoutItemNestedControlContainer>
@@ -836,6 +1008,25 @@
                     </dx:LayoutItemNestedControlContainer>
                 </LayoutItemNestedControlCollection>
             </dx:LayoutItem>
+            <dx:LayoutItem ShowCaption="False" Width="10%">
+                <LayoutItemNestedControlCollection>
+                    <dx:LayoutItemNestedControlContainer>
+                        <dx:ASPxButton runat="server" ID="btnApprove" ClientInstanceName="btnApprove" Text="Approve" AutoPostBack="false" UseSubmitBehavior="false" ValidationGroup="ValidationSave" Width="100%" Theme="Office2010Blue" Border-BorderColor="WhiteSmoke" Border-BorderWidth="2" Border-BorderStyle="Outset" ClientVisible="false">
+                            <ClientSideEvents Click="function(s,e) { cplMain.PerformCallback('APPROVECONFIRM;' + 'APPROVECONFIRM'); }" />
+                        </dx:ASPxButton>
+                    </dx:LayoutItemNestedControlContainer>
+                </LayoutItemNestedControlCollection>
+            </dx:LayoutItem>           
+             <dx:LayoutItem ShowCaption="False" Width="10%">
+                <LayoutItemNestedControlCollection>
+                    <dx:LayoutItemNestedControlContainer>
+                        <dx:ASPxButton runat="server" ID="btnReject" ClientInstanceName="btnReject" Text="Reject" AutoPostBack="false" UseSubmitBehavior="false" ValidationGroup="ValidationSave" Width="100%" Theme="Office2010Blue" Border-BorderColor="WhiteSmoke" Border-BorderWidth="2" Border-BorderStyle="Outset" ClientVisible="false">
+                            <ClientSideEvents Click="function(s,e) { cplMain.PerformCallback('REJECTCONFIRM;' + 'REJECTCONFIRM'); }" />
+                        </dx:ASPxButton>
+                    </dx:LayoutItemNestedControlContainer>
+                </LayoutItemNestedControlCollection>
+            </dx:LayoutItem>           
+
             <dx:LayoutItem ShowCaption="False" Width="10%">
                 <LayoutItemNestedControlCollection>
                     <dx:LayoutItemNestedControlContainer>
@@ -854,15 +1045,15 @@
                     </dx:LayoutItemNestedControlContainer>
                 </LayoutItemNestedControlCollection>
             </dx:LayoutItem>
-            <dx:LayoutItem ShowCaption="False" Width="10%" Visible="false">
+             <dx:LayoutItem ShowCaption="False" Width="10%">
                 <LayoutItemNestedControlCollection>
                     <dx:LayoutItemNestedControlContainer>
-                        <dx:ASPxButton runat="server" ID="btnReject" ClientInstanceName="btnReject" Text="Reject" AutoPostBack="false" UseSubmitBehavior="false" ValidationGroup="ValidationSave" Width="100%" Theme="Office2010Blue" Border-BorderColor="WhiteSmoke" Border-BorderWidth="2" Border-BorderStyle="Outset">
-                            <ClientSideEvents Click="function(s,e) { cplMain.PerformCallback('REJECTCONFIRM;' + 'REJECTCONFIRM'); }" />
+                        <dx:ASPxButton runat="server" ID="btnFinish" ClientInstanceName="btnFinish" Text="Finish" ClientVisible="false" ForeColor="DarkSlateBlue" AutoPostBack="false" UseSubmitBehavior="false" Width="100%" Theme="Office2010Blue" Border-BorderColor="WhiteSmoke" Border-BorderWidth="2" Border-BorderStyle="Outset">
+                             <ClientSideEvents Click="function(s,e) { cplMain.PerformCallback('FINISH;' + 'FINISH'); }" />
                         </dx:ASPxButton>
                     </dx:LayoutItemNestedControlContainer>
                 </LayoutItemNestedControlCollection>
-            </dx:LayoutItem>           
+            </dx:LayoutItem>
             <dx:LayoutItem ShowCaption="False" Width="10%">
                 <LayoutItemNestedControlCollection>
                     <dx:LayoutItemNestedControlContainer>
@@ -875,5 +1066,5 @@
     <dx:ASPxCallback ID="cplMain" runat="server" ClientInstanceName="cplMain" OnCallback="cplMain_Callback">
         <ClientSideEvents EndCallback="cplMain_EndCallback" />
     </dx:ASPxCallback>
-    <asp:SqlDataSource ConnectionString="<%$ ConnectionStrings:SqlConnectionString %>" ID="sdsPersonStatus" runat="server" SelectCommand="SELECT StatusDesc FROM [dbo].[PersonStatus] ORDER BY StatusDesc"></asp:SqlDataSource>
+    <asp:SqlDataSource ConnectionString="<%$ ConnectionStrings:SqlLocalConnectionString %>" ID="sdsPersonStatus" runat="server" SelectCommand="SELECT StatusDesc FROM [dbo].[PersonStatus] ORDER BY StatusDesc"></asp:SqlDataSource>
 </asp:Content>

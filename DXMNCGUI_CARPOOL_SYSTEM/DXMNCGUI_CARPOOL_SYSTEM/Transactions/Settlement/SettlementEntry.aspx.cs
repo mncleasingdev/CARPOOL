@@ -9,6 +9,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Data.SqlClient;
 
 namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
 {
@@ -18,6 +19,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
         {
             get { isValidLogin(false); return (SqlDBSetting)HttpContext.Current.Session["myDBSetting" + this.ViewState["_PageID"]]; }
             set { HttpContext.Current.Session["myDBSetting" + this.ViewState["_PageID"]] = value; }
+        }
+        protected SqlLocalDBSetting myLocalDBSetting
+        {
+            get { isValidLogin(false); return (SqlLocalDBSetting)HttpContext.Current.Session["myLocalDBSetting" + this.ViewState["_PageID"]]; }
+            set { HttpContext.Current.Session["myLocalDBSetting" + this.ViewState["_PageID"]] = value; }
         }
         protected SqlDBSession myDBSession
         {
@@ -119,6 +125,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             get { isValidLogin(false); return (int)HttpContext.Current.Session["BookingiLineIndex" + this.ViewState["_PageID"]]; }
             set { HttpContext.Current.Session["BookingiLineIndex" + this.ViewState["_PageID"]] = value; }
         }
+        protected DataTable myApprovalTable
+        {
+            get { isValidLogin(false); return (DataTable)HttpContext.Current.Session["myApprovalTable" + this.ViewState["_PageID"]]; }
+            set { HttpContext.Current.Session["myApprovalTable" + this.ViewState["_PageID"]] = value; }
+        }
 
         bool isReadOnly = false;
 
@@ -129,24 +140,29 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             {
                 this.ViewState["_PageID"] = Guid.NewGuid();
                 myDBSetting = dbsetting;
+                myLocalDBSetting = localdbsetting;
                 myDBSession = dbsession;
-                if (this.Request.QueryString["SourceKey"] != null && this.Request.QueryString["Type"] != null)
+                
+                //if (this.Request.QueryString["SourceKey"] != null && this.Request.QueryString["Type"] != null)
+                if (this.Request.QueryString["DocKey"] != null && this.Request.QueryString["Action"] == "Approval")
                 {
-                    this.mySettlementDB = SettlementDB.Create(dbsetting, myDBSession);
-                    mySettlementEntity = this.mySettlementDB.View(Convert.ToInt32(this.Request.QueryString["SourceKey"]));
+                    this.mySettlementDB = SettlementDB.Create(dbsetting, myDBSession, localdbsetting);
+                    //mySettlementEntity = this.mySettlementDB.View(Convert.ToInt32(this.Request.QueryString["SourceKey"]));
+                    mySettlementEntity = this.mySettlementDB.View(Convert.ToInt32(this.Request.QueryString["DocKey"]));
                 }
                 myHeaderTable = new DataTable();
                 myDetailTable = new DataTable();
                 myDocNoFormatTable = new DataTable();
                 myBookingTable = new DataTable();
                 mySectionTable = new DataTable();
+                myApprovalTable = new DataTable();
                 strDocName = "";
                 iLineIndex = -1;
                 igridindex = -1;
                 iLineID = -1;
                 myds = new DataSet();
-                this.mySettlementDB = SettlementDB.Create(myDBSetting, myDBSession);
-                strKey = Request.QueryString["Key"];
+                this.mySettlementDB = SettlementDB.Create(myDBSetting, myDBSession, localdbsetting);
+                strKey = Request.QueryString["DocKey"];
                 SetApplication((SettlementEntity)HttpContext.Current.Session["mySettlementEntity" + strKey]);
             }
             if (!IsCallback)
@@ -189,9 +205,13 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                                     INNER JOIN [dbo].[BookingAdmin] BOA ON BO.DocKey = BOA.SourceKey
                                     INNER JOIN [dbo].[BookingDriver] BOD ON BO.DocKey = BOD.SourceKey
                                     WHERE Status='FINISH' AND IsSettlement='F' ORDER BY DocDate";
-                myBookingTable = myDBSetting.GetDataTable(sQuery, false);
+                myBookingTable = myLocalDBSetting.GetDataTable(sQuery, false);
                 luBookNo.DataSource = myBookingTable;
                 luBookNo.DataBind();
+
+                myApprovalTable = myLocalDBSetting.GetDataTable("select top 1 * from SettlementApprovalList where DtlKey = 0 ORDER BY Seq ASC", false);
+                gvApproval.DataSource = myApprovalTable;
+                gvApproval.DataBind();
             }
         }
         private void BindingMaster()
@@ -199,7 +219,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             txtDocNo.Value = mySettlementEntity.DocNo;
             txtStatus.Value = mySettlementEntity.Status;
             deDocDate.Value = mySettlementEntity.DocDate;
-            txtBookNo.Value = mySettlementEntity.BookNo;
+            //txtBookNo.Value = mySettlementEntity.BookNo;
             luBookNo.Value = mySettlementEntity.BookNo;
             deBookingDate.Value = mySettlementEntity.BookDate;
             txtBookingType.Value = mySettlementEntity.BookType;
@@ -218,8 +238,15 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             mmBookingDestinationAddress.Value = mySettlementEntity.BookDestinantionAddress;
             mmBookingTripDetail.Value = mySettlementEntity.BookTripDetail;
             seTotal.Value = mySettlementEntity.Total;
-            txtApprover.Value = mySettlementEntity.Approver;
-            chkNeedApproval.CheckState = Convert.ToString(mySettlementEntity.NeedApproval) == "T" ? CheckState.Checked : CheckState.Unchecked;
+            //txtApprover.Value = mySettlementEntity.Approver;
+            //chkNeedApproval.CheckState = Convert.ToString(mySettlementEntity.NeedApproval) == "T" ? CheckState.Checked : CheckState.Unchecked;
+
+            if (this.Request.QueryString["Action"] == "Approval" || this.Request.QueryString["Action"] == "View")
+            {
+                myApprovalTable = myLocalDBSetting.GetDataTable("select * from SettlementApprovalList where Dockey = ? ORDER BY Seq ASC", false, strKey);
+                gvApproval.DataSource = myApprovalTable;
+                gvApproval.DataBind();
+            }
         }
         protected bool ErrorInField(out string strmessageError, SaveAction saveaction)
         {
@@ -242,15 +269,15 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
         }
         private void Accessable()
         {
-            DateTime mydate = myDBSetting.GetServerTime();
+            DateTime mydate = myLocalDBSetting.GetServerTime();
             myStatus = mySettlementEntity.Cancelled.ToString();
 
-            ASPxFormLayout1.FindItemOrGroupByName("lyttxtBookNo").Visible = myAction == DXCAction.New ? false : true;
+            //ASPxFormLayout1.FindItemOrGroupByName("lyttxtBookNo").Visible = myAction == DXCAction.New ? false : true;
             ASPxFormLayout1.FindItemOrGroupByName("lytluBookNo").Visible = myAction == DXCAction.New ? true : false;
 
             txtDocNo.ReadOnly = true;
             txtStatus.ReadOnly = true;
-            txtBookNo.ReadOnly = true;
+            //txtBookNo.ReadOnly = true;
             deBookingDate.ReadOnly = true;
             txtBookingType.ReadOnly = true;
             txtNumberOfSeat.ReadOnly = true;
@@ -268,8 +295,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             mmBookingDestinationAddress.ReadOnly = true;
             mmBookingTripDetail.ReadOnly = true;
             seTotal.ReadOnly = true;
-            chkNeedApproval.ReadOnly = true;
-            txtApprover.ReadOnly = true;
+            //chkNeedApproval.ReadOnly = true;
+            //txtApprover.ReadOnly = true;
 
             if (myAction == DXCAction.View)
             {
@@ -278,6 +305,22 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 gvSettlementDetail.Columns["ClmnCommand"].Visible = false;
                 gvSettlementDetail.Columns["ClmnCommand2"].Visible = true;
                 gvSettlementDetail.Columns["colNo"].Visible = true;
+                gvApproval.Columns["ClmnCommand"].Visible = false;
+                btnSubmit.Visible = false;
+                btnCancel.Visible = false;
+            }
+
+            if (myAction == DXCAction.Approve)
+            {
+                deDocDate.ReadOnly = true;
+
+                gvSettlementDetail.Columns["ClmnCommand"].Visible = false;
+                gvSettlementDetail.Columns["ClmnCommand2"].Visible = true;
+                gvSettlementDetail.Columns["colNo"].Visible = true;
+                gvApproval.Columns["ClmnCommand"].Visible = false;
+
+                btnSubmit.Visible = false;
+                btnCancel.Visible = false;
             }
 
             #region Control Color
@@ -287,7 +330,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             deDocDate.BackColor = deDocDate.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
             txtDocNo.BackColor = txtDocNo.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
             txtStatus.BackColor = txtStatus.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
-            txtBookNo.BackColor = txtDocNo.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
+            //txtBookNo.BackColor = txtDocNo.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
             deBookingDate.BackColor = deBookingDate.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
             txtBookingType.BackColor = txtBookingType.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
             txtNumberOfSeat.BackColor = txtNumberOfSeat.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
@@ -305,9 +348,205 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             mmBookingDestinationAddress.BackColor = mmBookingDestinationAddress.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
             mmBookingTripDetail.BackColor = mmBookingTripDetail.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
             seTotal.BackColor = seTotal.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
-            chkNeedApproval.BackColor = chkNeedApproval.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
-            txtApprover.BackColor = txtApprover.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
+            //chkNeedApproval.BackColor = chkNeedApproval.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
+            //txtApprover.BackColor = txtApprover.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
             #endregion
+        }
+
+        protected void gvApproval_DataBinding(object sender, EventArgs e)
+        {
+            (sender as ASPxGridView).DataSource = myApprovalTable;
+        }
+        protected void gvApproval_RowInserting(object sender, DevExpress.Web.Data.ASPxDataInsertingEventArgs e)
+        {
+            string StrErrorMsg = "";
+            DataRow myrow = gvApproval.GetDataRow(gvApproval.FocusedRowIndex);
+
+            if (e.NewValues["Nama"] == null) throw new Exception("Column 'Nama' is mandatory.");
+            if (e.NewValues["NIK"] == null) throw new Exception("Column 'Nik' is mandatory.");
+            if (e.NewValues["Jabatan"] == null) throw new Exception("Column 'Jabatan' is mandatory.");
+            if (myrow != null)
+            {
+                if (myrow["NIK"].ToString() == Convert.ToString((e.NewValues["NIK"]))) throw new Exception("User approval is exists.");
+            }
+
+            if (StrErrorMsg == "")
+            {
+                gvApproval.JSProperties["cpCmd"] = "INSERT";
+
+                int i = gvApproval.VisibleRowCount;
+
+                string dtlNIK = e.NewValues["NIK"].ToString();
+                string dtlNama = e.NewValues["Nama"].ToString();
+                string dtlJabatan = e.NewValues["Jabatan"].ToString();
+                string dtlEmail = e.NewValues["Email"].ToString();
+
+                if (myAction == DXCAction.New)
+                {
+                    myApprovalTable.Rows.Add(i, mySettlementEntity.DocKey, "Approval Baru", i, dtlNIK, dtlNama, dtlJabatan, "F", DBNull.Value, DBNull.Value, DBNull.Value, dtlEmail, DBNull.Value);
+                }
+
+                if (myAction == DXCAction.Edit)
+                {
+                    myApprovalTable.Rows.Add(i, mySettlementEntity.DocKey, "Approval Edit", i, dtlNIK, dtlNama, dtlJabatan, "F", DBNull.Value, DBNull.Value, DBNull.Value, dtlEmail, DBNull.Value);
+                }
+                ASPxGridView grid = sender as ASPxGridView;
+                grid.CancelEdit();
+                e.Cancel = true;
+            }
+        }
+
+        protected void gvApproval_RowUpdating(object sender, DevExpress.Web.Data.ASPxDataUpdatingEventArgs e)
+        {
+            string StrErrorMsg = "";
+            DataRow myrow = gvApproval.GetDataRow(gvApproval.FocusedRowIndex);
+
+            if (e.NewValues["Nama"] == null) throw new Exception("Column 'Nama' is mandatory.");
+            if (e.NewValues["NIK"] == null) throw new Exception("Column 'Nik' is mandatory.");
+            if (e.NewValues["Jabatan"] == null) throw new Exception("Column 'Jabatan' is mandatory.");
+            if (Convert.ToString(e.NewValues["NIK"]) == UserID) throw new Exception("User approval and user login can't be same.");
+            if (myrow != null)
+            {
+
+                if ((myrow["Jabatan"].ToString() == Convert.ToString((e.NewValues["Jabatan"]))))
+                {
+                    if (myrow["NIK"].ToString() == Convert.ToString((e.NewValues["NIK"]))) throw new Exception("User approval is exists.");
+                }
+            }
+
+            if (StrErrorMsg == "")
+            {
+                if (myAction == DXCAction.New || myAction == DXCAction.Edit)
+                {
+                    gvApproval.JSProperties["cpCmd"] = "UPDATE";
+                    int editingRowVisibleIndex = gvApproval.EditingRowVisibleIndex;
+                    int id = (int)gvApproval.GetRowValues(editingRowVisibleIndex, "DtlKey");
+                    //DataRow dr = myApprovalTable.Rows.Find(id);
+
+                    var searchExpression = "DtlKey = " + id.ToString();
+                    DataRow[] foundRow = myApprovalTable.Select(searchExpression);
+                    foreach (DataRow dr in foundRow)
+                    {
+                        dr["NIK"] = Convert.ToString(e.NewValues["NIK"]);
+                        dr["Nama"] = Convert.ToString(e.NewValues["Nama"]);
+                        dr["Jabatan"] = Convert.ToString(e.NewValues["Jabatan"]);
+                        dr["Email"] = Convert.ToString(e.NewValues["Email"]);
+                    }
+
+                    ASPxGridView grid = sender as ASPxGridView;
+                    grid.CancelEdit();
+                    e.Cancel = true;
+                }
+            }
+        }
+
+        protected void gvApproval_RowDeleting(object sender, DevExpress.Web.Data.ASPxDataDeletingEventArgs e)
+        {
+            if (myAction == DXCAction.New || myAction == DXCAction.Edit)
+            {
+                gvApproval.JSProperties["cpCmd"] = "DELETE";
+                int id = (int)e.Keys["DtlKey"];
+                //DataRow dr = myDetailTable.Rows.Find(id);
+
+                var searchExpression = "DtlKey = " + id.ToString();
+                DataRow[] foundRow = myApprovalTable.Select(searchExpression);
+                foreach (DataRow dr in foundRow)
+                {
+                    myApprovalTable.Rows.Remove(dr);
+                }
+
+                ASPxGridView grid = sender as ASPxGridView;
+                grid.CancelEdit();
+                e.Cancel = true;
+            }
+        }
+
+        protected void gvApproval_CustomCallback(object sender, ASPxGridViewCustomCallbackEventArgs e)
+        {
+
+        }
+
+        protected void gvApproval_AutoFilterCellEditorInitialize(object sender, ASPxGridViewEditorEventArgs e)
+        {
+
+        }
+        protected void gvApproval_CustomColumnDisplayText(object sender, ASPxGridViewColumnDisplayTextEventArgs e)
+        {
+            if (e.Column.Caption == "No")
+            {
+                e.DisplayText = (e.VisibleIndex + 1).ToString();
+            }
+        }
+
+        protected void gvApproval_CellEditorInitialize(object sender, ASPxGridViewEditorEventArgs e)
+        {
+            if (e.Column.FieldName == "Nama")
+            {
+                isValidLogin(false);
+                if (Page.IsCallback)
+                {
+                    DataTable myitem = new DataTable();
+                    myitem = myDBSetting.GetDataTable(@"select top 1
+                                                            a.HEAD AS NIK, 
+                                                            a.HEAD_DESCS AS Nama,
+                                                            c.USERGROUPDESC AS Jabatan,
+                                                            d.EMAIL AS Email
+                                                        from SYS_TBLEMPLOYEE a
+                                                        left join MASTER_USER_COMPANY_GROUP b on a.HEAD = b.USER_ID
+                                                        left join MASTER_GROUP c on b.GROUP_CODE = c.USERGROUP
+                                                        left join SYS_TBLEMPLOYEE d on a.HEAD = d.CODE
+                                                        where a.CODE = ? and d.ISACTIVE = 1", false, Email);
+                    ASPxComboBox cmb = (ASPxComboBox)e.Editor;
+                    cmb.DataSource = myitem;
+                    cmb.DataBindItems();
+                }
+            }
+        }
+
+        private void insertApproval(DataRow dataRow, string TypeApproval)
+        {
+            string ssql = @"insert into SettlementApprovalList ([DocKey],[TypeApproval],[Seq],[NIK],[Nama],[Jabatan],[IsDecision],[DecisionState],[DecisionDate],[DecisionNote],[Email])
+                        values(@DocKey,@TypeApproval,@Seq,@NIK,@Nama,@Jabatan,@IsDecision,@DecisionState,@DecisionDate,@DecisionNote,@Email)";
+
+            SqlConnection myconn = new SqlConnection(myLocalDBSetting.ConnectionString);
+            SqlCommand sqlCommand = new SqlCommand(ssql);
+            sqlCommand.Connection = myconn;
+            myconn.Open();
+            SqlParameter sqlParameter1 = sqlCommand.Parameters.Add("@DocKey", SqlDbType.Int);
+            sqlParameter1.Value = mySettlementEntity.DocKey;
+            sqlParameter1.Direction = ParameterDirection.Input;
+            SqlParameter sqlParameter2 = sqlCommand.Parameters.Add("@TypeApproval", SqlDbType.VarChar);
+            sqlParameter2.Value = TypeApproval;
+            sqlParameter2.Direction = ParameterDirection.Input;
+            SqlParameter sqlParameter3 = sqlCommand.Parameters.Add("@Seq", SqlDbType.Int);
+            sqlParameter3.Value = dataRow.Field<int>("Seq");
+            sqlParameter3.Direction = ParameterDirection.Input;
+            SqlParameter sqlParameter4 = sqlCommand.Parameters.Add("@NIK", SqlDbType.VarChar);
+            sqlParameter4.Value = dataRow.Field<string>("NIK");
+            sqlParameter4.Direction = ParameterDirection.Input;
+            SqlParameter sqlParameter5 = sqlCommand.Parameters.Add("@Nama", SqlDbType.VarChar);
+            sqlParameter5.Value = dataRow.Field<string>("Nama");
+            sqlParameter5.Direction = ParameterDirection.Input;
+            SqlParameter sqlParameter6 = sqlCommand.Parameters.Add("@Jabatan", SqlDbType.VarChar);
+            sqlParameter6.Value = dataRow.Field<string>("Jabatan");
+            sqlParameter6.Direction = ParameterDirection.Input;
+            SqlParameter sqlParameter7 = sqlCommand.Parameters.Add("@IsDecision", SqlDbType.VarChar);
+            sqlParameter7.Value = "F";
+            sqlParameter7.Direction = ParameterDirection.Input;
+            SqlParameter sqlParameter8 = sqlCommand.Parameters.Add("@DecisionState", SqlDbType.VarChar);
+            sqlParameter8.Value = dataRow.Field<string>("DecisionState") == null ? "" : dataRow.Field<string>("DecisionState");
+            sqlParameter8.Direction = ParameterDirection.Input;
+            SqlParameter sqlParameter9 = sqlCommand.Parameters.Add("@DecisionDate", SqlDbType.DateTime);
+            sqlParameter9.Value = DBNull.Value;
+            sqlParameter9.Direction = ParameterDirection.Input;
+            SqlParameter sqlParameter10 = sqlCommand.Parameters.Add("@DecisionNote", SqlDbType.VarChar);
+            sqlParameter10.Value = dataRow.Field<string>("DecisionNote") == null ? "" : dataRow.Field<string>("DecisionNote");
+            sqlParameter10.Direction = ParameterDirection.Input;
+            SqlParameter sqlParameter11 = sqlCommand.Parameters.Add("@Email", SqlDbType.VarChar);
+            sqlParameter11.Value = dataRow.Field<string>("Email") == null ? "" : dataRow.Field<string>("Email");
+            sqlParameter11.Direction = ParameterDirection.Input;
+            sqlCommand.ExecuteNonQuery();
+            myconn.Close();
         }
         private bool Save(SaveAction saveAction)
         {
@@ -337,21 +576,53 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             mySettlementEntity.BookDestinantionAddress = mmBookingDestinationAddress.Value;
             mySettlementEntity.BookTripDetail = mmBookingTripDetail.Value;
             mySettlementEntity.Total = seTotal.Value == null ? 0 : seTotal.Value;
-            mySettlementEntity.Approver = txtApprover.Value;
-            mySettlementEntity.NeedApproval = chkNeedApproval.CheckState == CheckState.Checked ? "T" : "F";
+            //mySettlementEntity.Approver = txtApprover.Value;
+            //mySettlementEntity.NeedApproval = chkNeedApproval.CheckState == CheckState.Checked ? "T" : "F";
 
             if (myAction == DXCAction.New)
             {
                 mySettlementEntity.CreatedBy = this.UserName;
-                mySettlementEntity.CreatedDateTime = myDBSetting.GetServerTime();
-                mySettlementEntity.LastModifiedDateTime = myDBSetting.GetServerTime();
+                mySettlementEntity.CreatedDateTime = myLocalDBSetting.GetServerTime();
+                mySettlementEntity.LastModifiedDateTime = myLocalDBSetting.GetServerTime();
+
+                foreach (DataRow drApprove in myApprovalTable.Rows)
+                {
+                    insertApproval(drApprove, "Pengajuan Approval");
+                    mySettlementEntity.Approver = drApprove["NIK"].ToString();
+                }
+
             }
-            if (Convert.ToString(mySettlementEntity.NeedApproval) == "T")
-            {
-                IsApproval = true;
-            }
-            mySettlementEntity.Save(UserID, UserName, "ST", saveAction, IsApproval);
+            //if (Convert.ToString(mySettlementEntity.NeedApproval) == "T")
+            //{
+            //    IsApproval = true;
+            //}
+
+
+            //mySettlementEntity.Save(UserID, UserName, "ST", saveAction, IsApproval);
+            mySettlementEntity.Save(UserID, UserName, "ST", saveAction, Convert.ToString(mySettlementEntity.Approver));
             return bSave;
+        }
+
+        private bool SaveApprove(SaveAction saveAction)
+        {
+            bool bSave = true;
+            // DataRow myrow = gvApprovalList.GetDataRow(gvApprovalList.FocusedRowIndex);
+            try
+            {
+                this.mySettlementDB = SettlementDB.Create(myDBSetting, myDBSession, myLocalDBSetting);
+                mySettlementEntity = this.mySettlementDB.View(Convert.ToInt32(mySettlementEntity.DocKey));
+            }
+            catch
+            { }
+            mySettlementEntity.Save(Email, UserName, "ST", saveAction, "");
+            UpdateApproval("APPROVE", DecisionNote.Value.ToString(), 1);
+            return bSave;
+        }
+
+        protected void UpdateApproval(string Status, string Note, int DecisionCode)
+        {
+            string ssql = "UPDATE SettlementApprovalList SET DecisionState=?, DecisionCode=?, DecisionNote=?, IsDecision = 'T', DecisionDate=GETDATE() WHERE DocKey=? AND NIK =?";
+            myLocalDBSetting.ExecuteNonQuery(ssql, Status, DecisionCode, Note, strKey, Email);
         }
 
         protected bool bookNoIsExist(string BookNo)
@@ -392,6 +663,21 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                     {
                         cplMain.JSProperties["cplblmessageError"] = strmessageError;
                     }
+                    break;
+                case "APPROVECONFIRM":
+                    cplMain.JSProperties["cplblmessageError"] = "";
+                    cplMain.JSProperties["cplblmessage"] = "are you sure want to approve this Settlement?";
+                    cplMain.JSProperties["cplblActionButton"] = "APPROVE";
+                    if (ErrorInField(out strmessageError, SaveAction.Approve))
+                    {
+                        cplMain.JSProperties["cplblmessageError"] = strmessageError;
+                    }
+                    break;
+                case "APPROVE":
+                    SaveApprove(SaveAction.Approve);
+                    cplMain.JSProperties["cpAlertMessage"] = "Settlement has been Approve...";
+                    cplMain.JSProperties["cplblActionButton"] = "APPROVE";
+                    DevExpress.Web.ASPxWebControl.RedirectOnCallback(urlsave + updatedQueryString);
                     break;
                 case "CANCEL":
                     Save(SaveAction.Cancel);

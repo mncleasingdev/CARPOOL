@@ -130,22 +130,40 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking {
         protected global::DevExpress.Web.ASPxGridView gvApprovalList;
         
         /// <summary>
-        /// btnApprove control.
+        /// btnShow control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::DevExpress.Web.GridViewCommandColumnCustomButton btnApprove;
+        protected global::DevExpress.Web.GridViewCommandColumnCustomButton btnShow;
         
         /// <summary>
-        /// btnReject control.
+        /// apcOnSchedule control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::DevExpress.Web.GridViewCommandColumnCustomButton btnReject;
+        protected global::DevExpress.Web.ASPxPopupControl apcOnSchedule;
+        
+        /// <summary>
+        /// gvOnSchedule control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::DevExpress.Web.ASPxGridView gvOnSchedule;
+        
+        /// <summary>
+        /// btnShowSchedule control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::DevExpress.Web.GridViewCommandColumnCustomButton btnShowSchedule;
         
         /// <summary>
         /// FormLayout1 control.
@@ -227,6 +245,24 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::DevExpress.Web.ASPxButton btnApprovalList;
+        
+        /// <summary>
+        /// LayoutItemNestedControlContainer6 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::DevExpress.Web.LayoutItemNestedControlContainer LayoutItemNestedControlContainer6;
+        
+        /// <summary>
+        /// btnOnSchedule control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::DevExpress.Web.ASPxButton btnOnSchedule;
         
         /// <summary>
         /// LayoutItemNestedControlContainer3 control.

@@ -86,7 +86,7 @@
                                         <Items>
                                             <%--<dx:MenuItem Text="Access Right Maintenance" Name="AccessRightMaintenance"></dx:MenuItem>--%>
                                             <%--<dx:MenuItem Text="Customer Maintenance" Name="CustomerMaintenance" NavigateUrl="DirectLoginDriver.aspx"></dx:MenuItem>--%>
-                                            <dx:MenuItem Text="Users Maintenance" Name="UsersMaintenance" NavigateUrl="Maintenance/UserMaintenance/UserMaintenance.aspx"></dx:MenuItem>
+                                            <%--<dx:MenuItem Text="Users Maintenance" Name="UsersMaintenance" NavigateUrl="Maintenance/UserMaintenance/UserMaintenance.aspx"></dx:MenuItem>--%>
                                             <dx:MenuItem Text="Item Maintenance" Name="ItemMaintenance" NavigateUrl="Maintenance/ItemMaintenance/FormItemMaintenance.aspx"></dx:MenuItem>
                                             <dx:MenuItem Text="Vehicle Maintenance" Name="VehicleMaintenance" NavigateUrl="Maintenance/VehicleMaintenance/FormVehicleMaintenance.aspx"></dx:MenuItem>
                                         </Items>

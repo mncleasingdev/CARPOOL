@@ -57,7 +57,7 @@
                                             <dx:ASPxImage runat="server" ImageUrl="~/Content/Images/IDIcon-32x32.png" Width="20px" Height="20px"></dx:ASPxImage>
                                         </td>
                                         <td>
-                                            <dx:ASPxTextBox runat="server" ID="txtEmail" Theme="DevEx" Width="150px" NullText="Email">
+                                            <dx:ASPxTextBox runat="server" ID="txtID" Theme="DevEx" Width="150px" NullText="User Id">
                                                 <Border BorderColor="WhiteSmoke" BorderStyle="Inset" BorderWidth="2px"></Border>
                                             </dx:ASPxTextBox>
                                         </td>

@@ -145,7 +145,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers
                     using (SqlCommand cmd = new SqlCommand("[sp_master_user_login]", connection))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
-                        SqlParameter spID = new SqlParameter("@p_email", aEmail);
+                        SqlParameter spID = new SqlParameter("@p_user_id", aEmail);
                         spID.SqlDbType = SqlDbType.NVarChar;
                         cmd.Parameters.Add(spID);
                         SqlParameter spPass = new SqlParameter("@p_user_password", aPassword);

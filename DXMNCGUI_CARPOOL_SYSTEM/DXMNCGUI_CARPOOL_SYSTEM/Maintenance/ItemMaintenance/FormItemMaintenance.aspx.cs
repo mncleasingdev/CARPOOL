@@ -18,6 +18,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Maintenance.ItemMaintenance
             get { isValidLogin(); return (SqlDBSetting)HttpContext.Current.Session["myDBSetting" + HttpContext.Current.Session["UserID"]]; }
             set { HttpContext.Current.Session["myDBSetting" + HttpContext.Current.Session["UserID"]] = value; }
         }
+        protected SqlLocalDBSetting myLocalDBSetting
+        {
+            get { isValidLogin(); return (SqlLocalDBSetting)HttpContext.Current.Session["myLocalDBSetting" + HttpContext.Current.Session["UserID"]]; }
+            set { HttpContext.Current.Session["myLocalDBSetting" + HttpContext.Current.Session["UserID"]] = value; }
+        }
         protected SqlDBSession myDBSession
         {
             get { isValidLogin(false); return (SqlDBSession)HttpContext.Current.Session["myDBSession" + HttpContext.Current.Session["UserID"]]; }
@@ -41,10 +46,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Maintenance.ItemMaintenance
             {
                 myDBSetting = dbsetting;
                 myDBSession = dbsession;
+                myLocalDBSetting = localdbsetting;
 
                 myMainDataSet = new DataSet();
                 myMainDataTable = new DataTable();
-                myMainDataTable = myDBSetting.GetDataTable("SELECT * FROM [dbo].[Item] ORDER BY ItemCode", false);
+                myMainDataTable = myLocalDBSetting.GetDataTable("SELECT * FROM [dbo].[Item] ORDER BY ItemCode", false);
                 myMainDataTable.PrimaryKey = new DataColumn[] { myMainDataTable.Columns["ItemCode"] };
                 myMainDataSet.Tables.AddRange(new DataTable[] { myMainDataTable });
                 Session["myMainDataSet"] = myMainDataSet;
@@ -75,8 +81,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Maintenance.ItemMaintenance
             DataRow row = mytable.NewRow();
             try
             {
-                DataRow[] myrowDocNo = myDBSetting.GetDataTable("select * from DocNoFormat", false, "").Select("DocType='ITEM'", "", DataViewRowState.CurrentRows);
-                e.NewValues["ItemCode"] = Document.FormatDocumentNo(myrowDocNo[0]["Format"].ToString(), System.Convert.ToInt32(myrowDocNo[0]["NextNo"]), myDBSetting.GetServerTime());
+                DataRow[] myrowDocNo = myLocalDBSetting.GetDataTable("select * from DocNoFormat", false, "").Select("DocType='ITEM'", "", DataViewRowState.CurrentRows);
+                e.NewValues["ItemCode"] = Document.FormatDocumentNo(myrowDocNo[0]["Format"].ToString(), System.Convert.ToInt32(myrowDocNo[0]["NextNo"]), myLocalDBSetting.GetServerTime());
             }
             catch { }
             IDictionaryEnumerator enumerator = e.NewValues.GetEnumerator();
@@ -91,24 +97,24 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Maintenance.ItemMaintenance
             {             
                 row["IsActive"] = row["IsActive"] == DBNull.Value || row["IsActive"] == null ? "F" : "T";
                 row["CreatedBy"] = this.UserName;
-                row["CreatedDateTime"] = myDBSetting.GetServerTime();
+                row["CreatedDateTime"] = myLocalDBSetting.GetServerTime();
                 row["LastModifiedBy"] = this.UserName;
-                row["LastModifiedDateTime"] = myDBSetting.GetServerTime();
+                row["LastModifiedDateTime"] = myLocalDBSetting.GetServerTime();
                 mytable.Rows.Add(row);
 
-                myDBSetting.StartTransaction();
-                myDBSetting.SimpleSaveDataTable(mytable, "SELECT * FROM [dbo].[Item]");
-                myDBSetting.ExecuteNonQuery("Update DocNoFormat set NextNo=NextNo+1 Where DocType='ITEM'");
-                myDBSetting.Commit();
+                myLocalDBSetting.StartTransaction();
+                myLocalDBSetting.SimpleSaveDataTable(mytable, "SELECT * FROM [dbo].[Item]");
+                myLocalDBSetting.ExecuteNonQuery("Update DocNoFormat set NextNo=NextNo+1 Where DocType='ITEM'");
+                myLocalDBSetting.Commit();
 
             }
             catch (Exception ex)
             {
-                myDBSetting.Rollback();
+                myLocalDBSetting.Rollback();
             }
             finally
             {
-                myDBSetting.EndTransaction();
+                myLocalDBSetting.EndTransaction();
             }
         }
         protected void gvMain_RowUpdating(object sender, DevExpress.Web.Data.ASPxDataUpdatingEventArgs e)
@@ -127,14 +133,14 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Maintenance.ItemMaintenance
             try
             {
                 row["LastModifiedBy"] = this.UserName;
-                row["LastModifiedDateTime"] = myDBSetting.GetServerTime();
+                row["LastModifiedDateTime"] = myLocalDBSetting.GetServerTime();
 
-                myDBSetting.StartTransaction();
-                myDBSetting.SimpleSaveDataTable(mytable, "SELECT * FROM [dbo].[Item]");
-                myDBSetting.Commit();
+                myLocalDBSetting.StartTransaction();
+                myLocalDBSetting.SimpleSaveDataTable(mytable, "SELECT * FROM [dbo].[Item]");
+                myLocalDBSetting.Commit();
             }
-            catch { myDBSetting.Rollback(); }
-            finally { myDBSetting.EndTransaction(); }
+            catch { myLocalDBSetting.Rollback(); }
+            finally { myLocalDBSetting.EndTransaction(); }
         }
         protected void gvMain_RowDeleting(object sender, DevExpress.Web.Data.ASPxDataDeletingEventArgs e)
         {
@@ -145,12 +151,12 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Maintenance.ItemMaintenance
             DataTable mytable = myMainDataSet.Tables[0];
             try
             {
-                myDBSetting.StartTransaction();
-                myDBSetting.ExecuteNonQuery("DELETE [dbo].[Item] WHERE ItemCode=?", e.Keys[gvMain.KeyFieldName]);
-                myDBSetting.Commit();
+                myLocalDBSetting.StartTransaction();
+                myLocalDBSetting.ExecuteNonQuery("DELETE [dbo].[Item] WHERE ItemCode=?", e.Keys[gvMain.KeyFieldName]);
+                myLocalDBSetting.Commit();
             }
-            catch { myDBSetting.Rollback(); }
-            finally { myDBSetting.EndTransaction(); }
+            catch { myLocalDBSetting.Rollback(); }
+            finally { myLocalDBSetting.EndTransaction(); }
         }
     }
 }

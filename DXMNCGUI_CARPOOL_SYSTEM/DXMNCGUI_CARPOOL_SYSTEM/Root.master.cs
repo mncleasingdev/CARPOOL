@@ -37,7 +37,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM {
         {
             ASPxLabel2.Text = DateTime.Now.Year + Server.HtmlDecode(" &copy; Corporate Digital and System Information Division - PT. MNC Guna Usaha Indonesia");
 
-            if (accessright.IsAccessibleByUserID(Email.ToString(), "IS_ADMIN"))
+            //if (accessright.IsAccessibleByUserID(Email.ToString(), "IS_ADMIN"))
+            if (accessright.IsAccessibleByUserID(Email.ToString(), "IS_GA"))
             {
                 HeaderMenu.Items.FindByName("MenuMaintenance").Visible = true;
                 HeaderMenu.Items.FindByName("MenuReporting").Visible = true;
@@ -48,7 +49,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM {
                 var lblUserName = this.HeadLoginView.FindControl("lblUserName") as ASPxLabel;
                 if (lblUserName != null)
                 {
-                    lblUserName.Text = "Welcome, " + myDBSetting.ExecuteScalar("SELECT USER_NAME FROM MasterUser WHERE Email=?", Email.ToString());
+                    lblUserName.Text = "Welcome, " + myDBSetting.ExecuteScalar("SELECT USER_NAME FROM MASTER_USER WHERE USER_ID=? AND IS_ACTIVE_FLAG=1", Email.ToString());
                 }
             }
             catch (Exception ex)

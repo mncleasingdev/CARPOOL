@@ -17,6 +17,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             get { isValidLogin(false); return (SqlDBSetting)HttpContext.Current.Session["myDBSetting" + this.ViewState["_PageID"]]; }
             set { HttpContext.Current.Session["myDBSetting" + this.ViewState["_PageID"]] = value; }
         }
+        protected SqlLocalDBSetting myLocalDBSetting
+        {
+            get { isValidLogin(false); return (SqlLocalDBSetting)HttpContext.Current.Session["myLocalDBSetting" + this.ViewState["_PageID"]]; }
+            set { HttpContext.Current.Session["myLocalDBSetting" + this.ViewState["_PageID"]] = value; }
+        }
         protected SqlDBSession myDBSession
         {
             get { isValidLogin(false); return (SqlDBSession)HttpContext.Current.Session["myDBSession" + this.ViewState["_PageID"]]; }
@@ -68,11 +73,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 myDBSession = dbsession;
                 if (this.Request.QueryString["SourceKey"] != null && this.Request.QueryString["Type"] != null)
                 {
-                    this.myBookingDB = BookingDB.Create(dbsetting, myDBSession);
+                    this.myBookingDB = BookingDB.Create(dbsetting, myDBSession, myLocalDBSetting);
                     myBookingEntity = this.myBookingDB.View(Convert.ToInt32(this.Request.QueryString["SourceKey"]));
                 }
                 myds = new DataSet();
-                this.myBookingDB = BookingDB.Create(myDBSetting, myDBSession);
+                this.myBookingDB = BookingDB.Create(myDBSetting, myDBSession, myLocalDBSetting);
                 strKey = Request.QueryString["Key"];
                 SetApplication((BookingEntity)HttpContext.Current.Session["myBookingEntity" + strKey]);
              
@@ -150,7 +155,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             myBookingEntity.DriverRemark = mmRemark.Value;
             myBookingEntity.DriverCurrentKilometer = txtCurrentKilometer.Value;
             myBookingEntity.DriverLastKilometer = txtLastKilometer.Value;
-            myBookingEntity.Save(UserID, UserName, "BK", saveAction, myBookingEntity.Status.ToString());
+            myBookingEntity.Save(UserID, UserName, "BK", saveAction, myBookingEntity.Status.ToString(),"");
             return bSave;
         }
         protected void cplMain_Callback(object source, DevExpress.Web.CallbackEventArgs e)
