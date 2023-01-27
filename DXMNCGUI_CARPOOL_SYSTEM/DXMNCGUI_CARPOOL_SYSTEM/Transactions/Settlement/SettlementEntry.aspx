@@ -99,7 +99,7 @@
         function OnBookNoChange(s, e)
         {
             var grid = luBookNo.GetGridView();
-            grid.GetRowValues(grid.GetFocusedRowIndex(), 'DocDate;DocType;NumberOfSeat;EmployeeCompanyName;Department;EmployeeName;DriverName;CarType;CarLicensePlate;ActualPickDateTime;ActualArriveDateTime;RequestPickLoc;RequestDestLoc;RequestPickAddress;RequestDestAddress;TripDetails', OnGetSelectedFieldValues);
+            grid.GetRowValues(grid.GetFocusedRowIndex(), 'DocDate;DocType;NumberOfSeat;EmployeeCompanyName;Department;EmployeeName;CarType;CarLicensePlate;ActualPickDateTime;ActualArriveDateTime;RequestPickLoc;RequestDestLoc;RequestPickAddress;RequestDestAddress;TripDetails', OnGetSelectedFieldValues);
         }
         function OnGetSelectedFieldValues(selectedValues)
         {
@@ -109,16 +109,16 @@
             txtCompany.SetValue(selectedValues[3]);
             txtDepartement.SetValue(selectedValues[4]);
             txtBookingBy.SetValue(selectedValues[5]);
-            txtDriver.SetValue(selectedValues[6]);
-            txtCarType.SetValue(selectedValues[7]);
-            txtLicense.SetValue(selectedValues[8]);
-            deBookingPickupDate.SetValue(selectedValues[9]);
-            deBookingArrivalDate.SetValue(selectedValues[10]);
-            txtBookingPickupLoc.SetValue(selectedValues[11]);
-            txtBookingDestinationLoc.SetValue(selectedValues[12]);
-            mmBookingPickupAddress.SetValue(selectedValues[13]);
-            mmBookingDestinationAddress.SetValue(selectedValues[14]);
-            mmBookingTripDetail.SetValue(selectedValues[15]);
+            //txtDriver.SetValue(selectedValues[6]);
+            txtCarType.SetValue(selectedValues[6]);
+            txtLicense.SetValue(selectedValues[7]);
+            deBookingPickupDate.SetValue(selectedValues[8]);
+            deBookingArrivalDate.SetValue(selectedValues[9]);
+            txtBookingPickupLoc.SetValue(selectedValues[10]);
+            txtBookingDestinationLoc.SetValue(selectedValues[11]);
+            mmBookingPickupAddress.SetValue(selectedValues[12]);
+            mmBookingDestinationAddress.SetValue(selectedValues[13]);
+            mmBookingTripDetail.SetValue(selectedValues[14]);
             //txtApprover.SetValue(selectedValues[16]);
             //String(selectedValues[17]) == "T" ? chkNeedApproval.SetValue(true) : chkNeedApproval.SetValue(false);        
         }
@@ -236,13 +236,13 @@
                     <Caption ForeColor="SteelBlue" Font-Size="Larger" Font-Bold="true" Font-Names="Calibri" BackColor="WhiteSmoke"></Caption>
                 </GroupBoxStyle>
                 <Items>
-     <%--               <dx:LayoutItem Name="lyttxtBookNo" ShowCaption="True" Caption="Booking No." Width="20%">
+                    <dx:LayoutItem Name="lyttxtBookNo" ShowCaption="True" Caption="Booking No." Width="20%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
-                                <dx:ASPxTextBox runat="server" ID="txtBookNo" ClientInstanceName="txtBookNo"></dx:ASPxTextBox>
+                                <dx:ASPxTextBox runat="server" ID="txtBookNo" ClientInstanceName="txtBookNo" ClientVisible="false"></dx:ASPxTextBox>
                             </dx:LayoutItemNestedControlContainer>
                         </LayoutItemNestedControlCollection>
-                    </dx:LayoutItem>--%>
+                    </dx:LayoutItem>
                     <dx:LayoutItem Name="lytluBookNo" ShowCaption="True" Caption="Booking No." Width="20%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
@@ -310,20 +310,20 @@
                             </dx:LayoutItemNestedControlContainer>
                         </LayoutItemNestedControlCollection>
                     </dx:LayoutItem>
-                    <dx:LayoutItem ShowCaption="True" Caption="Company" Width="20%">
+                    <dx:LayoutItem ShowCaption="True" Caption="Company" Width="40%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
                                 <dx:ASPxTextBox runat="server" ID="txtCompany" ClientInstanceName="txtCompany"></dx:ASPxTextBox>
                             </dx:LayoutItemNestedControlContainer>
                         </LayoutItemNestedControlCollection>
                     </dx:LayoutItem>               
-                    <dx:LayoutItem ShowCaption="True" Caption="Driver" Width="20%">
+                    <%--<dx:LayoutItem ShowCaption="True" Caption="Driver" Width="20%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
                                 <dx:ASPxTextBox runat="server" ID="txtDriver" ClientInstanceName="txtDriver"></dx:ASPxTextBox>
                             </dx:LayoutItemNestedControlContainer>
                         </LayoutItemNestedControlCollection>
-                    </dx:LayoutItem>
+                    </dx:LayoutItem>--%>
                <%--     <dx:LayoutItem ShowCaption="True" Caption="Need Approval" Width="20%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>

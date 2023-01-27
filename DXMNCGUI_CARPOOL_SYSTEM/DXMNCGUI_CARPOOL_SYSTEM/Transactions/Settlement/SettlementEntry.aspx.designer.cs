@@ -157,6 +157,15 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement {
         protected global::DevExpress.Web.ASPxDateEdit deDocDate;
         
         /// <summary>
+        /// txtBookNo control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::DevExpress.Web.ASPxTextBox txtBookNo;
+        
+        /// <summary>
         /// luBookNo control.
         /// </summary>
         /// <remarks>
@@ -173,15 +182,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::DevExpress.Web.ASPxTextBox txtCompany;
-        
-        /// <summary>
-        /// txtDriver control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.ASPxTextBox txtDriver;
         
         /// <summary>
         /// deBookingDate control.

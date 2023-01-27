@@ -409,10 +409,10 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             txtHp.ReadOnly = true;
             deDocDate.ReadOnly = false;
 
-            //if (!accessright.IsAccessibleByUserID(Email, "IS_GA"))
-            //{
-            //    ASPxFormLayout1.FindItemOrGroupByName("LayoutGroupAdminEntry").Visible = false;
-            //}
+            if (!accessright.IsAccessibleByUserID(Email, "IS_GA"))
+            {
+                ASPxFormLayout1.FindItemOrGroupByName("LayoutGroupAdminEntry").Visible = false;
+            }
 
             if (myAction == DXCAction.View)
             {
