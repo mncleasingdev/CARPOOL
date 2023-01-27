@@ -364,15 +364,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking {
         protected global::DevExpress.Web.ASPxGridView gvPersonDetail;
         
         /// <summary>
-        /// deEstPickupTime control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.ASPxDateEdit deEstPickupTime;
-        
-        /// <summary>
         /// luCarType control.
         /// </summary>
         /// <remarks>
@@ -380,15 +371,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::DevExpress.Web.ASPxGridLookup luCarType;
-        
-        /// <summary>
-        /// deEstArrivalTime control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.ASPxDateEdit deEstArrivalTime;
         
         /// <summary>
         /// txtLicensePlate control.

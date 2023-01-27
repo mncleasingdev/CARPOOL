@@ -292,8 +292,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             luCarType.Value = myBookingEntity.AdminCarType;
             txtLicensePlate.Value = myBookingEntity.AdminCarLicensePlate;
             txtLastKM.Value = myBookingEntity.AdminLastKilometer;
-            deEstPickupTime.Value = myBookingEntity.AdminEstPickDateTime;
-            deEstArrivalTime.Value = myBookingEntity.AdminEstArriveDateTime;
+            //deEstPickupTime.Value = myBookingEntity.AdminEstPickDateTime;
+            //deEstArrivalTime.Value = myBookingEntity.AdminEstArriveDateTime;
             mmAdminRemark.Value = myBookingEntity.AdminRemark;
 
             //txtActDriverName.Value = myBookingEntity.DriverName;
@@ -363,34 +363,34 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                             cplMain.JSProperties["cplActiveTabIndex"] = 1;
                         }
                     }
-                    if (deEstPickupTime.Value == null)
-                    {
-                        errorF = true;
-                        deEstPickupTime.IsValid = false;
-                        deEstPickupTime.ErrorText = "Estimate pick-up date time can't be empty.";
-                        if (!focusF)
-                        {
-                            deEstPickupTime.Focus();
-                            focusF = true;
-                            strmessageError = "Estimate pick-up date time can't be empty.";
-                            cplMain.JSProperties["cplblmessageError"] = strmessageError;
-                            cplMain.JSProperties["cplActiveTabIndex"] = 1;
-                        }
-                    }
-                    if (deEstArrivalTime.Value == null)
-                    {
-                        errorF = true;
-                        deEstArrivalTime.IsValid = false;
-                        deEstArrivalTime.ErrorText = "Estimate arrival date time can't be empty.";
-                        if (!focusF)
-                        {
-                            deEstArrivalTime.Focus();
-                            focusF = true;
-                            strmessageError = "Estimate arrival date time can't abe empty.";
-                            cplMain.JSProperties["cplblmessageError"] = strmessageError;
-                            cplMain.JSProperties["cplActiveTabIndex"] = 1;
-                        }
-                    }
+                    //if (deEstPickupTime.Value == null)
+                    //{
+                    //    errorF = true;
+                    //    deEstPickupTime.IsValid = false;
+                    //    deEstPickupTime.ErrorText = "Estimate pick-up date time can't be empty.";
+                    //    if (!focusF)
+                    //    {
+                    //        deEstPickupTime.Focus();
+                    //        focusF = true;
+                    //        strmessageError = "Estimate pick-up date time can't be empty.";
+                    //        cplMain.JSProperties["cplblmessageError"] = strmessageError;
+                    //        cplMain.JSProperties["cplActiveTabIndex"] = 1;
+                    //    }
+                    //}
+                    //if (deEstArrivalTime.Value == null)
+                    //{
+                    //    errorF = true;
+                    //    deEstArrivalTime.IsValid = false;
+                    //    deEstArrivalTime.ErrorText = "Estimate arrival date time can't be empty.";
+                    //    if (!focusF)
+                    //    {
+                    //        deEstArrivalTime.Focus();
+                    //        focusF = true;
+                    //        strmessageError = "Estimate arrival date time can't abe empty.";
+                    //        cplMain.JSProperties["cplblmessageError"] = strmessageError;
+                    //        cplMain.JSProperties["cplActiveTabIndex"] = 1;
+                    //    }
+                    //}
                 }
             }
             #endregion
@@ -435,9 +435,9 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 mmPickupAddress.ClientEnabled = false;
                 mmDestinationAddress.ClientEnabled = false;
                 mmTripDetail.ClientEnabled = false;
-                deEstPickupTime.ClientEnabled = false;
+                //deEstPickupTime.ClientEnabled = false;
                 luCarType.ClientEnabled = false;
-                deEstArrivalTime.ClientEnabled = false;
+                //deEstArrivalTime.ClientEnabled = false;
                 mmAdminRemark.ClientEnabled = false;
                 gvPersonDetail.Columns["ClmnCommand"].Visible = false;
                 gvApproval.Columns["ClmnCommand"].Visible = false;
@@ -461,7 +461,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 mmTripDetail.ClientEnabled = false;
                 //deestpickuptime.clientenabled = false;
                 luCarType.ClientEnabled = false;
-                deEstArrivalTime.ClientEnabled = false;
+                //deEstArrivalTime.ClientEnabled = false;
                 mmAdminRemark.ClientEnabled = false;
                 gvPersonDetail.Columns["ClmnCommand"].Visible = false;
                 gvApproval.Columns["ClmnCommand"].Visible = false;
@@ -743,8 +743,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             luCarType.BackColor = luCarType.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
             txtLicensePlate.BackColor = txtLicensePlate.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
             txtLastKM.BackColor = txtLastKM.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
-            deEstPickupTime.BackColor = deEstPickupTime.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
-            deEstArrivalTime.BackColor = deEstArrivalTime.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
+            //deEstPickupTime.BackColor = deEstPickupTime.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
+            //deEstArrivalTime.BackColor = deEstArrivalTime.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
             mmAdminRemark.BackColor = mmAdminRemark.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
 
             //txtActDriverName.BackColor = txtActDriverName.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
@@ -1073,8 +1073,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             myBookingEntity.AdminCarType = luCarType.Value;
             myBookingEntity.AdminCarLicensePlate = txtLicensePlate.Value;
             myBookingEntity.AdminLastKilometer = txtLastKM.Value;
-            myBookingEntity.AdminEstPickDateTime = deEstPickupTime.Value == null ? DBNull.Value : deEstPickupTime.Value;
-            myBookingEntity.AdminEstArriveDateTime = deEstArrivalTime.Value == null ? DBNull.Value : deEstArrivalTime.Value;
+            //myBookingEntity.AdminEstPickDateTime = deEstPickupTime.Value == null ? DBNull.Value : deEstPickupTime.Value;
+            //myBookingEntity.AdminEstArriveDateTime = deEstArrivalTime.Value == null ? DBNull.Value : deEstArrivalTime.Value;
             myBookingEntity.AdminRemark = mmAdminRemark.Value;
 
             //myBookingEntity.DriverName = txtActDriverName.Value;

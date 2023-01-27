@@ -690,7 +690,7 @@
                             </dx:LayoutItemNestedControlContainer>
                         </LayoutItemNestedControlCollection>
                     </dx:LayoutItem>--%>
-                    <dx:LayoutItem ShowCaption="True" Caption="Est. Pickup Time" Width="50%">
+                    <%--<dx:LayoutItem ShowCaption="True" Caption="Est. Pickup Time" Width="50%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
                                 <dx:ASPxDateEdit runat="server" ID="deEstPickupTime" ClientInstanceName="deEstPickupTime" EditFormat="DateTime" EditFormatString="dd/MM/yyyy HH:mm:ss">
@@ -701,7 +701,7 @@
                                 </dx:ASPxDateEdit>
                             </dx:LayoutItemNestedControlContainer>
                         </LayoutItemNestedControlCollection>
-                    </dx:LayoutItem>
+                    </dx:LayoutItem>--%>
                     <dx:LayoutItem ShowCaption="True" Caption="Car Type" Width="50%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
@@ -743,7 +743,7 @@
                             </dx:LayoutItemNestedControlContainer>
                         </LayoutItemNestedControlCollection>
                     </dx:LayoutItem>
-                    <dx:LayoutItem ShowCaption="True" Caption="Est. Arrival Time" Width="50%">
+                    <%--<dx:LayoutItem ShowCaption="True" Caption="Est. Arrival Time" Width="50%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
                                 <dx:ASPxDateEdit runat="server" ID="deEstArrivalTime" ClientInstanceName="deEstArrivalTime" EditFormat="DateTime" EditFormatString="dd/MM/yyyy HH:mm:ss">
@@ -754,7 +754,7 @@
                                 </dx:ASPxDateEdit>
                             </dx:LayoutItemNestedControlContainer>
                         </LayoutItemNestedControlCollection>
-                    </dx:LayoutItem>
+                    </dx:LayoutItem>--%>
                     <dx:LayoutItem ShowCaption="True" Caption="License Plate" Width="50%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
