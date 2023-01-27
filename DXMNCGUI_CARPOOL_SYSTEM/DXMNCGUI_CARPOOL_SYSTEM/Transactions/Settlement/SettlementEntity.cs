@@ -125,6 +125,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             if (saveaction == SaveAction.Approve)
             {
                 this.myRow["Status"] = "COMPLETE";
+                this.myRow["Approver"] = "";
             }
             if (saveaction == SaveAction.Reject)
             {

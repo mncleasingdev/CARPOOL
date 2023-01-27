@@ -16,11 +16,15 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             myBrowseTable.Clear();
             if (!bViewAll)
             {
-                myLocalDBSetting.LoadDataTable(myBrowseTable, "SELECT * FROM dbo.Settlement WHERE CreatedBy=? AND BookNo is not null ORDER BY DocDate DESC", true, userID);
+                myLocalDBSetting.LoadDataTable(myBrowseTable, @"SELECT a.approver + ' - ' + ISNULL(b.DESCS,'') [NextApprover],* FROM Settlement a
+                                                                LEFT JOIN IFINANCING_GOLIVE..SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE
+                                                                WHERE CreatedBy=? AND BookNo is not null ORDER BY DocDate DESC", true, userID);
             }
             else
             {
-                myLocalDBSetting.LoadDataTable(myBrowseTable, "SELECT * FROM dbo.Settlement WHERE BookNo is not null ORDER BY DocDate DESC", true);
+                myLocalDBSetting.LoadDataTable(myBrowseTable, @"SELECT a.approver + ' - ' + ISNULL(b.DESCS,'') [NextApprover],* FROM Settlement a
+                                                                LEFT JOIN IFINANCING_GOLIVE..SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE
+                                                                WHERE BookNo is not null ORDER BY DocDate DESC", true);
             }
             DataColumn[] keyHeader = new DataColumn[1];
             keyHeader[0] = myBrowseTable.Columns["DocKey"];
@@ -147,7 +151,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 if (saveaction == SaveAction.Approve)
                 {
                     //dataRow["Status"] = "APPROVED BY SUPERIOR";
-                    dataRow["Status"] = "APPROVED";
+                    dataRow["Status"] = "COMPLETE";
                     dataRow["LastModifiedBy"] = strUserName;
                     dataRow["LastModifiedDateTime"] = Mydate;
                     
@@ -159,12 +163,12 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                     dataRow["LastModifiedBy"] = strUserName;
                     dataRow["LastModifiedDateTime"] = Mydate;
                 }
-                if (Settlement.DocKey != null)
+                if (Settlement.DocKey != null && saveaction == SaveAction.Approve)
                 {
                     ClearDetail(Settlement, saveaction);
                 }
                 localdbSetting.SimpleSaveDataTable(ds.Tables["Header"], "SELECT * FROM [dbo].[Settlement]");
-                //SaveDetail(ds, saveaction);
+                SaveDetail(ds, saveaction);
                 if (saveaction == SaveAction.Approve)
                 {
                     UpdateBookingData(ds, saveaction);
@@ -311,35 +315,35 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 myconn.Close();
             }
         }
-        //protected override void ClearDetail(SettlementEntity Settlement, SaveAction saveaction)
-        //{
-        //    SqlConnection myconn = new SqlConnection(myLocalDBSetting.ConnectionString);
-        //    SqlCommand sqlCommand = new SqlCommand("DELETE [dbo].[SettlementDetail] WHERE DocKey=@DocKey");
-        //    sqlCommand.Connection = myconn;
-        //    try
-        //    {
-        //        myconn.Open();
-        //        SqlParameter sqlParameter1 = sqlCommand.Parameters.Add("@DocKey", SqlDbType.Int);
-        //        sqlParameter1.Value = Settlement.DocKey;
-        //        sqlCommand.ExecuteNonQuery();
-        //    }
-        //    catch (SqlException ex)
-        //    {
-        //        throw new ArgumentException(ex.Message);
-        //    }
-        //    catch (HttpUnhandledException ex)
-        //    {
-        //        throw new ArgumentException(ex.Message);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new ArgumentException(ex.Message);
-        //    }
-        //    finally
-        //    {
-        //        myconn.Close();
-        //        myconn.Dispose();
-        //    }
-        //}
+        protected override void ClearDetail(SettlementEntity Settlement, SaveAction saveaction)
+        {
+            SqlConnection myconn = new SqlConnection(myLocalDBSetting.ConnectionString);
+            SqlCommand sqlCommand = new SqlCommand("DELETE [dbo].[SettlementDetail] WHERE DocKey=@DocKey");
+            sqlCommand.Connection = myconn;
+            try
+            {
+                myconn.Open();
+                SqlParameter sqlParameter1 = sqlCommand.Parameters.Add("@DocKey", SqlDbType.Int);
+                sqlParameter1.Value = Settlement.DocKey;
+                sqlCommand.ExecuteNonQuery();
+            }
+            catch (SqlException ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
+            catch (HttpUnhandledException ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
+            finally
+            {
+                myconn.Close();
+                myconn.Dispose();
+            }
+        }
     }
 }

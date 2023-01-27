@@ -62,8 +62,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 myMainTable = new DataTable();
                 this.mySettlementDB = SettlementDB.Create(myDBSetting, dbsession, localdbsetting);
 
-                //if (accessright.IsAccessibleByUserID(Email, "IS_ADMIN"))
-                if (accessright.IsAccessibleByUserID(Email, "IS_GA"))
+                if ((accessright.IsAccessibleByUserID(Email, "IS_ADMIN")) || (accessright.IsAccessibleByUserID(Email, "IS_GA")))
                 {
                     myMainTable = this.mySettlementDB.LoadBrowseTable(true, UserName);
                 }
@@ -71,6 +70,14 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 {
                     myMainTable = this.mySettlementDB.LoadBrowseTable(false, UserName);
                 }
+                //if (accessright.IsAccessibleByUserID(Email, "IS_GA"))
+                //{
+                //    myMainTable = this.mySettlementDB.LoadBrowseTable(true, UserName);
+                //}
+                //else
+                //{
+                //    myMainTable = this.mySettlementDB.LoadBrowseTable(false, UserName);
+                //}
                 gvMain.DataBind();
                 GetApprovalTable();
                 gvApprovalList.DataBind();
@@ -88,7 +95,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 {
                     gvMain.FocusedRowIndex = -1;
                 }
-                refreshdatagrid();
+               // refreshdatagrid();
                 setEnabledButton();
             }
         }
@@ -130,9 +137,20 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             try
             {
                 mySettlementEntity = mySettlementDB.Entity(DXCType.BK);
-                var nameValues = HttpUtility.ParseQueryString(Request.QueryString.ToString());
-                nameValues.Set("Key", this.ViewState["_PageID"].ToString());
-                updatedQueryString = "?" + nameValues.ToString();
+                var docKeyValues = HttpUtility.ParseQueryString(Request.QueryString.ToString());
+                docKeyValues.Set("DocKey", this.ViewState["_PageID"].ToString());
+
+                //var dockeyValues = HttpUtility.ParseQueryString(Request.QueryString.ToString()); 
+                //dockeyValues.Set("DocKey", mySettlementEntity.DocKey.ToString());
+
+                //mySettlementEntity = mySettlementDB.View(Convert.ToInt32(mySettlementEntity.DocKey));
+                //updatedQueryString = "?" + nameValues.ToString() + "&" + dockeyValues.ToString();
+
+                var actionType = HttpUtility.ParseQueryString(Request.QueryString.ToString());
+                actionType.Set("Action", "New");
+
+                updatedQueryString = "?" + docKeyValues.ToString() + "&" + actionType.ToString();
+                //updatedQueryString = "?" + docKeyValues.ToString();
             }
             catch (Exception ex)
             {
@@ -140,6 +158,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 return;
             }
             Response.Redirect("~/Transactions/Settlement/SettlementEntry.aspx" + updatedQueryString);
+
         }
         protected void btnView_Click(object sender, EventArgs e)
         {
@@ -149,11 +168,19 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 DataRow myrow = gvMain.GetDataRow(gvMain.FocusedRowIndex);
                 if (myrow != null)
                 {
-                    var nameValues = HttpUtility.ParseQueryString(Request.QueryString.ToString());
-                    nameValues.Set("Key", this.ViewState["_PageID"].ToString());
-                    updatedQueryString = "?" + nameValues.ToString();
+                    //var nameValues = HttpUtility.ParseQueryString(Request.QueryString.ToString());
+                    //nameValues.Set("Key", this.ViewState["_PageID"].ToString());
+
+                    var dockeyValues = HttpUtility.ParseQueryString(Request.QueryString.ToString());
+                    dockeyValues.Set("DocKey", myrow["DocKey"].ToString());
+
+                    var actionValues = HttpUtility.ParseQueryString(Request.QueryString.ToString());
+                    actionValues.Set("Action", "View");
+
+                    updatedQueryString = "?" + dockeyValues.ToString() + "&" + actionValues.ToString();
+                    
                     mySettlementEntity = mySettlementDB.View(System.Convert.ToInt32(myrow["DocKey"]));
-                    Response.Redirect("~/Transactions/Settlement/SettlementEntry.aspx" + updatedQueryString);
+                    Response.Redirect("~/Transactions/Settlement/SettlementEntry.aspx" + updatedQueryString,false);
                 }
                 else
                 {

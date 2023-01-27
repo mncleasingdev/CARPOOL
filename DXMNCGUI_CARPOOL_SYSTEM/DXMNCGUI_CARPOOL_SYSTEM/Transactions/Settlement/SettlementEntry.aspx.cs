@@ -142,13 +142,15 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 myDBSetting = dbsetting;
                 myLocalDBSetting = localdbsetting;
                 myDBSession = dbsession;
-                
-                //if (this.Request.QueryString["SourceKey"] != null && this.Request.QueryString["Type"] != null)
-                if (this.Request.QueryString["DocKey"] != null && this.Request.QueryString["Action"] == "Approval")
+                //if (this.Request.QueryString["Key"] != null && this.Request.QueryString["Type"] != null)
+                if (this.Request.QueryString["DocKey"] != null)
                 {
-                    this.mySettlementDB = SettlementDB.Create(dbsetting, myDBSession, localdbsetting);
-                    //mySettlementEntity = this.mySettlementDB.View(Convert.ToInt32(this.Request.QueryString["SourceKey"]));
-                    mySettlementEntity = this.mySettlementDB.View(Convert.ToInt32(this.Request.QueryString["DocKey"]));
+                    if (this.Request.QueryString["Action"] == "View" || this.Request.QueryString["Action"] == "Approval")
+                    {
+                        this.mySettlementDB = SettlementDB.Create(dbsetting, myDBSession, localdbsetting);
+                        //mySettlementEntity = this.mySettlementDB.View(Convert.ToInt32(this.Request.QueryString["SourceKey"]));
+                        mySettlementEntity = this.mySettlementDB.View(Convert.ToInt32(this.Request.QueryString["DocKey"]));
+                    }
                 }
                 myHeaderTable = new DataTable();
                 myDetailTable = new DataTable();
@@ -156,13 +158,22 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 myBookingTable = new DataTable();
                 mySectionTable = new DataTable();
                 myApprovalTable = new DataTable();
+                //getBookNo();
+                //setuplookupedit();
                 strDocName = "";
                 iLineIndex = -1;
                 igridindex = -1;
                 iLineID = -1;
                 myds = new DataSet();
                 this.mySettlementDB = SettlementDB.Create(myDBSetting, myDBSession, localdbsetting);
-                strKey = Request.QueryString["DocKey"];
+                //if (this.Request.QueryString["Key"] != null)
+                //{
+                //    strKey = Request.QueryString["Key"];
+                //}
+                //else
+                //{
+                    strKey = Request.QueryString["DocKey"];
+              //  }
                 SetApplication((SettlementEntity)HttpContext.Current.Session["mySettlementEntity" + strKey]);
             }
             if (!IsCallback)
@@ -200,12 +211,14 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 DataView dv = new DataView(mySettlementEntity.LoadDocNoFormatTable());
                 myDocNoFormatTable = dv.ToTable();
 
+
                 string sQuery = @"SELECT BO.*, BOA.CarType, BOA.CarLicensePlate, BOD.DriverName, BOD.ActualPickDateTime, BOD.ActualArriveDateTime 
-                                    FROM [dbo].[Booking] BO
-                                    INNER JOIN [dbo].[BookingAdmin] BOA ON BO.DocKey = BOA.SourceKey
-                                    INNER JOIN [dbo].[BookingDriver] BOD ON BO.DocKey = BOD.SourceKey
-                                    WHERE Status='FINISH' AND IsSettlement='F' ORDER BY DocDate";
-                myBookingTable = myLocalDBSetting.GetDataTable(sQuery, false);
+                                  FROM [dbo].[Booking] BO
+                                  INNER JOIN [dbo].[BookingAdmin] BOA ON BO.DocKey = BOA.SourceKey
+                                  INNER JOIN [dbo].[BookingDriver] BOD ON BO.DocKey = BOD.SourceKey
+                                  WHERE Status='FINISH' AND IsSettlement='F' and BO.CreatedBy=?
+                                  ORDER BY DocDate";
+                myBookingTable = myLocalDBSetting.GetDataTable(sQuery, false, UserName);
                 luBookNo.DataSource = myBookingTable;
                 luBookNo.DataBind();
 
@@ -295,10 +308,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             mmBookingDestinationAddress.ReadOnly = true;
             mmBookingTripDetail.ReadOnly = true;
             seTotal.ReadOnly = true;
+            btnApprove.ClientVisible = false;
             //chkNeedApproval.ReadOnly = true;
             //txtApprover.ReadOnly = true;
 
-            if (myAction == DXCAction.View)
+            if (this.Request.QueryString["Action"] == "View")
             {
                 deDocDate.ReadOnly = true;
 
@@ -307,25 +321,25 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 gvSettlementDetail.Columns["colNo"].Visible = true;
                 gvApproval.Columns["ClmnCommand"].Visible = false;
                 btnSubmit.Visible = false;
-                btnCancel.Visible = false;
+                btnReject.Visible = false;
             }
 
-            if (myAction == DXCAction.Approve)
+            if (this.Request.QueryString["Action"] == "Approval")
             {
                 deDocDate.ReadOnly = true;
-
+                btnApprove.ClientVisible = true;
                 gvSettlementDetail.Columns["ClmnCommand"].Visible = false;
                 gvSettlementDetail.Columns["ClmnCommand2"].Visible = true;
                 gvSettlementDetail.Columns["colNo"].Visible = true;
                 gvApproval.Columns["ClmnCommand"].Visible = false;
 
                 btnSubmit.Visible = false;
-                btnCancel.Visible = false;
+                btnReject.Visible = true;
             }
 
             #region Control Color
             btnSubmit.ForeColor = btnSubmit.ClientEnabled == false ? System.Drawing.Color.Gray : System.Drawing.Color.DarkSlateBlue;
-            btnCancel.ForeColor = btnCancel.ClientEnabled == false ? System.Drawing.Color.Gray : System.Drawing.Color.Red;
+            btnReject.ForeColor = btnReject.ClientEnabled == false ? System.Drawing.Color.Gray : System.Drawing.Color.Red;
 
             deDocDate.BackColor = deDocDate.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
             txtDocNo.BackColor = txtDocNo.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
@@ -615,7 +629,14 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             catch
             { }
             mySettlementEntity.Save(Email, UserName, "ST", saveAction, "");
-            UpdateApproval("APPROVE", DecisionNote.Value.ToString(), 1);
+            if (saveAction == SaveAction.Approve)
+            {
+                UpdateApproval("APPROVE", DecisionNote.Value.ToString(), 1);
+            }
+            else if (saveAction == SaveAction.Reject)
+            {
+                UpdateApproval("REJECT", DecisionNote.Value.ToString(), 1);
+            }
             return bSave;
         }
 
@@ -634,6 +655,36 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
 
             return rtBool;
         }
+        private bool cekOutStandingSettle()
+        {
+            SqlConnection connection = new SqlConnection(this.myLocalDBSetting.ConnectionString);
+            bool flag = false;
+            try
+            {
+                connection.Open();
+                SqlCommand sqlCommand = new SqlCommand(@"SELECT COUNT(*) FROM BOOKING A
+                                                         LEFT JOIN Settlement B ON A.DocNo=B.BookNo
+                                                         where A.CreatedBy= '"+UserName+"' AND ISNULL(B.Status,'') = 'NEED APPROVAL'", connection);
+                if (System.Convert.ToInt32(sqlCommand.ExecuteScalar()) > 0)
+                {
+
+                    flag = true;
+                }
+            }
+            catch (SqlException ex)
+            {
+                DataError.HandleSqlException(ex);
+            }
+            finally
+            {
+                connection.Close();
+                connection.Dispose();
+            }
+
+            return flag;
+
+        }
+
         protected void cplMain_Callback(object source, DevExpress.Web.CallbackEventArgs e)
         {
             string urlsave = "";
@@ -650,28 +701,35 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             {
                 #region ACTION BY ADMIN
                 case "SUBMIT":
-                    Save(SaveAction.Save);
-                    cplMain.JSProperties["cpAlertMessage"] = "Settlement has been submit...";
-                    cplMain.JSProperties["cplblActionButton"] = "SUBMIT";
-                    DevExpress.Web.ASPxWebControl.RedirectOnCallback(urlsave + updatedQueryString);
+                    if (cekOutStandingSettle())
+                    {
+                        cplMain.JSProperties["cpAlertMessage"] = "There are Transaction Not Complete yet, Please Contact General Affair!";
+                    }
+                    else
+                    {
+                        Save(SaveAction.Save);
+                        cplMain.JSProperties["cpAlertMessage"] = "Settlement has been submit...";
+                        cplMain.JSProperties["cplblActionButton"] = "SUBMIT";
+                        DevExpress.Web.ASPxWebControl.RedirectOnCallback(urlsave + updatedQueryString);
+                    }
                     break;
                 case "SUBMITCONFIRM":
                     cplMain.JSProperties["cplblmessageError"] = "";
                     cplMain.JSProperties["cplblmessage"] = "are you sure want to submit this Settlement?";
                     cplMain.JSProperties["cplblActionButton"] = "SUBMIT";
-                    if (ErrorInField(out strmessageError, SaveAction.Save))
-                    {
-                        cplMain.JSProperties["cplblmessageError"] = strmessageError;
-                    }
+                    //if (ErrorInField(out strmessageError, SaveAction.Save))
+                    //{
+                    //    cplMain.JSProperties["cplblmessageError"] = strmessageError;
+                    //}
                     break;
                 case "APPROVECONFIRM":
                     cplMain.JSProperties["cplblmessageError"] = "";
                     cplMain.JSProperties["cplblmessage"] = "are you sure want to approve this Settlement?";
                     cplMain.JSProperties["cplblActionButton"] = "APPROVE";
-                    if (ErrorInField(out strmessageError, SaveAction.Approve))
-                    {
-                        cplMain.JSProperties["cplblmessageError"] = strmessageError;
-                    }
+                    //if (ErrorInField(out strmessageError, SaveAction.Approve))
+                    //{
+                    //    cplMain.JSProperties["cplblmessageError"] = strmessageError;
+                    //}
                     break;
                 case "APPROVE":
                     SaveApprove(SaveAction.Approve);
@@ -679,20 +737,20 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                     cplMain.JSProperties["cplblActionButton"] = "APPROVE";
                     DevExpress.Web.ASPxWebControl.RedirectOnCallback(urlsave + updatedQueryString);
                     break;
-                case "CANCEL":
-                    Save(SaveAction.Cancel);
+                case "REJECT":
+                    Save(SaveAction.Reject);
                     cplMain.JSProperties["cpAlertMessage"] = "Settlement has been cancelled...";
                     cplMain.JSProperties["cplblActionButton"] = "CANCEL";
                     DevExpress.Web.ASPxWebControl.RedirectOnCallback(urlsave + updatedQueryString);
                     break;
-                case "CANCEL_CONFIRM":
+                case "CREJECT_CONFIRM":
                     cplMain.JSProperties["cplblmessageError"] = "";
                     cplMain.JSProperties["cplblmessage"] = "are you sure want to cancel this Settlement?";
                     cplMain.JSProperties["cplblActionButton"] = "CANCEL";
-                    if (ErrorInField(out strmessageError, SaveAction.Save))
-                    {
-                        cplMain.JSProperties["cplblmessageError"] = strmessageError;
-                    }
+                    //if (ErrorInField(out strmessageError, SaveAction.Save))
+                    //{
+                    //    cplMain.JSProperties["cplblmessageError"] = strmessageError;
+                    //}
                     break;
                 #endregion
             }

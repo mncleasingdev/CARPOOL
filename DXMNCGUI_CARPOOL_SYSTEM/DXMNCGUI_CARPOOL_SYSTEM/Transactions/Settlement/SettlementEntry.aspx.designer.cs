@@ -373,13 +373,13 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement {
         protected global::DevExpress.Web.ASPxButton btnSubmit;
         
         /// <summary>
-        /// btnCancel control.
+        /// btnReject control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::DevExpress.Web.ASPxButton btnCancel;
+        protected global::DevExpress.Web.ASPxButton btnReject;
         
         /// <summary>
         /// btnBack control.

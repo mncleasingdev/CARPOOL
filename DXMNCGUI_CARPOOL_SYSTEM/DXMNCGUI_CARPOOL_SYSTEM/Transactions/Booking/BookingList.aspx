@@ -198,11 +198,11 @@
                                         EnableCallBacks="true"
                                         EnablePagingCallbackAnimation="true"
                                         EnableTheming="True" 
-                                        OnInit="gvApprovalList_Init" OnDataBinding="gvApprovalList_DataBinding" OnFocusedRowChanged="gvApprovalList_FocusedRowChanged" OnCustomCallback="gvApprovalList_CustomCallback"
+                                        OnInit="gvApprovalList_Init" OnDataBinding="gvApprovalList_DataBinding" OnFocusedRowChanged="gvApprovalList_FocusedRowChanged" OnCustomCallback="gvApprovalList_CustomCallback" 
                                         Theme="Office2010Blue" Font-Size="Small" Font-Names="Calibri" KeyFieldName="DocKey">
                                         <SettingsAdaptivity AdaptivityMode="HideDataCellsWindowLimit" AllowOnlyOneAdaptiveDetailExpanded="True" HideDataCellsAtWindowInnerWidth="700"></SettingsAdaptivity>
                                         <ClientSideEvents CustomButtonClick="function(s, e) { gvApprovalList_CustomButtonClick(s, e); }"/>
-                                        <Settings ShowFilterRow="false" ShowGroupPanel="False" ShowFilterRowMenu="true" ShowFilterBar="Auto" ShowHeaderFilterButton="true" ShowFooter="true" />
+                                        <Settings ShowFilterRow="false" ShowGroupPanel="False" ShowFilterRowMenu="false" ShowFilterBar="Hidden" ShowHeaderFilterButton="true" ShowFooter="false" />
                                         <SettingsBehavior AllowFocusedRow="True" AllowSelectByRowClick="True" EnableRowHotTrack="true" EnableCustomizationWindow="true" AllowEllipsisInText="true" />
                                         <SettingsDataSecurity AllowDelete="False" AllowEdit="False" AllowInsert="False" />
                                         <SettingsSearchPanel Visible="True" />
@@ -263,7 +263,7 @@
                                             <AlternatingRow Enabled="True"></AlternatingRow>
                                         </Styles>
                                         <Styles AdaptiveDetailButtonWidth="22" Footer-Font-Bold="true"></Styles>
-                                        <SettingsDetail ShowDetailRow="false" />
+                                        <%--<SettingsDetail ShowDetailRow="false" />--%>
                                     </dx:ASPxGridView>
                                 </dx:LayoutItemNestedControlContainer>
                             </LayoutItemNestedControlCollection>
@@ -498,9 +498,9 @@
                                         <dx:GridViewDataTextColumn Name="colCreBy" Caption="Created By" FieldName="CreatedBy" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="6" Width="10%">
                                             <HeaderStyle Font-Bold="true" />
                                         </dx:GridViewDataTextColumn>
-                                        <dx:GridViewDataTextColumn Name="colCreDate" Caption="Created Date" FieldName="CreatedDateTime" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="6" Width="10%">
+                                        <dx:GridViewDataDateColumn Name="colCreDate" Caption="Created Date" FieldName="CreatedDateTime" ReadOnly="True" ShowInCustomizationForm="true" PropertiesDateEdit-DisplayFormatString="dd/MM/yyyy" Visible="true" VisibleIndex="7" Width="10%">
                                             <HeaderStyle Font-Bold="true" />
-                                        </dx:GridViewDataTextColumn>
+                                        </dx:GridViewDataDateColumn>
                                     </Columns>
                                     <Styles>
                                         <AlternatingRow Enabled="True"></AlternatingRow>

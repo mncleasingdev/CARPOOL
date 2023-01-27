@@ -166,10 +166,14 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             //        myMainTable = this.myBookingDB.LoadBrowseTable(false, true, UserName, Convert.ToString(obj));
             //    }
             //}
-            //if (accessright.IsAccessibleByUserID(Email, "IS_ADMIN"))
-            //{
+            if ((accessright.IsAccessibleByUserID(Email, "IS_ADMIN")) || (accessright.IsAccessibleByUserID(Email, "IS_GA")))
+            {
                 myMainTable = this.myBookingDB.LoadBrowseTable(true, false, UserName, "");
-            //}
+            }
+            else
+            {
+                myMainTable = this.myBookingDB.LoadBrowseTable(false, false, UserName, "");
+            }
             //if (accessright.IsAccessibleByUserID(Email, "IS_DRIVER"))
             //{
             //    string updatedQueryString = "";

@@ -59,7 +59,7 @@
                     apcalert.SetContentHtml(cplMain.cpAlertMessage);
                     apcalert.Show();
                     break;
-                case "CANCEL_CONFIRM":
+                case "REJECT_CONFIRM":
                     if (cplMain.cplblmessageError.length > 0) {
                         apcalert.SetContentHtml(cplMain.cplblmessageError);
                         apcalert.Show();
@@ -69,6 +69,10 @@
                         apcconfirm.Show();
                         lblmessage.SetText(cplMain.cplblmessage);
                     }
+                    break;
+                case "REJECT":
+                    apcalert.SetContentHtml(cplMain.cpAlertMessage);
+                    apcalert.Show();
                     break;
             }
         }
@@ -599,7 +603,7 @@
                                                             PropertiesSpinEdit-MaxValue="999999999999999" VisibleIndex="12">
                                                             <HeaderStyle Font-Bold="true" ForeColor="#003399"/>
                                                         </dx:GridViewDataSpinEditColumn>
-                                                        <dx:GridViewCommandColumn ButtonType="Button" Caption=" " ShowInCustomizationForm="True" Width="5%" VisibleIndex="13">
+                                                        <dx:GridViewCommandColumn ButtonType="Button" Caption=" " ShowInCustomizationForm="True" Width="5%" VisibleIndex="13" Visible="false">
                                                             <HeaderStyle Font-Bold="true" ForeColor="#003399" />
                                                             <CustomButtons>
                                                                 <dx:GridViewCommandColumnCustomButton ID="btnImage" Text="Show Image">
@@ -794,8 +798,8 @@
             <dx:LayoutItem ShowCaption="False" Width="10%" Visible="true">
                 <LayoutItemNestedControlCollection>
                     <dx:LayoutItemNestedControlContainer>
-                        <dx:ASPxButton runat="server" ID="btnCancel" ClientInstanceName="btnCancel" Text="Cancel" AutoPostBack="false" UseSubmitBehavior="false" Width="100%" ForeColor="Red" Theme="Office2010Blue" Border-BorderColor="WhiteSmoke" Border-BorderWidth="2" Border-BorderStyle="Outset">
-                            <ClientSideEvents Click="function(s,e) { cplMain.PerformCallback('CANCEL_CONFIRM;' + 'CANCEL_CONFIRM'); }" />
+                        <dx:ASPxButton runat="server" ID="btnReject" ClientInstanceName="btnReject" Text="Reject" AutoPostBack="false" UseSubmitBehavior="false" Width="100%" ForeColor="Red" Theme="Office2010Blue" Border-BorderColor="WhiteSmoke" Border-BorderWidth="2" Border-BorderStyle="Outset" ClientVisible="false">
+                            <ClientSideEvents Click="function(s,e) { cplMain.PerformCallback('REJECT_CONFIRM;' + 'REJECT_CONFIRM'); }" />
                         </dx:ASPxButton>
                     </dx:LayoutItemNestedControlContainer>
                 </LayoutItemNestedControlCollection>

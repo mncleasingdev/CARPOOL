@@ -353,10 +353,13 @@
                                         <dx:GridViewDataTextColumn Name="colStatus" Caption="Status" FieldName="Status" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="7" Width="10%">
                                             <HeaderStyle Font-Bold="true" />
                                         </dx:GridViewDataTextColumn>
-                                        <dx:GridViewDataTextColumn Name="colCreatedBy" Caption="Created By" FieldName="CreatedBy" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="8" Width="10%">
+                                        <dx:GridViewDataTextColumn Name="colApprover" Caption="Next Approver" FieldName="NextApprover" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="8" Width="10%">
                                             <HeaderStyle Font-Bold="true" />
                                         </dx:GridViewDataTextColumn>
-                                        <dx:GridViewDataTextColumn Name="colCreatedDateTime" Caption="Created Date" FieldName="CreatedDateTime" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="8" Width="10%">
+                                        <dx:GridViewDataTextColumn Name="colCreatedBy" Caption="Created By" FieldName="CreatedBy" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="9" Width="10%">
+                                            <HeaderStyle Font-Bold="true" />
+                                        </dx:GridViewDataTextColumn>
+                                        <dx:GridViewDataTextColumn Name="colCreatedDateTime" Caption="Created Date" FieldName="CreatedDateTime" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="10" Width="10%">
                                             <HeaderStyle Font-Bold="true" />
                                         </dx:GridViewDataTextColumn>
                                     </Columns>

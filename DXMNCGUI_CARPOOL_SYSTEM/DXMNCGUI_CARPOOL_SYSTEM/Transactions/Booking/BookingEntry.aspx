@@ -664,7 +664,7 @@
                     </dx:TabbedLayoutGroup>
                 </Items>
             </dx:LayoutGroup>
-            <dx:LayoutGroup Name="LayoutGroupAdminEntry" GroupBoxDecoration="Box" Caption="Estimated Booking" Width="50%" ColCount="3">
+            <dx:LayoutGroup Name="LayoutGroupAdminEntry" GroupBoxDecoration="Box" Caption="Booking Car Type" Width="50%" ColCount="3">
                 <GroupBoxStyle>
                     <Caption ForeColor="SteelBlue" Font-Size="Larger" Font-Bold="true" Font-Names="Calibri" BackColor="WhiteSmoke"></Caption>
                 </GroupBoxStyle>
@@ -998,16 +998,7 @@
                     </dx:LayoutItem>
                 </Items>
             </dx:LayoutGroup>--%>
-            <dx:EmptyLayoutItem Width="70%"></dx:EmptyLayoutItem>
-            <dx:LayoutItem ShowCaption="False" Width="10%" Visible="false">
-                <LayoutItemNestedControlCollection>
-                    <dx:LayoutItemNestedControlContainer>
-                        <dx:ASPxButton runat="server" ID="btnTestMap" ClientInstanceName="btnTestMap" Text="Open Map test" AutoPostBack="false" UseSubmitBehavior="false" Width="100%" Theme="Office2010Blue" Border-BorderColor="WhiteSmoke" Border-BorderWidth="2" Border-BorderStyle="Outset">
-                            <ClientSideEvents Click="function(s,e) { cplMain.PerformCallback('OPEN_MAP;' + 'OPEN_MAP'); }" />
-                        </dx:ASPxButton>
-                    </dx:LayoutItemNestedControlContainer>
-                </LayoutItemNestedControlCollection>
-            </dx:LayoutItem>
+            <dx:EmptyLayoutItem Width="60%"></dx:EmptyLayoutItem>
             <dx:LayoutItem ShowCaption="False" Width="10%">
                 <LayoutItemNestedControlCollection>
                     <dx:LayoutItemNestedControlContainer>

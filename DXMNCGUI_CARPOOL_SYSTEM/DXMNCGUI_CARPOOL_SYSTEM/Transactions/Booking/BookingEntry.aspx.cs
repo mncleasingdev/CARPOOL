@@ -409,6 +409,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             txtHp.ReadOnly = true;
             deDocDate.ReadOnly = false;
 
+            //if (!accessright.IsAccessibleByUserID(Email, "IS_GA"))
+            //{
+            //    ASPxFormLayout1.FindItemOrGroupByName("LayoutGroupAdminEntry").Visible = false;
+            //}
+
             if (myAction == DXCAction.View)
             {
                 if (this.Request.QueryString["Action"] == "OnSchedule")
@@ -454,7 +459,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 mmPickupAddress.ClientEnabled = false;
                 mmDestinationAddress.ClientEnabled = false;
                 mmTripDetail.ClientEnabled = false;
-                deEstPickupTime.ClientEnabled = false;
+                //deestpickuptime.clientenabled = false;
                 luCarType.ClientEnabled = false;
                 deEstArrivalTime.ClientEnabled = false;
                 mmAdminRemark.ClientEnabled = false;
@@ -1011,11 +1016,41 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 myconn.Close();
             }
         }
+
+        private bool cekOutStandingBooking()
+        {
+            SqlConnection connection = new SqlConnection(this.myLocalDBSetting.ConnectionString);
+            bool flag = false;
+            try
+            {
+                connection.Open();
+                SqlCommand sqlCommand = new SqlCommand(@"SELECT a.status,a.Approver,b.status,b.Approver FROM BOOKING A
+                                                         LEFT JOIN Settlement B ON A.DocNo=B.BookNo
+                                                         where A.CreatedBy='" + UserName + "' AND ISNULL(B.Status,'') NOT IN ('COMPLETE') AND ISNULL(A.Status, '') NOT IN('REJECTED')", connection);
+                if (System.Convert.ToInt32(sqlCommand.ExecuteScalar()) > 0)
+                {
+
+                    flag = true;
+                }
+            }
+            catch (SqlException ex)
+            {
+                DataError.HandleSqlException(ex);
+            }
+            finally
+            {
+                connection.Close();
+                connection.Dispose();
+            }
+
+            return flag;
+
+        }
         private bool Save(SaveAction saveAction)
         {
             bool bSave = true;
             DataTable dtCopyApp = new DataTable();
-
+            
             gvPersonDetail.UpdateEdit();
             myBookingEntity.DocNo = txtDocNo.Value;
             myBookingEntity.DocDate = deDocDate.Value;
@@ -1095,10 +1130,17 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             {
                 #region ACTION BY USER
                 case "SUBMIT":
-                    Save(SaveAction.Save);
-                    cplMain.JSProperties["cpAlertMessage"] = "Transaction has been submit...";
-                    cplMain.JSProperties["cplblActionButton"] = "SUBMIT";
-                    DevExpress.Web.ASPxWebControl.RedirectOnCallback(urlsave + updatedQueryString);
+                    if (cekOutStandingBooking())
+                    {
+                        cplMain.JSProperties["cpAlertMessage"] = "There are Transaction Not Complete yet, Please Contact General Affair!";
+                    }
+                    else
+                    { 
+                        Save(SaveAction.Save);
+                        cplMain.JSProperties["cpAlertMessage"] = "Transaction has been submit...";
+                        cplMain.JSProperties["cplblActionButton"] = "SUBMIT";
+                        DevExpress.Web.ASPxWebControl.RedirectOnCallback(urlsave + updatedQueryString);
+                    }
                     break;
                 case "SUBMITCONFIRM":
                     cplMain.JSProperties["cplblmessageError"] = "";
@@ -1128,7 +1170,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     SaveApprove(SaveAction.Reject);
                     cplMain.JSProperties["cpAlertMessage"] = "This book has been rejected..";
                     cplMain.JSProperties["cplblActionButton"] = "REJECT_CONFIRM";
-                    DevExpress.Web.ASPxWebControl.RedirectOnCallback(Request.Url.AbsoluteUri);
+                    DevExpress.Web.ASPxWebControl.RedirectOnCallback("BookingList.aspx");
                     break;
                 case "REJECTCONFIRM":
                     cplMain.JSProperties["cplblmessageError"] = "";
@@ -1139,7 +1181,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     Save(SaveAction.Cancel);
                     cplMain.JSProperties["cpAlertMessage"] = "Transaction has been cancelled...";
                     cplMain.JSProperties["cplblActionButton"] = "CANCEL";
-                    DevExpress.Web.ASPxWebControl.RedirectOnCallback(urlsave + updatedQueryString);
+                    DevExpress.Web.ASPxWebControl.RedirectOnCallback("BookingList.aspx");
                     break;
                 case "CANCEL_CONFIRM":
                     cplMain.JSProperties["cplblmessageError"] = "";
@@ -1156,7 +1198,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     Save(SaveAction.HoldByAdmin);
                     cplMain.JSProperties["cpAlertMessage"] = "Transaction has been holding...";
                     cplMain.JSProperties["cplblActionButton"] = "ADMIN_PENDING";
-                    DevExpress.Web.ASPxWebControl.RedirectOnCallback(urlsave + updatedQueryString);
+                    DevExpress.Web.ASPxWebControl.RedirectOnCallback("BookingList.aspx");
                     break;
                 case "ADMIN_PENDING_CONFIRM":
                     cplMain.JSProperties["cplblmessageError"] = "";
@@ -1171,7 +1213,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     Save(SaveAction.RejectByAdmin);
                     cplMain.JSProperties["cpAlertMessage"] = "Transaction has been rejected...";
                     cplMain.JSProperties["cplblActionButton"] = "ADMIN_REJECT";
-                    DevExpress.Web.ASPxWebControl.RedirectOnCallback(urlsave + updatedQueryString);
+                    DevExpress.Web.ASPxWebControl.RedirectOnCallback("BookingList.aspx");
                     break;
                 case "ADMIN_REJECT_CONFIRM":
                     cplMain.JSProperties["cplblmessageError"] = "";
@@ -1186,7 +1228,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     Save(SaveAction.ApproveByAdmin);
                     cplMain.JSProperties["cpAlertMessage"] = "Transaction has been approved...";
                     cplMain.JSProperties["cplblActionButton"] = "ADMIN_APPROVE";
-                    DevExpress.Web.ASPxWebControl.RedirectOnCallback(urlsave + updatedQueryString);
+                    DevExpress.Web.ASPxWebControl.RedirectOnCallback("BookingList.aspx");
                     break;
                 case "ADMIN_APPROVE_CONFIRM":
                     cplMain.JSProperties["cplblmessageError"] = "";
@@ -1233,7 +1275,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     Save(SaveAction.FinishByDriver);
                     cplMain.JSProperties["cpAlertMessage"] = "Transaction has been finish...";
                     cplMain.JSProperties["cplblActionButton"] = "FINISH";
-                    DevExpress.Web.ASPxWebControl.RedirectOnCallback(urlsave + updatedQueryString);
+                    DevExpress.Web.ASPxWebControl.RedirectOnCallback("BookingList.aspx");
                     break;
                 case "FINISH_CONFIRM":
                     cplMain.JSProperties["cplblmessageError"] = "";
@@ -1259,7 +1301,15 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             catch
             { }
             myBookingEntity.Save(Email, UserName, "BK", saveAction, Convert.ToString(myBookingEntity.Status),"");
-            UpdateApproval("APPROVE", DecisionNote.Value.ToString(), 1);
+            if (saveAction == SaveAction.Approve)
+            {
+                UpdateApproval("APPROVE", DecisionNote.Value.ToString(), 1);
+            }
+            else if (saveAction == SaveAction.Reject)
+            {
+                UpdateApproval("REJECT", DecisionNote.Value.ToString(), 1);
+            }
+            
             return bSave;
         }
 
@@ -1374,8 +1424,9 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 if (Page.IsCallback)
                 {
                     DataTable myitem = new DataTable();
-                    myitem = myDBSetting.GetDataTable(@"SELECT A.ID AS DtlKey,'' DocKey,'' Seq,A.CODE AS NIK ,A.DESCS AS NAME,c.USERGROUPDESC AS JABATAN,A.EMAIL FROM SYS_TBLEMPLOYEE a
-                                                        left join MASTER_USER_COMPANY_GROUP b on a.HEAD = b.USER_ID
+                    myitem = myDBSetting.GetDataTable(@"SELECT A.ID AS DtlKey,'' DocKey,'' Seq,A.CODE AS NIK ,A.DESCS AS NAME,c.USERGROUPDESC AS JABATAN,A.EMAIL 
+                                                        FROM SYS_TBLEMPLOYEE a
+                                                        left join MASTER_USER_COMPANY_GROUP b on a.code = b.USER_ID and a.C_CODE=b.C_CODE
                                                         left join MASTER_GROUP c on b.GROUP_CODE = c.USERGROUP
                                                         where a.isactive=1", false);
                     ASPxComboBox cmb = (ASPxComboBox)e.Editor;

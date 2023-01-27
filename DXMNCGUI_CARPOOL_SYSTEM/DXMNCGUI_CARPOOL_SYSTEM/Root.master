@@ -91,7 +91,7 @@
                                             <dx:MenuItem Text="Vehicle Maintenance" Name="VehicleMaintenance" NavigateUrl="Maintenance/VehicleMaintenance/FormVehicleMaintenance.aspx"></dx:MenuItem>
                                         </Items>
                                     </dx:MenuItem>
-                                    <dx:MenuItem Text="About" Name="MenuAbout" Image-Url="Content/Images/AboutIcon-16x16.png"></dx:MenuItem>
+                                    <%--<dx:MenuItem Text="About" Name="MenuAbout" Image-Url="Content/Images/AboutIcon-16x16.png"></dx:MenuItem>--%>
                                 </Items>
                                 <ItemStyle HorizontalAlign="Justify"/>
                                 <SubMenuItemStyle HorizontalAlign="Left">

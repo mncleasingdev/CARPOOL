@@ -23,22 +23,32 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             if (!bViewAll)
             {
                 myBrowseTable.Clear();
-                myLocalDBSetting.LoadDataTable(myBrowseTable, "SELECT * FROM dbo.Booking WHERE EmployeeName=? ORDER BY DocDate DESC", true, userID);
+                myLocalDBSetting.LoadDataTable(myBrowseTable, @"SELECT CASE WHEN a.approver + '-' + ISNULL(b.DESCS,'') ='IS_GA-' THEN 'GENERAL AFFAIR'
+                                                                ELSE a.approver + ' - ' + ISNULL(b.DESCS,'') END [NextApprover],* 
+                                                                FROM dbo.Booking a
+                                                                left join IFINANCING_GOLIVE..SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE
+                                                                WHERE EmployeeName=? 
+                                                                ORDER BY DocDate DESC", true, userID);
             }
             else
             {
                 myBrowseTable.Clear();
-                myLocalDBSetting.LoadDataTable(myBrowseTable, @"SELECT CASE WHEN a.approver +' - ' + b.DESCS IS NULL 
-                                                                THEN a.Approver ELSE a.approver +' - ' + b.DESCS 
-                                                                END as NextApprover,* 
+                myLocalDBSetting.LoadDataTable(myBrowseTable, @"SELECT CASE WHEN a.approver + '-' + ISNULL(b.DESCS,'') ='IS_GA-' THEN 'GENERAL AFFAIR'
+                                                                ELSE a.approver + ' - ' + ISNULL(b.DESCS,'') END [NextApprover],* 
                                                                 FROM dbo.Booking a
-                                                                left join IFINANCING_GOLIVE..SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE ORDER BY DocDate DESC", true);
+                                                                left join IFINANCING_GOLIVE..SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE 
+                                                                ORDER BY DocDate DESC", true);
             }
 
             if (bViewAllperDept)
             {
                 myBrowseTable.Clear();
-                myLocalDBSetting.LoadDataTable(myBrowseTable, "SELECT * FROM dbo.Booking WHERE EmployeeName=? OR Department=? ORDER BY DocDate DESC", true, userID, department);
+                myLocalDBSetting.LoadDataTable(myBrowseTable, @"SELECT CASE WHEN a.approver + '-' + ISNULL(b.DESCS,'') ='IS_GA-' THEN 'GENERAL AFFAIR'
+                                                                ELSE a.approver + ' - ' + ISNULL(b.DESCS, '') END[NextApprover], *
+                                                                FROM dbo.Booking a
+                                                                left join IFINANCING_GOLIVE..SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE
+                                                                WHERE EmployeeName =? OR Department =?
+                                                                ORDER BY DocDate DESC", true, userID, department);
             }
 
             DataColumn[] keyHeader = new DataColumn[1];
@@ -302,17 +312,20 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     dataRow["Approver"] = "";
 
                     dataDriverRow["DriverName"] = userName;
+                    dataDriverRow["ActualPickDateTime"] = Mydate;
                     dataDriverRow["ActualArriveDateTime"] = Mydate;
                     dataDriverRow["LastModifiedBy"] = userName;
                     dataDriverRow["LastModifiedDateTime"] = Mydate;
 
-                   // localdbSetting.ExecuteNonQuery("UPDATE [dbo].[MasterCar] SET Kilometer=? WHERE CarLicense=?", (object)dataDriverRow["CurrentKilometer"], (object)dataAdminRow["CarLicensePlate"]);
+                    //localdbSetting.ExecuteNonQuery("UPDATE [dbo].[MasterCar] SET Kilometer=? WHERE CarLicense=?", (object)dataDriverRow["CurrentKilometer"], (object)dataAdminRow["CarLicensePlate"]);
                 }
 
+                //if (Booking.DocKey != null && saveaction == SaveAction.Approve)
                 //if (Booking.DocKey != null)
                 //{
                 //    ClearDetail(Booking, saveaction);
                 //}
+
                 localdbSetting.ExecuteNonQuery("UPDATE [dbo].[MasterCar] SET Kilometer=? WHERE CarLicense=?", (object)dataDriverRow["CurrentKilometer"], (object)dataAdminRow["CarLicensePlate"]);
                 localdbSetting.SimpleSaveDataTable(ds.Tables["User"], "SELECT * FROM [dbo].[Booking]");
                 localdbSetting.SimpleSaveDataTable(ds.Tables["Admin"], "SELECT * FROM [dbo].[BookingAdmin]");
@@ -350,66 +363,66 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 localdbSetting.EndTransaction();
             }
         }
-        //protected override void SaveDetail(DataSet ds, SaveAction saveaction)
-        //{
-        //    SqlConnection myconn = new SqlConnection(LocalDBSetting.ConnectionString);
-        //    myconn.Open();
-        //    SqlTransaction trans = myconn.BeginTransaction();
-        //    try
-        //    {
-        //        foreach (DataRow dataRow in ds.Tables["UserDetail"].Rows)
-        //        {
+        protected override void SaveDetail(DataSet ds, SaveAction saveaction)
+        {
+            SqlConnection myconn = new SqlConnection(LocalDBSetting.ConnectionString);
+            myconn.Open();
+            SqlTransaction trans = myconn.BeginTransaction();
+            try
+            {
+                foreach (DataRow dataRow in ds.Tables["UserDetail"].Rows)
+                {
 
-        //            SqlCommand sqlCommand = new SqlCommand("INSERT INTO [dbo].[BookingDetail] (DtlKey, DocKey, Seq, Name, Gender, Status, Remark1, Remark2, Remark3) VALUES (@DtlKey, @DocKey, @Seq, @Name, @Gender ,@Status, @Remark1, @Remark2, @Remark3)");
-        //            sqlCommand.Connection = myconn;
-        //            sqlCommand.Transaction = trans;
+                    SqlCommand sqlCommand = new SqlCommand("INSERT INTO [dbo].[BookingDetail] (DtlKey, DocKey, Seq, Name, Gender, Status, Remark1, Remark2, Remark3) VALUES (@DtlKey, @DocKey, @Seq, @Name, @Gender ,@Status, @Remark1, @Remark2, @Remark3)");
+                    sqlCommand.Connection = myconn;
+                    sqlCommand.Transaction = trans;
 
-        //            var varRemark1 = dataRow["Remark1"];
-        //            var varRemark2 = dataRow["Remark2"];
-        //            var varRemark3 = dataRow["Remark3"];
+                    var varRemark1 = dataRow["Remark1"];
+                    var varRemark2 = dataRow["Remark2"];
+                    var varRemark3 = dataRow["Remark3"];
 
-        //            SqlParameter sqlParameter1 = sqlCommand.Parameters.Add("@DtlKey", SqlDbType.Int);
-        //            sqlParameter1.Value = dataRow.Field<int>("DtlKey");
-        //            sqlParameter1.Direction = ParameterDirection.Input;
-        //            SqlParameter sqlParameter2 = sqlCommand.Parameters.Add("@DocKey", SqlDbType.Int);
-        //            sqlParameter2.Value = dataRow.Field<int>("DocKey");
-        //            sqlParameter2.Direction = ParameterDirection.Input;
-        //            SqlParameter sqlParameter3 = sqlCommand.Parameters.Add("@Seq", SqlDbType.Int);
-        //            sqlParameter3.Value = dataRow.Field<int>("Seq");
-        //            sqlParameter3.Direction = ParameterDirection.Input;
-        //            SqlParameter sqlParameter4 = sqlCommand.Parameters.Add("@Name", SqlDbType.NVarChar, 50);
-        //            sqlParameter4.Value = dataRow.Field<string>("Name");
-        //            sqlParameter4.Direction = ParameterDirection.Input;
-        //            SqlParameter sqlParameter5 = sqlCommand.Parameters.Add("@Gender", SqlDbType.NVarChar, 1);
-        //            sqlParameter5.Value = dataRow.Field<string>("Gender");
-        //            sqlParameter5.Direction = ParameterDirection.Input;
-        //            SqlParameter sqlParameter6 = sqlCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 50);
-        //            sqlParameter6.Value = dataRow.Field<string>("Status");
-        //            sqlParameter6.Direction = ParameterDirection.Input;
-        //            SqlParameter sqlParameter7 = sqlCommand.Parameters.Add("@Remark1", SqlDbType.NVarChar);
-        //            sqlParameter7.Value = varRemark1;
-        //            sqlParameter7.Direction = ParameterDirection.Input;
-        //            SqlParameter sqlParameter8 = sqlCommand.Parameters.Add("@Remark2", SqlDbType.NVarChar);
-        //            sqlParameter8.Value = varRemark2;
-        //             sqlParameter8.Direction = ParameterDirection.Input;
-        //            SqlParameter sqlParameter9 = sqlCommand.Parameters.Add("@Remark3", SqlDbType.NVarChar);
-        //            sqlParameter9.Value = varRemark3;
-        //            sqlParameter9.Direction = ParameterDirection.Input;
+                    SqlParameter sqlParameter1 = sqlCommand.Parameters.Add("@DtlKey", SqlDbType.Int);
+                    sqlParameter1.Value = dataRow.Field<int>("DtlKey");
+                    sqlParameter1.Direction = ParameterDirection.Input;
+                    SqlParameter sqlParameter2 = sqlCommand.Parameters.Add("@DocKey", SqlDbType.Int);
+                    sqlParameter2.Value = dataRow.Field<int>("DocKey");
+                    sqlParameter2.Direction = ParameterDirection.Input;
+                    SqlParameter sqlParameter3 = sqlCommand.Parameters.Add("@Seq", SqlDbType.Int);
+                    sqlParameter3.Value = dataRow.Field<int>("Seq");
+                    sqlParameter3.Direction = ParameterDirection.Input;
+                    SqlParameter sqlParameter4 = sqlCommand.Parameters.Add("@Name", SqlDbType.NVarChar, 50);
+                    sqlParameter4.Value = dataRow.Field<string>("Name");
+                    sqlParameter4.Direction = ParameterDirection.Input;
+                    SqlParameter sqlParameter5 = sqlCommand.Parameters.Add("@Gender", SqlDbType.NVarChar, 1);
+                    sqlParameter5.Value = dataRow.Field<string>("Gender");
+                    sqlParameter5.Direction = ParameterDirection.Input;
+                    SqlParameter sqlParameter6 = sqlCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 50);
+                    sqlParameter6.Value = dataRow.Field<string>("Status");
+                    sqlParameter6.Direction = ParameterDirection.Input;
+                    SqlParameter sqlParameter7 = sqlCommand.Parameters.Add("@Remark1", SqlDbType.NVarChar);
+                    sqlParameter7.Value = varRemark1;
+                    sqlParameter7.Direction = ParameterDirection.Input;
+                    SqlParameter sqlParameter8 = sqlCommand.Parameters.Add("@Remark2", SqlDbType.NVarChar);
+                    sqlParameter8.Value = varRemark2;
+                    sqlParameter8.Direction = ParameterDirection.Input;
+                    SqlParameter sqlParameter9 = sqlCommand.Parameters.Add("@Remark3", SqlDbType.NVarChar);
+                    sqlParameter9.Value = varRemark3;
+                    sqlParameter9.Direction = ParameterDirection.Input;
 
-        //            sqlCommand.ExecuteNonQuery();
-        //        }
-        //        trans.Commit();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        trans.Rollback();
-        //        throw new ArgumentException(ex.Message);
-        //    }
-        //    finally
-        //    {
-        //        myconn.Close();
-        //    }
-        //}
+                    sqlCommand.ExecuteNonQuery();
+                }
+                trans.Commit();
+            }
+            catch (Exception ex)
+            {
+                trans.Rollback();
+                throw new ArgumentException(ex.Message);
+            }
+            finally
+            {
+                myconn.Close();
+            }
+        }
         protected override void SaveHistory(BookingEntity Booking, DataSet ds, SaveAction saveaction, string userID, string userName, DateTime myLastApprove, string myLastState)
         {
             int imyDiffTime;

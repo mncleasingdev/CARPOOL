@@ -111,8 +111,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             deDocDate.Value = myBookingEntity.DocDate;
             txtBookingBy.Value = myBookingEntity.CreatedBy;
             txtPhone.Value = myBookingEntity.Hp;
-            deStart.Value = myBookingEntity.AdminEstPickDateTime;
-            deEnd.Value = myBookingEntity.AdminEstArriveDateTime;
+            //deStart.Value = myBookingEntity.AdminEstPickDateTime;
+            //deEnd.Value = myBookingEntity.AdminEstArriveDateTime;
             mmFrom.Value = myBookingEntity.RequestPickAddress;
             mmTo.Value = myBookingEntity.RequestDestAddress;
             mmDetailTrip.Value = myBookingEntity.TripDetails;
