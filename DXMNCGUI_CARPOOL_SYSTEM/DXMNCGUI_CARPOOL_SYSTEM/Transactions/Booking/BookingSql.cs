@@ -375,10 +375,10 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             SqlTransaction trans = myconn.BeginTransaction();
             try
             {
-                //DataRow dataRow = ds.Tables["Admin"].Rows[0];
+                DataRow dataRow = ds.Tables["Admin"].Rows[0];
 
-                foreach (DataRow dataRow in ds.Tables["Admin"].Rows)
-                {
+                //foreach (DataRow dataRow in ds.Tables["Admin"].Rows)
+                //{
                     //myLocalDBSetting.ExecuteNonQuery("UPDATE [dbo].[BookingAdmin] SET CarType=?, CarLicensePlate=?, Remark=?, LastKilometer=? WHERE SourceKey=?", (object)dataRow["CarType"], (object)dataRow["CarLicensePlate"], (object)dataRow["Remark"], (object)dataRow["LastKilometer"], (object)dataRow["SourceKey"]);
 
                     SqlCommand sqlCommand = new SqlCommand(@"INSERT INTO [dbo].[BookingAdmin] (DocKey,SourceKey,DriverCode,DriverName,CarCode,
@@ -457,7 +457,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     sqlParameter17.Direction = ParameterDirection.Input;
 
                     sqlCommand.ExecuteNonQuery();
-                }
+                //}
                 trans.Commit();
             }
             catch (Exception ex)
