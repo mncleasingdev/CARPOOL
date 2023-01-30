@@ -334,10 +334,14 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
         public virtual void Delete(long headerid)
         {
         }
+        protected virtual void ClearBookingAdmin(DataSet ds)
+        { }
         protected virtual void SaveData(BookingEntity Booking, DataSet ds, string strDocName, SaveAction saveaction, string strUpline, string userID, string userName, string approver)
         {
         }
         protected virtual void SaveDetail(DataSet ds, SaveAction saveaction)
+        { }
+        protected virtual void SaveBookingAdmin(DataSet ds, string username)
         { }
         protected virtual void SaveHistory(BookingEntity Booking, DataSet ds, SaveAction saveaction, string userID, string userName, DateTime myLastApprove, string myLastState)
         {

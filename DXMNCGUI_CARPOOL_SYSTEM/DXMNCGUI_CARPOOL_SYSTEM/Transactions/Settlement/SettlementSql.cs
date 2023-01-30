@@ -291,7 +291,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             {
                 foreach (DataRow dataRow in ds.Tables["Header"].Rows)
                 {
-                    SqlCommand sqlCommand = new SqlCommand("UPDATE [dbo].[Booking] SET IsSettlement=@IsSettlement WHERE DocNo=@BookNo");
+                    SqlCommand sqlCommand = new SqlCommand("UPDATE [dbo].[Booking] SET IsSettlement=@IsSettlement, Status=@Status WHERE DocNo=@BookNo");
                     sqlCommand.Connection = myconn;
                     sqlCommand.Transaction = trans;
 
@@ -300,7 +300,10 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                     sqlParameter1.Direction = ParameterDirection.Input;
                     SqlParameter sqlParameter2 = sqlCommand.Parameters.Add("@IsSettlement", SqlDbType.NVarChar, 1);
                     sqlParameter2.Value = saveaction == SaveAction.Approve ? "T" : "F";
-                    sqlParameter2.Direction = ParameterDirection.Input;                 
+                    sqlParameter2.Direction = ParameterDirection.Input;
+                    SqlParameter sqlParameter3 = sqlCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 60);
+                    sqlParameter3.Value = "COMPLETE";
+                    sqlParameter3.Direction = ParameterDirection.Input;
                     sqlCommand.ExecuteNonQuery();
                 }
                 trans.Commit();

@@ -27,7 +27,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                                                                 ELSE a.approver + ' - ' + ISNULL(b.DESCS,'') END [NextApprover],* 
                                                                 FROM dbo.Booking a
                                                                 left join IFINANCING_GOLIVE..SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE
-                                                                WHERE EmployeeName=? 
+                                                                WHERE EmployeeName=?
                                                                 ORDER BY DocDate DESC", true, userID);
             }
             else
@@ -278,10 +278,13 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 }
                 if (saveaction == SaveAction.ApproveByAdmin)
                 {
-                    dataRow["Status"] = "ON SCHEDULE";                    
+                    dataRow["Status"] = "ON SCHEDULE";
                     dataRow["LastModifiedBy"] = userName;
                     dataRow["LastModifiedDateTime"] = Mydate;
-                   // SendSMS(Booking, saveaction);
+                    ClearBookingAdmin(ds);
+                    SaveBookingAdmin(ds, userName);
+
+                    // SendSMS(Booking, saveaction);
                 }
 
                 //if (saveaction == SaveAction.PickupByDriver)
@@ -361,6 +364,110 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             finally
             {
                 localdbSetting.EndTransaction();
+            }
+        }
+
+        protected override void SaveBookingAdmin(DataSet ds, string userName)
+        {
+            DateTime Mydate = myLocalDBSetting.GetServerTime();
+            SqlConnection myconn = new SqlConnection(LocalDBSetting.ConnectionString);
+            myconn.Open();
+            SqlTransaction trans = myconn.BeginTransaction();
+            try
+            {
+                //DataRow dataRow = ds.Tables["Admin"].Rows[0];
+
+                foreach (DataRow dataRow in ds.Tables["Admin"].Rows)
+                {
+                    //myLocalDBSetting.ExecuteNonQuery("UPDATE [dbo].[BookingAdmin] SET CarType=?, CarLicensePlate=?, Remark=?, LastKilometer=? WHERE SourceKey=?", (object)dataRow["CarType"], (object)dataRow["CarLicensePlate"], (object)dataRow["Remark"], (object)dataRow["LastKilometer"], (object)dataRow["SourceKey"]);
+
+                    SqlCommand sqlCommand = new SqlCommand(@"INSERT INTO [dbo].[BookingAdmin] (DocKey,SourceKey,DriverCode,DriverName,CarCode,
+                    CarType,CarLicensePlate,Remark,EstPickDateTime,EstArriveDateTime,AdminCode,AdminName,CreatedBy,CreatedDateTime,LastModifiedBy,
+                    LastModifiedDateTime,LastKilometer) VALUES (@DocKey,@SourceKey,@DriverCode,@DriverName,@CarCode,@CarType,@CarLicensePlate,@Remark,
+                    @EstPickDateTime,@EstArriveDateTime,@AdminCode,@AdminName,@CreatedBy,@CreatedDateTime,@LastModifiedBy,@LastModifiedDateTime,@LastKilometer)");
+                    sqlCommand.Connection = myconn;
+                    sqlCommand.Transaction = trans;
+
+                    SqlParameter sqlParameter1 = sqlCommand.Parameters.Add("@DocKey", SqlDbType.Int);
+                    sqlParameter1.Value = dataRow.Field<int>("DocKey");
+                    sqlParameter1.Direction = ParameterDirection.Input;
+
+                    SqlParameter sqlParameter2 = sqlCommand.Parameters.Add("@SourceKey", SqlDbType.Int);
+                    sqlParameter2.Value = dataRow.Field<int>("SourceKey");
+                    sqlParameter2.Direction = ParameterDirection.Input;
+
+                    SqlParameter sqlParameter3 = sqlCommand.Parameters.Add("@DriverCode", SqlDbType.NVarChar, 40);
+                    sqlParameter3.Value = DBNull.Value;
+                    sqlParameter3.Direction = ParameterDirection.Input;
+
+                    SqlParameter sqlParameter4 = sqlCommand.Parameters.Add("@DriverName", SqlDbType.NVarChar, 100);
+                    sqlParameter4.Value = DBNull.Value;
+                    sqlParameter4.Direction = ParameterDirection.Input;
+
+                    SqlParameter sqlParameter5 = sqlCommand.Parameters.Add("@CarCode", SqlDbType.NVarChar, 40);
+                    sqlParameter5.Value = DBNull.Value;
+                    sqlParameter5.Direction = ParameterDirection.Input;
+
+                    SqlParameter sqlParameter6 = sqlCommand.Parameters.Add("@CarType", SqlDbType.NVarChar, 100);
+                    sqlParameter6.Value = dataRow.Field<string>("CarType");
+                    sqlParameter6.Direction = ParameterDirection.Input;
+
+                    SqlParameter sqlParameter7 = sqlCommand.Parameters.Add("@CarLicensePlate", SqlDbType.NVarChar, 15);
+                    sqlParameter7.Value = dataRow.Field<string>("CarLicensePlate");
+                    sqlParameter7.Direction = ParameterDirection.Input;
+
+                    SqlParameter sqlParameter8 = sqlCommand.Parameters.Add("@Remark", SqlDbType.NVarChar);
+                    sqlParameter8.Value = dataRow.Field<string>("Remark");
+                    sqlParameter8.Direction = ParameterDirection.Input;
+
+                    SqlParameter sqlParameter9 = sqlCommand.Parameters.Add("@EstPickDateTime", SqlDbType.DateTime);
+                    sqlParameter9.Value = DBNull.Value;
+                    sqlParameter9.Direction = ParameterDirection.Input;
+
+                    SqlParameter sqlParameter10 = sqlCommand.Parameters.Add("@EstArriveDateTime", SqlDbType.DateTime);
+                    sqlParameter10.Value = DBNull.Value;
+                    sqlParameter10.Direction = ParameterDirection.Input;
+
+                    SqlParameter sqlParameter11 = sqlCommand.Parameters.Add("@AdminCode", SqlDbType.NVarChar, 40);
+                    sqlParameter11.Value = DBNull.Value;
+                    sqlParameter11.Direction = ParameterDirection.Input;
+
+                    SqlParameter sqlParameter12 = sqlCommand.Parameters.Add("@AdminName", SqlDbType.NVarChar, 100);
+                    sqlParameter12.Value = DBNull.Value;
+                    sqlParameter12.Direction = ParameterDirection.Input;
+
+                    SqlParameter sqlParameter13 = sqlCommand.Parameters.Add("@CreatedBy", SqlDbType.NVarChar);
+                    sqlParameter13.Value = userName;
+                    sqlParameter13.Direction = ParameterDirection.Input;
+
+                    SqlParameter sqlParameter14 = sqlCommand.Parameters.Add("@CreatedDateTime", SqlDbType.DateTime);
+                    sqlParameter14.Value = Mydate;
+                    sqlParameter14.Direction = ParameterDirection.Input;
+
+                    SqlParameter sqlParameter15 = sqlCommand.Parameters.Add("@LastModifiedBy", SqlDbType.NVarChar);
+                    sqlParameter15.Value = DBNull.Value;
+                    sqlParameter15.Direction = ParameterDirection.Input;
+
+                    SqlParameter sqlParameter16 = sqlCommand.Parameters.Add("@LastModifiedDateTime", SqlDbType.DateTime);
+                    sqlParameter16.Value = DBNull.Value;
+                    sqlParameter16.Direction = ParameterDirection.Input;
+
+                    SqlParameter sqlParameter17 = sqlCommand.Parameters.Add("@LastKilometer", SqlDbType.NVarChar);
+                    sqlParameter17.Value = dataRow.Field<string>("LastKilometer");
+                    sqlParameter17.Direction = ParameterDirection.Input;
+
+                    sqlCommand.ExecuteNonQuery();
+                }
+                trans.Commit();
+            }
+            catch (Exception ex)
+            {
+                trans.Rollback();
+                throw new ArgumentException(ex.Message);
+            }
+            finally
+            {
+                myconn.Close();
             }
         }
         protected override void SaveDetail(DataSet ds, SaveAction saveaction)
@@ -607,6 +714,37 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
 
             }
             return myNextStatus;
+        }
+        protected override void ClearBookingAdmin(DataSet ds)
+        {
+            DataRow dataRow = ds.Tables["Admin"].Rows[0];
+            SqlConnection myconn = new SqlConnection(myLocalDBSetting.ConnectionString);
+            SqlCommand sqlCommand = new SqlCommand("DELETE [dbo].[BookingAdmin] WHERE DocKey=@DocKey");
+            sqlCommand.Connection = myconn;
+            try
+            {
+                myconn.Open();
+                SqlParameter sqlParameter1 = sqlCommand.Parameters.Add("@DocKey", SqlDbType.Int);
+                sqlParameter1.Value = dataRow.Field<int>("DocKey"); ;
+                sqlCommand.ExecuteNonQuery();
+            }
+            catch (SqlException ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
+            catch (HttpUnhandledException ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
+            finally
+            {
+                myconn.Close();
+                myconn.Dispose();
+            }
         }
         protected override void ClearDetail(BookingEntity Booking, SaveAction saveaction)
         {

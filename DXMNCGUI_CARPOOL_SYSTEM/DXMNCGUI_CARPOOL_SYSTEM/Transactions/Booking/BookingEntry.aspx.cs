@@ -407,12 +407,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             txtDocNo.ReadOnly = true;
             txtDepartment.ReadOnly = true;
             txtHp.ReadOnly = true;
-            deDocDate.ReadOnly = false;
-
-            if (!accessright.IsAccessibleByUserID(Email, "IS_GA"))
-            {
-                ASPxFormLayout1.FindItemOrGroupByName("LayoutGroupAdminEntry").Visible = false;
-            }
+            deDocDate.ReadOnly = false;            
 
             if (myAction == DXCAction.View)
             {
@@ -473,7 +468,17 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     btnAdminReject.ClientVisible = true;
                     btnApprove.ClientVisible = false;
                     btnReject.ClientVisible = false;
+                    luCarType.ClientEnabled = true;
+                    mmAdminRemark.ClientEnabled = true;
                 }
+            }
+
+            if (!accessright.IsAccessibleByUserID(Email, "IS_GA"))
+            {
+                ASPxFormLayout1.FindItemOrGroupByName("LayoutGroupAdminEntry").Visible = false;
+                luCarType.ClientVisible = true;
+                txtLicensePlate.ClientVisible = true;
+                mmAdminRemark.ClientVisible = true;
             }
 
             //#region Super Admin Accessable
