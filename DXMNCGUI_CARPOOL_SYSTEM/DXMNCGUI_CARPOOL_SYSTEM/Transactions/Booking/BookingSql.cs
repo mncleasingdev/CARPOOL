@@ -331,7 +331,10 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
 
                 localdbSetting.ExecuteNonQuery("UPDATE [dbo].[MasterCar] SET Kilometer=? WHERE CarLicense=?", (object)dataDriverRow["CurrentKilometer"], (object)dataAdminRow["CarLicensePlate"]);
                 localdbSetting.SimpleSaveDataTable(ds.Tables["User"], "SELECT * FROM [dbo].[Booking]");
-                localdbSetting.SimpleSaveDataTable(ds.Tables["Admin"], "SELECT * FROM [dbo].[BookingAdmin]");
+                if (saveaction != SaveAction.ApproveByAdmin)
+                {
+                    localdbSetting.SimpleSaveDataTable(ds.Tables["Admin"], "SELECT * FROM [dbo].[BookingAdmin]");
+                }
                 localdbSetting.SimpleSaveDataTable(ds.Tables["Driver"], "SELECT * FROM [dbo].[BookingDriver]");
                 //SaveDetail(ds, saveaction);
 
@@ -452,8 +455,10 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     sqlParameter16.Value = DBNull.Value;
                     sqlParameter16.Direction = ParameterDirection.Input;
 
+                    var lastkilometer = dataRow.Field<string>("LastKilometer");
+
                     SqlParameter sqlParameter17 = sqlCommand.Parameters.Add("@LastKilometer", SqlDbType.NVarChar);
-                    sqlParameter17.Value = dataRow.Field<string>("LastKilometer");
+                    sqlParameter17.Value = lastkilometer == null ? "" : lastkilometer;
                     sqlParameter17.Direction = ParameterDirection.Input;
 
                     sqlCommand.ExecuteNonQuery();

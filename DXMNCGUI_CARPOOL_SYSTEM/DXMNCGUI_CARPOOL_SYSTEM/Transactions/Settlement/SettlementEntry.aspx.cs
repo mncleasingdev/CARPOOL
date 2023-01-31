@@ -806,6 +806,15 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             if (e.NewValues["ItemCode"] == null) throw new Exception("Item code is null are not allowed.");
             if (e.NewValues["Qty"] == null) throw new Exception("Column 'Qty' is mandatory.");
             if (e.NewValues["UnitPrice"] == null) throw new Exception("Column 'UnitPrice' is mandatory.");
+            byte[] uploadedImage = null;
+            //Bitmap uploadedImage = new Bitmap(Convert.ToString(e.NewValues["Image"]));
+            if (e.NewValues["Image"] != null)
+            {
+                uploadedImage = e.NewValues["Image"] as byte[];
+            }
+
+            //MemoryStream ms = new MemoryStream(uploadedImage);
+            //System.Drawing.Image returnImage = System.Drawing.Image.FromStream(ms);
 
             if (StrErrorMsg == "")
             {
@@ -823,7 +832,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                     e.NewValues["Remark2"],
                     null,
                     null,
-                    e.NewValues["Image"],
+                    uploadedImage,
                     e.NewValues["Qty"], 
                     e.NewValues["UnitPrice"], 
                     e.NewValues["SubTotal"]);
@@ -838,6 +847,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 e.Cancel = true;
             }
         }
+
         protected void gvSettlementDetail_RowUpdating(object sender, DevExpress.Web.Data.ASPxDataUpdatingEventArgs e)
         {
             string StrErrorMsg = "";

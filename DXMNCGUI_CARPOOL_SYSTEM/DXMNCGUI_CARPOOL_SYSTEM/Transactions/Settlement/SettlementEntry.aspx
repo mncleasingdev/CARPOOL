@@ -519,7 +519,7 @@
                                                                 AllowDragDrop="False" AllowGroup="False" AllowHeaderFilter="False"
                                                                 AllowSort="False" />
                                                         </dx:GridViewDataTextColumn>
-                                                        <dx:GridViewCommandColumn  Name="ClmnCommand2"  ShowNewButton="false" ShowEditButton="false" ButtonRenderMode="Image" Caption=" " VisibleIndex="2" Width="1%" Visible="false">
+                                                        <dx:GridViewCommandColumn  Name="ClmnCommand2"  ShowNewButton="false" ShowEditButton="false" ButtonRenderMode="Image" Caption=" " VisibleIndex="2" Width="1%" Visible="true">
                                                             <CustomButtons>
                                                                 <dx:GridViewCommandColumnCustomButton ID="ctmbtnView">
                                                                     <Image ToolTip="View detail" Url="../../Content/Images/ViewIcon-16x16.png"/>
@@ -555,7 +555,7 @@
                                                         <dx:GridViewDataMemoColumn Name="colNote" Caption="Note" FieldName="Note" PropertiesMemoEdit-Height="75px" Visible="false" VisibleIndex="8">
                                                             <HeaderStyle Font-Bold="true" ForeColor="#003399" />
                                                         </dx:GridViewDataMemoColumn>
-                                                        <dx:GridViewDataBinaryImageColumn  Name="colImage" FieldName="Image" ShowInCustomizationForm="True" UnboundType="Object" Settings-AllowAutoFilter="False" Visible="false" VisibleIndex="9">
+                                                        <dx:GridViewDataBinaryImageColumn  Name="colImage" FieldName="Image" ShowInCustomizationForm="True" UnboundType="Object" Settings-AllowAutoFilter="False" Visible="true" VisibleIndex="9">
                                                             <PropertiesBinaryImage ImageHeight="170px" ImageWidth="140px">
                                                                 <EditingSettings Enabled="true" UploadSettings-UploadValidationSettings-MaxFileSize="4194304" UploadSettings-UploadMode="Advanced">
                                                                     <UploadSettings UploadMode="Advanced">
@@ -628,7 +628,7 @@
                                                                     <dx:EmptyLayoutItem Width="40%"></dx:EmptyLayoutItem>
                                                                     <dx:GridViewColumnLayoutItem Caption="Note" ColumnName="colNote" Width="40%"></dx:GridViewColumnLayoutItem>
                                                                     <dx:EmptyLayoutItem Width="60%"></dx:EmptyLayoutItem>
-                                                                    <dx:GridViewColumnLayoutItem Caption="Image" ColumnName="colImage" Width="40%" Visible="false"></dx:GridViewColumnLayoutItem>
+                                                                    <dx:GridViewColumnLayoutItem Caption="Image" ColumnName="colImage" Width="40%" Visible="true"></dx:GridViewColumnLayoutItem>
                                                                     <dx:EmptyLayoutItem Width="60%"></dx:EmptyLayoutItem>
                                                                     <dx:EditModeCommandLayoutItem HorizontalAlign="Right" Width="100%"></dx:EditModeCommandLayoutItem>
                                                                 </Items>
