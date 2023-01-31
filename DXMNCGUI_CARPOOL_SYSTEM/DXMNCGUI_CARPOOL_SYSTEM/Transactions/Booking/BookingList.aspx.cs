@@ -87,7 +87,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     btnApprovalList.Text += " (" + Convert.ToString(myApprovalTable.Rows.Count) + ")";
                 }
 
-                if (accessright.IsAccessibleByUserID(Email, "IS_GA"))
+                if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
                 {
                     if (myFinishTable.Rows.Count > 0)
                     {
@@ -112,7 +112,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
 
         private void accessable()
         {
-            if (accessright.IsAccessibleByUserID(Email, "IS_GA"))
+            if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
             {
                 btnOnSchedule.ClientVisible = true;
             }
@@ -122,7 +122,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
         protected void GetApprovalTable()
         {
             string cmdID = "";
-            if (accessright.IsAccessibleByUserID(Email, "IS_GA"))
+            if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
             {
                 cmdID = "IS_GA";
             }

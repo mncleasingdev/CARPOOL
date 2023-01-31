@@ -119,7 +119,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
         }
         private void refreshdatagrid()
         {
-            if (accessright.IsAccessibleByUserID(Email, "IS_GA"))
+            if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
             {
                 myMainTable = this.mySettlementDB.LoadBrowseTable(true, UserName);
             }

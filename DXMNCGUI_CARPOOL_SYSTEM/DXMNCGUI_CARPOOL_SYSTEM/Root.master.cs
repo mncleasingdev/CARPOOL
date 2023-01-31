@@ -38,7 +38,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM {
             ASPxLabel2.Text = DateTime.Now.Year + Server.HtmlDecode(" &copy; Corporate Digital and System Information Division - PT. MNC Guna Usaha Indonesia");
 
             //if (accessright.IsAccessibleByUserID(Email.ToString(), "IS_ADMIN"))
-            if (accessright.IsAccessibleByUserID(Email.ToString(), "IS_GA"))
+            if ((accessright.IsAccessibleByUserID(Email.ToString(), "IS_GA")) || (accessright.IsAccessibleByUserID(Email.ToString(), "IS_ADMIN")))
             {
                 HeaderMenu.Items.FindByName("MenuMaintenance").Visible = true;
                 HeaderMenu.Items.FindByName("MenuReporting").Visible = true;

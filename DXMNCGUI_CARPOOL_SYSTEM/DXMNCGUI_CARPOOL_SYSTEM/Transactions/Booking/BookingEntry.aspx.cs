@@ -461,9 +461,9 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 gvPersonDetail.Columns["ClmnCommand"].Visible = false;
                 gvApproval.Columns["ClmnCommand"].Visible = false;
 
-                if (accessright.IsAccessibleByUserID(Email, "IS_GA"))
+                if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
                 {
-                    btnAdminOnHold.ClientVisible = true;
+                    //btnAdminOnHold.ClientVisible = true;
                     btnAdminApprove.ClientVisible = true;
                     btnAdminReject.ClientVisible = true;
                     btnApprove.ClientVisible = false;

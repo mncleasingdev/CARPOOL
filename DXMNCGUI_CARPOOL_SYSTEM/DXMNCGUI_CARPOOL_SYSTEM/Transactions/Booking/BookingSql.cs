@@ -75,7 +75,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             string sQuery = "";
             string cmdID = "";
             myBrowseTableApproval.Clear();
-            if (accessright.IsAccessibleByUserID(UserCode, "IS_GA"))
+            if ((accessright.IsAccessibleByUserID(UserCode, "IS_GA")) || (accessright.IsAccessibleByUserID(UserCode, "IS_ADMIN")))
             {
                 cmdID = "IS_GA";
             }
