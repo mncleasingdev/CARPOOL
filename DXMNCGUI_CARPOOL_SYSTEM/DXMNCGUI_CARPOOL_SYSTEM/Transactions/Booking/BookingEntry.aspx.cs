@@ -1031,7 +1031,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 connection.Open();
                 SqlCommand sqlCommand = new SqlCommand(@"SELECT a.status,a.Approver,b.status,b.Approver FROM BOOKING A
                                                          LEFT JOIN Settlement B ON A.DocNo=B.BookNo
-                                                         where A.CreatedBy='" + UserName + "' AND ISNULL(B.Status,'') NOT IN ('COMPLETE') AND ISNULL(A.Status, '') NOT IN('REJECTED')", connection);
+                                                         where A.CreatedBy='" + UserName + "' AND ISNULL(B.Status,'') NOT IN ('COMPLETE') AND ISNULL(A.Status, '') NOT IN('REJECTED','REJECTED BY GA')", connection);
                 if (System.Convert.ToInt32(sqlCommand.ExecuteScalar()) > 0)
                 {
 
