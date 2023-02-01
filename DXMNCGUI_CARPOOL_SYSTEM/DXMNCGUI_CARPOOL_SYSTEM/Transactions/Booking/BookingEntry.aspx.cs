@@ -76,6 +76,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             get { isValidLogin(false); return (DataTable)HttpContext.Current.Session["myApprovalTable" + this.ViewState["_PageID"]]; }
             set { HttpContext.Current.Session["myApprovalTable" + this.ViewState["_PageID"]] = value; }
         }
+        protected DataTable myApprovalGATable
+        {
+            get { isValidLogin(false); return (DataTable)HttpContext.Current.Session["myApprovalGATable" + this.ViewState["_PageID"]]; }
+            set { HttpContext.Current.Session["myApprovalGATable" + this.ViewState["_PageID"]] = value; }
+        }
         //protected DataTable myDriverTable
         //{
         //    get { isValidLogin(false); return (DataTable)HttpContext.Current.Session["myDriverTable" + this.ViewState["_PageID"]]; }
@@ -174,6 +179,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 myNumberOfSeatTable = new DataTable();
                 //myDriverTable = new DataTable();
                 myApprovalTable = new DataTable();
+                myApprovalGATable = new DataTable();
                 myCarTable = new DataTable();
                 myRoleTable = new DataTable();
                 strDocName = "";
@@ -261,6 +267,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 myCarTable = myLocalDBSetting.GetDataTable("SELECT CarCode, CarType, CarName, CarLicense, NumberOfSeat, Kilometer FROM [dbo].[MasterCar] ORDER BY CarType", false);
                 luCarType.DataSource = myCarTable;
                 luCarType.DataBind();
+
+                myApprovalGATable = myLocalDBSetting.GetDataTable("select top 1 * from BookingApprovalList where DtlKey = 0 ORDER BY Seq ASC", false);
 
                 myApprovalTable = myLocalDBSetting.GetDataTable("select top 1 * from BookingApprovalList where DtlKey = 0 ORDER BY Seq ASC", false);
                 gvApproval.DataSource = myApprovalTable;
@@ -914,7 +922,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             }
         }
 
-        private void insertApproval(DataRow dataRow, string TypeApproval)
+        private void insertApproval(DataRow dataRow, string TypeApproval, SaveAction saveaction)
         {
             string ssql = @"insert into BookingApprovalList ([DocKey],[TypeApproval],[Seq],[NIK],[Nama],[Jabatan],[IsDecision],[DecisionState],[DecisionDate],[DecisionNote],[Email])
                         values(@DocKey,@TypeApproval,@Seq,@NIK,@Nama,@Jabatan,@IsDecision,@DecisionState,@DecisionDate,@DecisionNote,@Email)";
@@ -942,13 +950,27 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             sqlParameter6.Value = dataRow.Field<string>("Jabatan");
             sqlParameter6.Direction = ParameterDirection.Input;
             SqlParameter sqlParameter7 = sqlCommand.Parameters.Add("@IsDecision", SqlDbType.VarChar);
-            sqlParameter7.Value = "F";
+            if ((saveaction == SaveAction.ApproveByAdmin) || (saveaction == SaveAction.RejectByAdmin))
+            {
+                sqlParameter7.Value = dataRow.Field<string>("IsDecision");
+            }
+            else
+            {
+                sqlParameter7.Value = "F";
+            }
             sqlParameter7.Direction = ParameterDirection.Input;
             SqlParameter sqlParameter8 = sqlCommand.Parameters.Add("@DecisionState", SqlDbType.VarChar);
             sqlParameter8.Value = dataRow.Field<string>("DecisionState") == null ? "" : dataRow.Field<string>("DecisionState");
             sqlParameter8.Direction = ParameterDirection.Input;
             SqlParameter sqlParameter9 = sqlCommand.Parameters.Add("@DecisionDate", SqlDbType.DateTime);
-            sqlParameter9.Value = DBNull.Value;
+            if ((saveaction == SaveAction.ApproveByAdmin) || (saveaction == SaveAction.RejectByAdmin))
+            {
+                sqlParameter9.Value = myLocalDBSetting.GetServerTime();
+            }
+            else
+            {
+                sqlParameter9.Value = DBNull.Value;
+            }
             sqlParameter9.Direction = ParameterDirection.Input;
             SqlParameter sqlParameter10 = sqlCommand.Parameters.Add("@DecisionNote", SqlDbType.VarChar);
             sqlParameter10.Value = dataRow.Field<string>("DecisionNote") == null ? "" : dataRow.Field<string>("DecisionNote");
@@ -956,6 +978,20 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             SqlParameter sqlParameter11 = sqlCommand.Parameters.Add("@Email", SqlDbType.VarChar);
             sqlParameter11.Value = dataRow.Field<string>("Email") == null ? "" : dataRow.Field<string>("Email");
             sqlParameter11.Direction = ParameterDirection.Input;
+            SqlParameter sqlParameter12 = sqlCommand.Parameters.Add("@DecisionCode", SqlDbType.VarChar);
+            if (saveaction == SaveAction.ApproveByAdmin)
+            {
+                sqlParameter12.Value = 1;
+            }
+            else if (saveaction == SaveAction.RejectByAdmin)
+            {
+                sqlParameter12.Value = 2;
+            }
+            else
+            {
+                sqlParameter12.Value = DBNull.Value;
+            }
+            sqlParameter12.Direction = ParameterDirection.Input;
             sqlCommand.ExecuteNonQuery();
             myconn.Close();
         }
@@ -1092,6 +1128,42 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             //myBookingEntity.DriverActualArriveDateTime = deActArrivalTime.Value == null ? DBNull.Value : deActArrivalTime.Value;
             //myBookingEntity.DriverRemark = mmActRemark.Value;
 
+            if (saveAction == SaveAction.ApproveByAdmin)
+            {
+                string sEmail = "";
+                if (Email == "1610024")
+                {
+                    sEmail = "yeffi.hendrisco@mncgroup.com";
+                }
+                else if(Email == "97030053")
+                {
+                    sEmail = "amin.gusdarri@mncgroup.com";
+                }
+                myApprovalGATable.Rows.Add(2, myBookingEntity.DocKey, "Pengajuan Approval", 1, Email, UserName, "HO GENERAL AFFAIR MANAGER", "T", "APPROVE", DBNull.Value, mmAdminRemark.Value, sEmail, DBNull.Value);
+                foreach (DataRow drApproveGA in myApprovalGATable.Rows)
+                {
+                    insertApproval(drApproveGA, "Pengajuan Approval", SaveAction.ApproveByAdmin);
+                }
+            }
+
+            if (saveAction == SaveAction.RejectByAdmin)
+            {
+                string sEmail = "";
+                if (Email == "1610024")
+                {
+                    sEmail = "yeffi.hendrisco@mncgroup.com";
+                }
+                else if (Email == "97030053")
+                {
+                    sEmail = "amin.gusdarri@mncgroup.com";
+                }
+                myApprovalGATable.Rows.Add(2, myBookingEntity.DocKey, "Pengajuan Approval", 1, Email, UserName, "HO GENERAL AFFAIR MANAGER", "T", "REJECT", DBNull.Value, mmAdminRemark.Value, sEmail, DBNull.Value);
+                foreach (DataRow drApproveGA in myApprovalGATable.Rows)
+                {
+                    insertApproval(drApproveGA, "Pengajuan Approval", SaveAction.ApproveByAdmin);
+                }
+            }
+
             if (saveAction == SaveAction.Save)
             {
                 foreach (DataRow dr in myDetailTable.Rows)
@@ -1102,7 +1174,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
 
                 foreach (DataRow drApprove in myApprovalTable.Rows)
                 {
-                    insertApproval(drApprove, "Pengajuan Approval");
+                    insertApproval(drApprove, "Pengajuan Approval", SaveAction.Save);
                     myBookingEntity.Approver = drApprove["NIK"].ToString();
                 }
             }
@@ -1317,7 +1389,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             }
             else if (saveAction == SaveAction.Reject)
             {
-                UpdateApproval("REJECT", DecisionNote.Value.ToString(), 1);
+                UpdateApproval("REJECT", DecisionNote.Value.ToString(), 2);
             }
             
             return bSave;
