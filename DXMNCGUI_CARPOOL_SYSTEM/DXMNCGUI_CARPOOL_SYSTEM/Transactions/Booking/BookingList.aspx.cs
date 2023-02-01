@@ -3,6 +3,7 @@ using DXMNCGUI_CARPOOL_SYSTEM.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -75,6 +76,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 isValidLogin();
                 myDBSetting = dbsetting;
                 myDBSession = dbsession;
+                myLocalDBSetting = localdbsetting;
                 myMainTable = new DataTable();
                 this.myBookingDB = BookingDB.Create(myDBSetting, dbsession,myLocalDBSetting);
                 GetApprovalTable();
@@ -205,6 +207,34 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
         {
 
         }
+        private bool cekOutStandingBooking()
+        {
+            SqlConnection connection = new SqlConnection(this.myLocalDBSetting.ConnectionString);
+            bool flag = false;
+            try
+            {
+                connection.Open();
+                SqlCommand sqlCommand = new SqlCommand(@"SELECT COUNT(*) FROM BOOKING                                                        
+                                                         WHERE CreatedBy='" + UserName + "' AND ISNULL(Status,'') in ('NEED APPROVAL','ON SCHEDULE') ", connection);
+                if (System.Convert.ToInt32(sqlCommand.ExecuteScalar()) > 0)
+                {
+
+                    flag = true;
+                }
+            }
+            catch (SqlException ex)
+            {
+                DataError.HandleSqlException(ex);
+            }
+            finally
+            {
+                connection.Close();
+                connection.Dispose();
+            }
+
+            return flag;
+
+        }
         protected void btnNew_Click(object sender, EventArgs e)
         {
             string updatedQueryString = "";
@@ -217,17 +247,24 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
 
             try
             {
-                myBookingEntity = myBookingDB.Entity(DXCType.BK);
-                var nameValues = HttpUtility.ParseQueryString(Request.QueryString.ToString());
-                nameValues.Set("Key", this.ViewState["_PageID"].ToString());
-                updatedQueryString = "?" + nameValues.ToString();
+                if (cekOutStandingBooking())
+                {
+                    ClientScript.RegisterStartupScript(this.GetType(), "myalert", "alert('Cant Input Transaction There is Transaction status Not Finish, Please Contact General Affair!');", true);
+                }
+                else
+                { 
+                    myBookingEntity = myBookingDB.Entity(DXCType.BK);
+                    var nameValues = HttpUtility.ParseQueryString(Request.QueryString.ToString());
+                    nameValues.Set("Key", this.ViewState["_PageID"].ToString());
+                    updatedQueryString = "?" + nameValues.ToString();
+                    Response.Redirect("~/Transactions/Booking/BookingEntry.aspx" + updatedQueryString);
+                }
             }
             catch (Exception ex)
             {
                 ClientScript.RegisterStartupScript(this.GetType(), "myalert", "alert('" + ex.Message + "');", true);
                 return;
-            }
-            Response.Redirect("~/Transactions/Booking/BookingEntry.aspx" + updatedQueryString);
+            }        
         }
         protected void btnView_Click(object sender, EventArgs e)
         {

@@ -407,7 +407,15 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             txtDocNo.ReadOnly = true;
             txtDepartment.ReadOnly = true;
             txtHp.ReadOnly = true;
-            deDocDate.ReadOnly = false;            
+            deDocDate.ReadOnly = false;
+
+            if (!accessright.IsAccessibleByUserID(Email, "IS_GA"))
+            {
+                ASPxFormLayout1.FindItemOrGroupByName("LayoutGroupAdminEntry").Visible = false;
+                luCarType.ClientVisible = true;
+                txtLicensePlate.ClientVisible = true;
+                mmAdminRemark.ClientVisible = true;
+            }
 
             if (myAction == DXCAction.View)
             {
@@ -418,6 +426,10 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     btnAdminOnHold.ClientVisible = false;
                     btnAdminReject.ClientVisible = false;
                 }
+                ASPxFormLayout1.FindItemOrGroupByName("LayoutGroupAdminEntry").Visible = true;
+                luCarType.ClientVisible = true;
+                mmAdminRemark.ClientVisible = true;
+                txtLastKM.ClientVisible = true;
                 btnSubmit.Visible = false;
                 btnCancel.Visible = false;
                 deDocDate.ClientEnabled = false;
@@ -473,13 +485,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 }
             }
 
-            if (!accessright.IsAccessibleByUserID(Email, "IS_GA"))
-            {
-                ASPxFormLayout1.FindItemOrGroupByName("LayoutGroupAdminEntry").Visible = false;
-                luCarType.ClientVisible = true;
-                txtLicensePlate.ClientVisible = true;
-                mmAdminRemark.ClientVisible = true;
-            }
+
 
             //#region Super Admin Accessable
             //if (accessright.IsAccessibleByUserID(Email, "IS_SUPER_ADMIN"))
@@ -1022,40 +1028,39 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             }
         }
 
-        private bool cekOutStandingBooking()
-        {
-            SqlConnection connection = new SqlConnection(this.myLocalDBSetting.ConnectionString);
-            bool flag = false;
-            try
-            {
-                connection.Open();
-                SqlCommand sqlCommand = new SqlCommand(@"SELECT a.status,a.Approver,b.status,b.Approver FROM BOOKING A
-                                                         LEFT JOIN Settlement B ON A.DocNo=B.BookNo
-                                                         where A.CreatedBy='" + UserName + "' AND ISNULL(B.Status,'') NOT IN ('COMPLETE') AND ISNULL(A.Status, '') NOT IN('REJECTED','REJECTED BY GA')", connection);
-                if (System.Convert.ToInt32(sqlCommand.ExecuteScalar()) > 0)
-                {
+        //private bool cekOutStandingBooking()
+        //{
+        //    SqlConnection connection = new SqlConnection(this.myLocalDBSetting.ConnectionString);
+        //    bool flag = false;
+        //    try
+        //    {
+        //        connection.Open();
+        //        SqlCommand sqlCommand = new SqlCommand(@"SELECT status,Approver FROM BOOKING                                                        
+        //                                                 WHERE CreatedBy='" + UserName + "' AND ISNULL(Status,'') = 'NEED_APPROVAL' ", connection);
+        //        if (System.Convert.ToInt32(sqlCommand.ExecuteScalar()) > 0)
+        //        {
 
-                    flag = true;
-                }
-            }
-            catch (SqlException ex)
-            {
-                DataError.HandleSqlException(ex);
-            }
-            finally
-            {
-                connection.Close();
-                connection.Dispose();
-            }
+        //            flag = true;
+        //        }
+        //    }
+        //    catch (SqlException ex)
+        //    {
+        //        DataError.HandleSqlException(ex);
+        //    }
+        //    finally
+        //    {
+        //        connection.Close();
+        //        connection.Dispose();
+        //    }
 
-            return flag;
+        //    return flag;
 
-        }
+        //}
         private bool Save(SaveAction saveAction)
         {
             bool bSave = true;
             DataTable dtCopyApp = new DataTable();
-            
+
             gvPersonDetail.UpdateEdit();
             myBookingEntity.DocNo = txtDocNo.Value;
             myBookingEntity.DocDate = deDocDate.Value;
@@ -1135,17 +1140,17 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             {
                 #region ACTION BY USER
                 case "SUBMIT":
-                    if (cekOutStandingBooking())
-                    {
-                        cplMain.JSProperties["cpAlertMessage"] = "There are Transaction Not Complete yet, Please Contact General Affair!";
-                    }
-                    else
-                    { 
+                    //if (cekOutStandingBooking())
+                    //{
+                    //    cplMain.JSProperties["cpAlertMessage"] = "There are Transaction Not Complete yet, Please Contact General Affair!";
+                    //}
+                    //else
+                    //{ 
                         Save(SaveAction.Save);
                         cplMain.JSProperties["cpAlertMessage"] = "Transaction has been submit...";
                         cplMain.JSProperties["cplblActionButton"] = "SUBMIT";
                         DevExpress.Web.ASPxWebControl.RedirectOnCallback(urlsave + updatedQueryString);
-                    }
+                    //}
                     break;
                 case "SUBMITCONFIRM":
                     cplMain.JSProperties["cplblmessageError"] = "";

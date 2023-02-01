@@ -257,7 +257,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                     sqlParameter10.Direction = ParameterDirection.Input;
                     //SqlParameter sqlParameter11 = sqlCommand.Parameters.Add("@Image", SqlDbType.Image, 1);
                     SqlParameter sqlParameter11 = sqlCommand.Parameters.Add("@Image", SqlDbType.Binary);
-                    sqlParameter11.Value = DBNull.Value; //dataRow.Field<Image>("Image");
+                    sqlParameter11.Value = DBNull.Value;//dataRow.Field<byte>("Image");
                     sqlParameter11.Direction = ParameterDirection.Input;
                     SqlParameter sqlParameter12 = sqlCommand.Parameters.Add("@Qty", SqlDbType.Float);
                     sqlParameter12.Value = dataRow.Field<Decimal>("Qty");
