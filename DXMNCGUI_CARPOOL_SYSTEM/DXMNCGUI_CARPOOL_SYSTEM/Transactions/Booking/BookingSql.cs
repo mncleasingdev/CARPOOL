@@ -26,9 +26,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 myLocalDBSetting.LoadDataTable(myBrowseTable, @"SELECT CASE WHEN a.approver + '-' + ISNULL(b.DESCS,'') ='IS_GA-' THEN 'GENERAL AFFAIR'
                                                                 ELSE a.approver + ' - ' + ISNULL(b.DESCS,'') END [NextApprover],* 
                                                                 FROM dbo.Booking a
-                                                                left join IFINANCING_GOLIVE..SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE
-                                                                WHERE EmployeeName=?
-                                                                ORDER BY DocDate DESC", true, userID);
+                                                                left join IFINANCING_GOLIVE..SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE                                                                
+                                                                WHERE EmployeeName='" + userID + "' OR b.DESCS='" + userID + "' ORDER BY DocDate DESC", true);
             }
             else
             {
@@ -36,7 +35,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 myLocalDBSetting.LoadDataTable(myBrowseTable, @"SELECT CASE WHEN a.approver + '-' + ISNULL(b.DESCS,'') ='IS_GA-' THEN 'GENERAL AFFAIR'
                                                                 ELSE a.approver + ' - ' + ISNULL(b.DESCS,'') END [NextApprover],* 
                                                                 FROM dbo.Booking a
-                                                                left join IFINANCING_GOLIVE..SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE 
+                                                                left join IFINANCING_GOLIVE..SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE                                
                                                                 ORDER BY DocDate DESC", true);
             }
 
@@ -51,9 +50,9 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                                                                 ORDER BY DocDate DESC", true, userID, department);
             }
 
-            DataColumn[] keyHeader = new DataColumn[1];
-            keyHeader[0] = myBrowseTable.Columns["DocKey"];
-            myBrowseTable.PrimaryKey = keyHeader;
+            //DataColumn[] keyHeader = new DataColumn[1];
+            //keyHeader[0] = myBrowseTable.Columns["DocKey"];
+            //myBrowseTable.PrimaryKey = keyHeader;
             return myBrowseTable;
         }
         public override DataTable LoadBrowseTableForDriver(string DriverName)
@@ -75,7 +74,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             string sQuery = "";
             string cmdID = "";
             myBrowseTableApproval.Clear();
-            if ((accessright.IsAccessibleByUserID(UserCode, "IS_GA")) || (accessright.IsAccessibleByUserID(UserCode, "IS_ADMIN")))
+            //if ((accessright.IsAccessibleByUserID(UserCode, "IS_GA")) || (accessright.IsAccessibleByUserID(UserCode, "IS_ADMIN")))
+            if (accessright.IsAccessibleByUserID(UserCode, "IS_GA"))
             {
                 cmdID = "IS_GA";
             }
@@ -248,7 +248,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 if (saveaction == SaveAction.Reject)
                 {
                     dataRow["Status"] = "REJECTED";
-                    dataRow["Approver"] = "-";
+                    dataRow["Approver"] = userID;
                     dataRow["LastModifiedBy"] = userName;
                     dataRow["LastModifiedDateTime"] = Mydate;
                 }
@@ -256,7 +256,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 {
                     dataRow["Status"] = "CANCELLED";
                     dataRow["Cancelled"] = "T";
-                    dataRow["Approver"] = "-";
+                    dataRow["Approver"] = userID;
                     dataRow["CancelledBy"] = userName;
                     dataRow["CancelledDateTime"] = Mydate;
                     dataRow["LastModifiedBy"] = userName;
@@ -272,7 +272,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 if (saveaction == SaveAction.RejectByAdmin)
                 {
                     dataRow["Status"] = "REJECTED BY GA";
-                    dataRow["Approver"] = "-";
+                    dataRow["Approver"] = userID;
                     dataRow["LastModifiedBy"] = userName;
                     dataRow["LastModifiedDateTime"] = Mydate;
                 }

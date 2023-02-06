@@ -555,7 +555,7 @@
                                                         <dx:GridViewDataMemoColumn Name="colNote" Caption="Note" FieldName="Note" PropertiesMemoEdit-Height="75px" Visible="false" VisibleIndex="8">
                                                             <HeaderStyle Font-Bold="true" ForeColor="#003399" />
                                                         </dx:GridViewDataMemoColumn>
-                                                        <dx:GridViewDataBinaryImageColumn  Name="colImage" FieldName="Image" ShowInCustomizationForm="True" UnboundType="Object" Settings-AllowAutoFilter="False" Visible="true" VisibleIndex="9">
+                                                        <dx:GridViewDataBinaryImageColumn  Name="colImage" FieldName="Image" ShowInCustomizationForm="True" UnboundType="Object" Settings-AllowAutoFilter="False" Visible="false" VisibleIndex="9">
                                                             <PropertiesBinaryImage ImageHeight="170px" ImageWidth="140px">
                                                                 <EditingSettings Enabled="true" UploadSettings-UploadValidationSettings-MaxFileSize="4194304" UploadSettings-UploadMode="Advanced">
                                                                     <UploadSettings UploadMode="Advanced">
@@ -628,7 +628,7 @@
                                                                     <dx:EmptyLayoutItem Width="40%"></dx:EmptyLayoutItem>
                                                                     <dx:GridViewColumnLayoutItem Caption="Note" ColumnName="colNote" Width="40%"></dx:GridViewColumnLayoutItem>
                                                                     <dx:EmptyLayoutItem Width="60%"></dx:EmptyLayoutItem>
-                                                                    <dx:GridViewColumnLayoutItem Caption="Image" ColumnName="colImage" Width="40%" Visible="true"></dx:GridViewColumnLayoutItem>
+                                                                    <dx:GridViewColumnLayoutItem Caption="Image" ColumnName="colImage" Width="40%" Visible="false"></dx:GridViewColumnLayoutItem>
                                                                     <dx:EmptyLayoutItem Width="60%"></dx:EmptyLayoutItem>
                                                                     <dx:EditModeCommandLayoutItem HorizontalAlign="Right" Width="100%"></dx:EditModeCommandLayoutItem>
                                                                 </Items>
@@ -776,7 +776,7 @@
                             </dx:LayoutItem>
                         </Items>
             </dx:LayoutGroup>            
-            <dx:EmptyLayoutItem Width="70%"></dx:EmptyLayoutItem>
+            <dx:EmptyLayoutItem Width="60%"></dx:EmptyLayoutItem>
            <dx:LayoutItem ShowCaption="False" Width="10%">
                 <LayoutItemNestedControlCollection>
                     <dx:LayoutItemNestedControlContainer>
@@ -785,21 +785,21 @@
                         </dx:ASPxButton>
                     </dx:LayoutItemNestedControlContainer>
                 </LayoutItemNestedControlCollection>
-            </dx:LayoutItem>    
+            </dx:LayoutItem> 
+           <dx:LayoutItem ShowCaption="False" Width="10%" Visible="true">
+                <LayoutItemNestedControlCollection>
+                    <dx:LayoutItemNestedControlContainer>
+                        <dx:ASPxButton runat="server" ID="btnReject" ClientInstanceName="btnReject" Text="Reject" AutoPostBack="false" UseSubmitBehavior="false" Width="100%" ForeColor="Red" Theme="Office2010Blue" Border-BorderColor="WhiteSmoke" Border-BorderWidth="2" Border-BorderStyle="Outset" ClientVisible="false">
+                            <ClientSideEvents Click="function(s,e) { cplMain.PerformCallback('REJECT_CONFIRM;' + 'REJECT_CONFIRM'); }" />
+                        </dx:ASPxButton>
+                    </dx:LayoutItemNestedControlContainer>
+                </LayoutItemNestedControlCollection>
+            </dx:LayoutItem>               
             <dx:LayoutItem ShowCaption="False" Width="10%">
                 <LayoutItemNestedControlCollection>
                     <dx:LayoutItemNestedControlContainer>
                         <dx:ASPxButton runat="server" ID="btnSubmit" ClientInstanceName="btnSubmit" Text="Submit" ForeColor="DarkSlateBlue" AutoPostBack="false" UseSubmitBehavior="false" ValidationGroup="ValidationSave" Width="100%" Theme="Office2010Blue" Border-BorderColor="WhiteSmoke" Border-BorderWidth="2" Border-BorderStyle="Outset">
                             <ClientSideEvents Click="function(s,e) { cplMain.PerformCallback('SUBMITCONFIRM;' + 'SUBMITCONFIRM'); }" />
-                        </dx:ASPxButton>
-                    </dx:LayoutItemNestedControlContainer>
-                </LayoutItemNestedControlCollection>
-            </dx:LayoutItem>
-            <dx:LayoutItem ShowCaption="False" Width="10%" Visible="true">
-                <LayoutItemNestedControlCollection>
-                    <dx:LayoutItemNestedControlContainer>
-                        <dx:ASPxButton runat="server" ID="btnReject" ClientInstanceName="btnReject" Text="Reject" AutoPostBack="false" UseSubmitBehavior="false" Width="100%" ForeColor="Red" Theme="Office2010Blue" Border-BorderColor="WhiteSmoke" Border-BorderWidth="2" Border-BorderStyle="Outset" ClientVisible="false">
-                            <ClientSideEvents Click="function(s,e) { cplMain.PerformCallback('REJECT_CONFIRM;' + 'REJECT_CONFIRM'); }" />
                         </dx:ASPxButton>
                     </dx:LayoutItemNestedControlContainer>
                 </LayoutItemNestedControlCollection>

@@ -481,7 +481,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 gvPersonDetail.Columns["ClmnCommand"].Visible = false;
                 gvApproval.Columns["ClmnCommand"].Visible = false;
 
-                if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
+                //if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
+                if (accessright.IsAccessibleByUserID(Email, "IS_GA"))
                 {
                     //btnAdminOnHold.ClientVisible = true;
                     btnAdminApprove.ClientVisible = true;
@@ -1160,7 +1161,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 myApprovalGATable.Rows.Add(2, myBookingEntity.DocKey, "Pengajuan Approval", 1, Email, UserName, "HO GENERAL AFFAIR MANAGER", "T", "REJECT", DBNull.Value, mmAdminRemark.Value, sEmail, DBNull.Value);
                 foreach (DataRow drApproveGA in myApprovalGATable.Rows)
                 {
-                    insertApproval(drApproveGA, "Pengajuan Approval", SaveAction.ApproveByAdmin);
+                    insertApproval(drApproveGA, "Pengajuan Approval", SaveAction.RejectByAdmin);
                 }
             }
 
@@ -1306,11 +1307,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                         cplMain.JSProperties["cplblmessageError"] = strmessageError;
                     }
                     break;
-                case "ADMIN_APPROVE":
+                case "ADMIN_APPROVE":                    
                     Save(SaveAction.ApproveByAdmin);
                     cplMain.JSProperties["cpAlertMessage"] = "Transaction has been approved...";
                     cplMain.JSProperties["cplblActionButton"] = "ADMIN_APPROVE";
-                    DevExpress.Web.ASPxWebControl.RedirectOnCallback("BookingList.aspx");
+                    DevExpress.Web.ASPxWebControl.RedirectOnCallback("BookingList.aspx");                                        
                     break;
                 case "ADMIN_APPROVE_CONFIRM":
                     cplMain.JSProperties["cplblmessageError"] = "";

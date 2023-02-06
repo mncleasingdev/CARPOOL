@@ -736,7 +736,7 @@
                                     </Columns>
                                     <GridViewStyles AdaptiveDetailButtonWidth="22">
                                     </GridViewStyles>
-                                    <%--<ValidationSettings Display="Dynamic" SetFocusOnError="True" ValidationGroup="ValidationSave">
+                          <%--          <ValidationSettings Display="Dynamic" SetFocusOnError="True" ValidationGroup="ValidationSave">
                                         <RequiredField ErrorText="* Value can't be empty." IsRequired="True" />
                                     </ValidationSettings>--%>
                                 </dx:ASPxGridLookup>

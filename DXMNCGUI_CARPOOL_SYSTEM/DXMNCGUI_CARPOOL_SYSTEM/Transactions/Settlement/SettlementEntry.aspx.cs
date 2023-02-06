@@ -329,6 +329,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             {
                 deDocDate.ReadOnly = true;
                 btnApprove.ClientVisible = true;
+                btnReject.ClientVisible = true;
                 gvSettlementDetail.Columns["ClmnCommand"].Visible = false;
                 gvSettlementDetail.Columns["ClmnCommand2"].Visible = true;
                 gvSettlementDetail.Columns["colNo"].Visible = true;
@@ -336,7 +337,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 txtBookNo.ClientVisible = true;
 
                 btnSubmit.Visible = false;
-                btnReject.Visible = true;
+               
             }
 
             #region Control Color
@@ -574,7 +575,14 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             mySettlementEntity.DocNo = txtDocNo.Value;
             mySettlementEntity.Status = txtStatus.Value;
             mySettlementEntity.DocDate = deDocDate.Value;
-            mySettlementEntity.BookNo = luBookNo.Value;
+            if (saveAction == SaveAction.Save)
+            {
+                mySettlementEntity.BookNo = luBookNo.Value;
+            }
+            else
+            {
+                mySettlementEntity.BookNo = txtBookNo.Text;
+            }
             mySettlementEntity.BookDate = deBookingDate.Value;
             mySettlementEntity.BookType = txtBookingType.Value;
             mySettlementEntity.BookSeatNumber = txtNumberOfSeat.Value;
@@ -615,7 +623,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
 
 
             //mySettlementEntity.Save(UserID, UserName, "ST", saveAction, IsApproval);
-            mySettlementEntity.Save(UserID, UserName, "ST", saveAction, Convert.ToString(mySettlementEntity.Approver));
+            mySettlementEntity.Save(Email, UserName, "ST", saveAction, Convert.ToString(mySettlementEntity.Approver));
             return bSave;
         }
 
@@ -719,10 +727,10 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                     cplMain.JSProperties["cplblmessageError"] = "";
                     cplMain.JSProperties["cplblmessage"] = "are you sure want to submit this Settlement?";
                     cplMain.JSProperties["cplblActionButton"] = "SUBMIT";
-                    //if (ErrorInField(out strmessageError, SaveAction.Save))
-                    //{
-                    //    cplMain.JSProperties["cplblmessageError"] = strmessageError;
-                    //}
+                    if (ErrorInField(out strmessageError, SaveAction.Save))
+                    {
+                        cplMain.JSProperties["cplblmessageError"] = strmessageError;
+                    }
                     break;
                 case "APPROVECONFIRM":
                     cplMain.JSProperties["cplblmessageError"] = "";
@@ -741,14 +749,14 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                     break;
                 case "REJECT":
                     Save(SaveAction.Reject);
-                    cplMain.JSProperties["cpAlertMessage"] = "Settlement has been cancelled...";
-                    cplMain.JSProperties["cplblActionButton"] = "CANCEL";
+                    cplMain.JSProperties["cpAlertMessage"] = "Settlement has been Reject...";
+                    cplMain.JSProperties["cplblActionButton"] = "REJECT";
                     DevExpress.Web.ASPxWebControl.RedirectOnCallback(urlsave + updatedQueryString);
                     break;
-                case "CREJECT_CONFIRM":
+                case "REJECT_CONFIRM":
                     cplMain.JSProperties["cplblmessageError"] = "";
-                    cplMain.JSProperties["cplblmessage"] = "are you sure want to cancel this Settlement?";
-                    cplMain.JSProperties["cplblActionButton"] = "CANCEL";
+                    cplMain.JSProperties["cplblmessage"] = "are you sure want to Reject this Settlement?";
+                    cplMain.JSProperties["cplblActionButton"] = "REJECT";
                     //if (ErrorInField(out strmessageError, SaveAction.Save))
                     //{
                     //    cplMain.JSProperties["cplblmessageError"] = strmessageError;

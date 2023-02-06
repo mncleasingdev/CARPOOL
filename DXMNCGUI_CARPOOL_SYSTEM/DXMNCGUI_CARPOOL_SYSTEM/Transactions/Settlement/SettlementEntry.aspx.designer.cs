@@ -364,15 +364,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement {
         protected global::DevExpress.Web.ASPxButton btnApprove;
         
         /// <summary>
-        /// btnSubmit control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.ASPxButton btnSubmit;
-        
-        /// <summary>
         /// btnReject control.
         /// </summary>
         /// <remarks>
@@ -380,6 +371,15 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::DevExpress.Web.ASPxButton btnReject;
+        
+        /// <summary>
+        /// btnSubmit control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::DevExpress.Web.ASPxButton btnSubmit;
         
         /// <summary>
         /// btnBack control.

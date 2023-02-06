@@ -11,14 +11,14 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
 {
     public class SettlementSql : SettlementDB
     {
-        public override DataTable LoadBrowseTable(bool bViewAll, string userID)
+        public override DataTable LoadBrowseTable(bool bViewAll, string userName)
         {
             myBrowseTable.Clear();
             if (!bViewAll)
             {
                 myLocalDBSetting.LoadDataTable(myBrowseTable, @"SELECT a.approver + ' - ' + ISNULL(b.DESCS,'') [NextApprover],* FROM Settlement a
                                                                 LEFT JOIN IFINANCING_GOLIVE..SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE
-                                                                WHERE CreatedBy=? AND BookNo is not null ORDER BY DocDate DESC", true, userID);
+                                                                WHERE CreatedBy='"+ userName + "' OR B.DESCS='" + userName + "' AND BookNo is not null ORDER BY DocDate DESC", true);
             }
             else
             {
@@ -151,6 +151,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 if (saveaction == SaveAction.Approve)
                 {
                     //dataRow["Status"] = "APPROVED BY SUPERIOR";
+                    dataRow["Approver"] = Settlement.Approver;
                     dataRow["Status"] = "COMPLETE";
                     dataRow["LastModifiedBy"] = strUserName;
                     dataRow["LastModifiedDateTime"] = Mydate;
@@ -168,7 +169,10 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                     ClearDetail(Settlement, saveaction);
                 }
                 localdbSetting.SimpleSaveDataTable(ds.Tables["Header"], "SELECT * FROM [dbo].[Settlement]");
-                SaveDetail(ds, saveaction);
+                if (cekDataDetail(ds))
+                {
+                    SaveDetail(ds, saveaction);
+                }
                 if (saveaction == SaveAction.Approve)
                 {
                     UpdateBookingData(ds, saveaction);
@@ -204,6 +208,32 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             {
                 localdbSetting.EndTransaction();
             }
+        }
+
+        private bool cekDataDetail(DataSet ds)
+        {
+            bool flag = true;
+           
+                SqlConnection connection = new SqlConnection(this.LocalDBSetting.ConnectionString);
+                connection.Open();
+               
+
+            if (ds.Tables["Lines"].Rows.Count != 0)
+            {
+                DataRow dataRow = ds.Tables["Lines"].Rows[0];
+                SqlCommand sqlCommand = new SqlCommand("SELECT COUNT(*) FROM SettlementDetail WHERE Dockey='" + dataRow["DocKey"] + "'", connection);
+
+                if (System.Convert.ToInt32(sqlCommand.ExecuteScalar()) > 0)
+                {
+                    flag = false;
+                }
+
+            }
+
+            connection.Close();
+            connection.Dispose();
+
+            return flag;
         }
         protected override void SaveDetail(DataSet ds, SaveAction saveaction)
         {
@@ -300,7 +330,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                     sqlParameter1.Value = dataRow.Field<string>("BookNo");
                     sqlParameter1.Direction = ParameterDirection.Input;
                     SqlParameter sqlParameter2 = sqlCommand.Parameters.Add("@IsSettlement", SqlDbType.NVarChar, 1);
-                    sqlParameter2.Value = saveaction == SaveAction.Approve ? "T" : "F";
+                    sqlParameter2.Value = "T";//saveaction == SaveAction.Approve ? "T" : "F";
                     sqlParameter2.Direction = ParameterDirection.Input;
                     SqlParameter sqlParameter3 = sqlCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 60);
                     sqlParameter3.Value = "COMPLETE";

@@ -63,7 +63,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 myMainTable = new DataTable();
                 this.mySettlementDB = SettlementDB.Create(myDBSetting, dbsession, localdbsetting);
 
-                if ((accessright.IsAccessibleByUserID(Email, "IS_ADMIN")) || (accessright.IsAccessibleByUserID(Email, "IS_GA")))
+                //if ((accessright.IsAccessibleByUserID(Email, "IS_ADMIN")) || (accessright.IsAccessibleByUserID(Email, "IS_GA")))
+                if(accessright.IsAccessibleByUserID(Email, "IS_GA"))
                 {
                     myMainTable = this.mySettlementDB.LoadBrowseTable(true, UserName);
                 }
@@ -119,7 +120,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
         }
         private void refreshdatagrid()
         {
-            if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
+            //if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
+            if (accessright.IsAccessibleByUserID(Email, "IS_GA"))
             {
                 myMainTable = this.mySettlementDB.LoadBrowseTable(true, UserName);
             }
@@ -309,7 +311,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             }
             catch
             { }
-            mySettlementEntity.Save(UserID, UserName, "BK", saveAction, "");
+            mySettlementEntity.Save(Email, UserName, "BK", saveAction, "");
             return bSave;
         }
     }
