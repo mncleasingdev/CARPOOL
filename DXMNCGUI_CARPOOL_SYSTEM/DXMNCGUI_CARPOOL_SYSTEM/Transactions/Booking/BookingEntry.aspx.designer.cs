@@ -247,13 +247,13 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking {
         protected global::DevExpress.Web.ASPxTextBox txtDocNo;
         
         /// <summary>
-        /// txtDepartment control.
+        /// cbDepartment control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::DevExpress.Web.ASPxTextBox txtDepartment;
+        protected global::DevExpress.Web.ASPxComboBox cbDepartment;
         
         /// <summary>
         /// txtHp control.

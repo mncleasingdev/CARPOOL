@@ -146,7 +146,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             row["RequestDestLoc"] = DBNull.Value;
             row["RequestPickAddress"] = DBNull.Value;
             row["RequestDestAddress"] = DBNull.Value;
-            row["Department"] = "HEAD OFFICE";//myrow["Department"].ToString();
+            row["Department"] = "";//myrow["Department"].ToString();
             row["TripDetails"] = DBNull.Value;
             row["IsSettlement"] = "F";
             row["Hp"] = "0213910993";//myrow["Hp"].ToString();

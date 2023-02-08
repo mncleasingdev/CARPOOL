@@ -408,13 +408,39 @@
                             </dx:LayoutItemNestedControlContainer>
                         </LayoutItemNestedControlCollection>
                     </dx:LayoutItem>
-                    <dx:LayoutItem ShowCaption="True" Caption="Department" Width="20%">
+<%--                    <dx:LayoutItem ShowCaption="True" Caption="Department" Width="20%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
                                 <dx:ASPxTextBox runat="server" ID="txtDepartment" ClientInstanceName="txtDepartment"></dx:ASPxTextBox>
                             </dx:LayoutItemNestedControlContainer>
                         </LayoutItemNestedControlCollection>
-                    </dx:LayoutItem><dx:LayoutItem ShowCaption="True" Caption="Phone" Width="20%">
+                    </dx:LayoutItem>--%>
+                    <dx:LayoutItem ShowCaption="True" Caption="Department" Width="20%">
+                        <LayoutItemNestedControlCollection>
+                            <dx:LayoutItemNestedControlContainer>
+                                <dx:ASPxComboBox
+                                    runat="server"
+                                    ID="cbDepartment"
+                                    ClientInstanceName="cbDepartment"
+                                    NullText="-- Select --"
+                                    AutoPostBack="false"
+                                    KeyFieldName="Code" ValueField="Department" TextField="Department"
+                                    DisplayFormatString="{1}"
+                                    TextFormatString="{1}"
+                                    SelectionMode="Single"
+                                    OnDataBinding="cbDepartment_DataBinding">
+                                    <Columns>
+                                        <dx:ListBoxColumn Caption="Code" FieldName="CODE" />
+                                        <dx:ListBoxColumn Caption="Desc" FieldName="DEPARTMENT" />
+                                    </Columns>
+                                    <ValidationSettings Display="Dynamic" SetFocusOnError="True" ValidationGroup="ValidationSave" ErrorDisplayMode="ImageWithTooltip">
+                                        <RequiredField ErrorText="Department is required." IsRequired="True" />
+                                    </ValidationSettings>
+                                </dx:ASPxComboBox>
+                            </dx:LayoutItemNestedControlContainer>
+                        </LayoutItemNestedControlCollection>
+                    </dx:LayoutItem>
+                    <dx:LayoutItem ShowCaption="True" Caption="Phone" Width="20%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
                                 <dx:ASPxTextBox runat="server" ID="txtHp" ClientInstanceName="txtHp"></dx:ASPxTextBox>

@@ -66,6 +66,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             get { isValidLogin(false); return (DataTable)HttpContext.Current.Session["myBookTypeTable" + this.ViewState["_PageID"]]; }
             set { HttpContext.Current.Session["myBookTypeTable" + this.ViewState["_PageID"]] = value; }
         }
+        protected DataTable myDepartmentTable
+        {
+            get { isValidLogin(false); return (DataTable)HttpContext.Current.Session["myDepartmentTable" + this.ViewState["_PageID"]]; }
+            set { HttpContext.Current.Session["myDepartmentTable" + this.ViewState["_PageID"]] = value; }
+        }
         protected DataTable myNumberOfSeatTable
         {
             get { isValidLogin(false); return (DataTable)HttpContext.Current.Session["myNumberOfSeatTable" + this.ViewState["_PageID"]]; }
@@ -176,6 +181,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 myDocNoFormatTable = new DataTable();
                 mySectionTable = new DataTable();
                 myBookTypeTable = new DataTable();
+                myDepartmentTable = new DataTable();
                 myNumberOfSeatTable = new DataTable();
                 //myDriverTable = new DataTable();
                 myApprovalTable = new DataTable();
@@ -256,6 +262,10 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 cbBookType.DataSource = myBookTypeTable;
                 cbBookType.DataBind();
 
+                myDepartmentTable = myLocalDBSetting.GetDataTable("SELECT * FROM [dbo].[Master_Department] ORDER BY CODE", false);
+                cbDepartment.DataSource = myDepartmentTable;
+                cbDepartment.DataBind();
+
                 myNumberOfSeatTable = myLocalDBSetting.GetDataTable("SELECT * FROM [dbo].[NumberOfSeat] ORDER BY NumberOfSeat", false);
                 cbNumberSeat.DataSource = myNumberOfSeatTable;
                 cbNumberSeat.DataBind();
@@ -283,7 +293,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             txtComapany.Value = myBookingEntity.EmployeeCompanyName;
             txtStatus.Value = myBookingEntity.Status;
             txtDocNo.Value = myBookingEntity.DocNo.ToString();
-            txtDepartment.Value = myBookingEntity.Department.ToString();
+            cbDepartment.Value = myBookingEntity.Department.ToString();
             txtHp.Value = myBookingEntity.Hp.ToString();
             deDocDate.Value = myBookingEntity.DocDate;
             cbBookType.Value = myBookingEntity.DocType;
@@ -413,7 +423,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             txtComapany.ReadOnly = true;
             txtStatus.ReadOnly = true;
             txtDocNo.ReadOnly = true;
-            txtDepartment.ReadOnly = true;
+            //cbDepartment.ReadOnly = true;
             txtHp.ReadOnly = true;
             deDocDate.ReadOnly = false;
 
@@ -442,6 +452,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 btnCancel.Visible = false;
                 deDocDate.ClientEnabled = false;
                 cbBookType.ClientEnabled = false;
+                cbDepartment.ClientEnabled = false;
                 deReqPickupTime.ClientEnabled = false;
                 deReqArrivalTime.ClientEnabled = false;
                 cbNumberSeat.ClientEnabled = false;
@@ -466,6 +477,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 btnCancel.Visible = false;
                 deDocDate.ClientEnabled = false;
                 cbBookType.ClientEnabled = false;
+                cbDepartment.ClientEnabled = false;
                 deReqPickupTime.ClientEnabled = false;
                 deReqArrivalTime.ClientEnabled = false;
                 cbNumberSeat.ClientEnabled = false;
@@ -746,7 +758,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             txtComapany.BackColor = txtComapany.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
             txtStatus.BackColor = txtStatus.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
             txtDocNo.BackColor = txtDocNo.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
-            txtDepartment.BackColor = txtDepartment.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
+            cbDepartment.BackColor = cbDepartment.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
             txtHp.BackColor = txtHp.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
             deDocDate.BackColor = deDocDate.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
             cbBookType.BackColor = cbBookType.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
@@ -1101,7 +1113,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             gvPersonDetail.UpdateEdit();
             myBookingEntity.DocNo = txtDocNo.Value;
             myBookingEntity.DocDate = deDocDate.Value;
-            myBookingEntity.Department = txtDepartment.Value;
+            myBookingEntity.Department = cbDepartment.Value;
             myBookingEntity.Hp = txtHp.Value;
             myBookingEntity.DocType = cbBookType.Value;
             myBookingEntity.EmployeeName = txtEmployee.Value;
@@ -1400,6 +1412,10 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
         {
             string ssql = "UPDATE BookingApprovalList SET DecisionState=?, DecisionCode=?, DecisionNote=?, IsDecision = 'T', DecisionDate=GETDATE() WHERE DocKey=? AND NIK =?";
             myLocalDBSetting.ExecuteNonQuery(ssql, Status, DecisionCode, Note, strKey, Email);
+        }
+        protected void cbDepartment_DataBinding(object sender, EventArgs e)
+        {
+            (sender as ASPxComboBox).DataSource = myDepartmentTable;
         }
 
         protected void cbBookType_DataBinding(object sender, EventArgs e)
