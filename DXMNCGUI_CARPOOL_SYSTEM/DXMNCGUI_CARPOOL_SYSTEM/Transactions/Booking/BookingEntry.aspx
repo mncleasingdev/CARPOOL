@@ -792,7 +792,7 @@
                     <dx:LayoutItem ShowCaption="True" Caption="Last Kilometer" Width="50%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
-                                <dx:ASPxTextBox runat="server" ID="txtLastKM" ClientInstanceName="txtLastKM" ReadOnly="true"></dx:ASPxTextBox>
+                                <dx:ASPxTextBox runat="server" ID="txtLastKM" ClientInstanceName="txtLastKM"></dx:ASPxTextBox>
                             </dx:LayoutItemNestedControlContainer>
                         </LayoutItemNestedControlCollection>
                     </dx:LayoutItem>

@@ -283,7 +283,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     dataRow["LastModifiedDateTime"] = Mydate;
                     ClearBookingAdmin(ds);
                     SaveBookingAdmin(ds, userName);
-
+             
                     // SendSMS(Booking, saveaction);
                 }
 
@@ -320,7 +320,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     dataDriverRow["LastModifiedBy"] = userName;
                     dataDriverRow["LastModifiedDateTime"] = Mydate;
 
-                    //localdbSetting.ExecuteNonQuery("UPDATE [dbo].[MasterCar] SET Kilometer=? WHERE CarLicense=?", (object)dataDriverRow["CurrentKilometer"], (object)dataAdminRow["CarLicensePlate"]);
+                    localdbSetting.ExecuteNonQuery("UPDATE [dbo].[MasterCar] SET Kilometer=? WHERE CarLicense=?", Convert.ToString(Booking.AdminLastKilometer), Convert.ToString(Booking.AdminCarLicensePlate));
                 }
 
                 //if (Booking.DocKey != null && saveaction == SaveAction.Approve)
@@ -329,7 +329,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 //    ClearDetail(Booking, saveaction);
                 //}
 
-                localdbSetting.ExecuteNonQuery("UPDATE [dbo].[MasterCar] SET Kilometer=? WHERE CarLicense=?", (object)dataDriverRow["CurrentKilometer"], (object)dataAdminRow["CarLicensePlate"]);
+                //localdbSetting.ExecuteNonQuery("UPDATE [dbo].[MasterCar] SET Kilometer=? WHERE CarLicense=?", (object)dataDriverRow["CurrentKilometer"], (object)dataAdminRow["CarLicensePlate"]);
                 localdbSetting.SimpleSaveDataTable(ds.Tables["User"], "SELECT * FROM [dbo].[Booking]");
                 if (saveaction != SaveAction.ApproveByAdmin)
                 {

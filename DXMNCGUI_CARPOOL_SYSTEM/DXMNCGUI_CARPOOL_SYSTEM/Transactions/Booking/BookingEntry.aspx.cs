@@ -423,7 +423,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             txtComapany.ReadOnly = true;
             txtStatus.ReadOnly = true;
             txtDocNo.ReadOnly = true;
-            //cbDepartment.ReadOnly = true;
+            txtLastKM.ReadOnly = true;
             txtHp.ReadOnly = true;
             deDocDate.ReadOnly = false;
 
@@ -437,13 +437,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
 
             if (myAction == DXCAction.View)
             {
-                if (this.Request.QueryString["Action"] == "OnSchedule")
-                {
-                    btnFinish.ClientVisible = true;
-                    btnAdminApprove.ClientVisible = false;
-                    btnAdminOnHold.ClientVisible = false;
-                    btnAdminReject.ClientVisible = false;
-                }
                 ASPxFormLayout1.FindItemOrGroupByName("LayoutGroupAdminEntry").Visible = true;
                 luCarType.ClientVisible = true;
                 mmAdminRemark.ClientVisible = true;
@@ -465,8 +458,21 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 luCarType.ClientEnabled = false;
                 //deEstArrivalTime.ClientEnabled = false;
                 mmAdminRemark.ClientEnabled = false;
+                txtLastKM.ClientEnabled = false;
                 gvPersonDetail.Columns["ClmnCommand"].Visible = false;
                 gvApproval.Columns["ClmnCommand"].Visible = false;
+
+                if (this.Request.QueryString["Action"] == "OnSchedule")
+                {
+                    btnFinish.ClientVisible = true;
+                    btnAdminApprove.ClientVisible = false;
+                    btnAdminOnHold.ClientVisible = false;
+                    btnAdminReject.ClientVisible = false;
+                    txtLastKM.ReadOnly = false;
+                    mmAdminRemark.ReadOnly = false;
+                    mmAdminRemark.ClientEnabled = true;
+                    txtLastKM.ClientEnabled = true;
+                }
             }
 
             if (myAction == DXCAction.Approve)
@@ -489,7 +495,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 //deestpickuptime.clientenabled = false;
                 luCarType.ClientEnabled = false;
                 //deEstArrivalTime.ClientEnabled = false;
-                mmAdminRemark.ClientEnabled = false;
+                //mmAdminRemark.ClientEnabled = false;
                 gvPersonDetail.Columns["ClmnCommand"].Visible = false;
                 gvApproval.Columns["ClmnCommand"].Visible = false;
 
@@ -502,6 +508,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     btnApprove.ClientVisible = false;
                     btnReject.ClientVisible = false;
                     luCarType.ClientEnabled = true;
+                    txtLastKM.ClientEnabled = true;
                     mmAdminRemark.ClientEnabled = true;
                 }
             }

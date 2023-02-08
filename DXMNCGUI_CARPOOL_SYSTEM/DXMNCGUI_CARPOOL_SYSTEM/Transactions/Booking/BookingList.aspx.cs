@@ -253,7 +253,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             {
                 if (cekOutStandingBooking())
                 {
-                    ClientScript.RegisterStartupScript(this.GetType(), "myalert", "alert('Cant Input Transaction There is Transaction status Not Finish, Please Contact General Affair!');", true);
+                    ClientScript.RegisterStartupScript(this.GetType(), "myalert", "alert('Tidak Bisa Input Booking, Silahkan Hubungi General Affair!');", true);
                 }
                 else
                 { 
