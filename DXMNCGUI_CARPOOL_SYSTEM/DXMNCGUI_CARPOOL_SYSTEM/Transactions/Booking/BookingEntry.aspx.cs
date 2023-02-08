@@ -262,7 +262,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 cbBookType.DataSource = myBookTypeTable;
                 cbBookType.DataBind();
 
-                myDepartmentTable = myLocalDBSetting.GetDataTable("SELECT * FROM [dbo].[Master_Department] ORDER BY CODE", false);
+                myDepartmentTable = myDBSetting.GetDataTable("SELECT * FROM [dbo].[PC_DEPT] ORDER BY CODE", false);
                 cbDepartment.DataSource = myDepartmentTable;
                 cbDepartment.DataBind();
 

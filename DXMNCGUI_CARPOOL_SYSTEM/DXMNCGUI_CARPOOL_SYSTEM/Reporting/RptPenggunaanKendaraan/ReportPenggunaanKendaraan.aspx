@@ -48,7 +48,7 @@
                                             <HeaderStyle Font-Bold="true" />
                                             <CellStyle Wrap="False"></CellStyle>
                                         </dx:GridViewDataTextColumn>
-                                        <dx:GridViewDataDateColumn Name="colDocDate" Caption="Document Date" FieldName="DocDate" ReadOnly="True" ShowInCustomizationForm="true" PropertiesDateEdit-DisplayFormatString="dd/MM/yyyy" Visible="true" VisibleIndex="2">
+                                        <dx:GridViewDataDateColumn Name="colDocDate" Caption="Request Date" FieldName="DocDate" ReadOnly="True" ShowInCustomizationForm="true" PropertiesDateEdit-DisplayFormatString="dd/MM/yyyy" Visible="true" VisibleIndex="2">
                                             <CellStyle Wrap="False"></CellStyle>
                                             <HeaderStyle Font-Bold="true" />
                                         </dx:GridViewDataDateColumn>
@@ -56,56 +56,58 @@
                                             <HeaderStyle Font-Bold="true" />
                                             <CellStyle Wrap="False"></CellStyle>
                                         </dx:GridViewDataTextColumn>
-                                        <dx:GridViewDataTextColumn Name="colEmployeeCompanyName" Caption="Company Name" FieldName="EmployeeCompanyName" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="4">
+                                <%--        <dx:GridViewDataTextColumn Name="colEmployeeCompanyName" Caption="Company Name" FieldName="EmployeeCompanyName" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="4">
+                                            <HeaderStyle Font-Bold="true" />
+                                            <CellStyle Wrap="False"></CellStyle>
+                                        </dx:GridViewDataTextColumn>--%>
+                                        <dx:GridViewDataTextColumn Name="colDepartment" Caption="Department" FieldName="Department" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="4">
                                             <HeaderStyle Font-Bold="true" />
                                             <CellStyle Wrap="False"></CellStyle>
                                         </dx:GridViewDataTextColumn>
-                                        <dx:GridViewDataTextColumn Name="colDepartment" Caption="Department" FieldName="Department" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="5">
+                                        <dx:GridViewDataTextColumn Name="colPenumpang" Caption="Passengers" FieldName="Penumpang" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="5">
                                             <HeaderStyle Font-Bold="true" />
                                             <CellStyle Wrap="False"></CellStyle>
                                         </dx:GridViewDataTextColumn>
-                                        <dx:GridViewDataTextColumn Name="colPenumpang" Caption="Passengers" FieldName="Penumpang" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="6">
-                                            <HeaderStyle Font-Bold="true" />
-                                            <CellStyle Wrap="False"></CellStyle>
-                                        </dx:GridViewDataTextColumn>
-                                        <dx:GridViewDataDateColumn Name="colActualPickDateTime" Caption="Pick DateTime" FieldName="ActualPickDateTime" ReadOnly="True" ShowInCustomizationForm="true" PropertiesDateEdit-DisplayFormatString="dd/MM/yyyy hh:mm:ss" Visible="true" VisibleIndex="7">
+                                        <dx:GridViewDataDateColumn Name="colActualPickDateTime" Caption="Request Date" FieldName="ActualPickDateTime" ReadOnly="True" ShowInCustomizationForm="true" PropertiesDateEdit-DisplayFormatString="dd/MM/yyyy hh:mm:ss" Visible="true" VisibleIndex="6">
                                             <HeaderStyle Font-Bold="true" />
                                             <CellStyle Wrap="False"></CellStyle>
                                         </dx:GridViewDataDateColumn>
-                                        <dx:GridViewDataDateColumn Name="colActualArriveDateTime" Caption="Arrive DateTime" FieldName="ActualArriveDateTime" ReadOnly="True" ShowInCustomizationForm="true" PropertiesDateEdit-DisplayFormatString="dd/MM/yyyy hh:mm:ss" Visible="true" VisibleIndex="8">
+                                        <dx:GridViewDataDateColumn Name="colActualArriveDateTime" Caption="Finish" FieldName="ActualArriveDateTime" ReadOnly="True" ShowInCustomizationForm="true" PropertiesDateEdit-DisplayFormatString="dd/MM/yyyy hh:mm:ss" Visible="true" VisibleIndex="7">
                                             <HeaderStyle Font-Bold="true" />
                                         </dx:GridViewDataDateColumn>
-                                        <dx:GridViewDataTextColumn Name="colMenit" Caption="Minutes Pick to Arrive" FieldName="Menit" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="9">
+                                       <%-- <dx:GridViewDataTextColumn Name="colMenit" Caption="Minutes Pick to Arrive" FieldName="Menit" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="9">
+                                            <HeaderStyle Font-Bold="true" />
+                                        </dx:GridViewDataTextColumn>--%>
+                                        <dx:GridViewDataTextColumn Name="colLastKilometer" Caption="LastKilometer" FieldName="LastKilometer" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="8">
                                             <HeaderStyle Font-Bold="true" />
                                         </dx:GridViewDataTextColumn>
-                                        <dx:GridViewDataTextColumn Name="colLastKilometer" Caption="LastKilometer" FieldName="LastKilometer" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="10">
+                                        <dx:GridViewDataTextColumn Name="colCurrentKilometer" Caption="CurrentKilometer" FieldName="CurrentKilometer" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="9">
                                             <HeaderStyle Font-Bold="true" />
                                         </dx:GridViewDataTextColumn>
-                                        <dx:GridViewDataTextColumn Name="colCurrentKilometer" Caption="CurrentKilometer" FieldName="CurrentKilometer" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="11">
-                                            <HeaderStyle Font-Bold="true" />
-                                        </dx:GridViewDataTextColumn>
-                                        <dx:GridViewDataTextColumn Name="colAmountParkir" Caption="AmountParkir" FieldName="AmountParkir" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="12">
+                                        <%--<dx:GridViewDataTextColumn Name="colAmountParkir" Caption="AmountParkir" FieldName="AmountParkir" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="12">
                                             <HeaderStyle Font-Bold="true" />
                                         </dx:GridViewDataTextColumn>
                                         <dx:GridViewDataTextColumn Name="colAmountTOL" Caption="AmountTOL" FieldName="AmountTOL" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="13">
                                             <HeaderStyle Font-Bold="true" />
-                                        </dx:GridViewDataTextColumn>
-                                        <dx:GridViewDataTextColumn Name="colAmountBBM" Caption="AmountBBM" FieldName="AmountBBM" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="14">
+                                        </dx:GridViewDataTextColumn>--%>
+                                        <dx:GridViewDataTextColumn Name="colAmountBBM" Caption="AmountBBM" FieldName="AmountBBM" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="10">
                                             <HeaderStyle Font-Bold="true" />
                                         </dx:GridViewDataTextColumn>
-                                        <dx:GridViewDataTextColumn Name="colDriverName" Caption="DriverName" FieldName="DriverName" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="15">
+                                 <%--       <dx:GridViewDataTextColumn Name="colDriverName" Caption="DriverName" FieldName="DriverName" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="15">
+                                            <HeaderStyle Font-Bold="true" />
+                                        </dx:GridViewDataTextColumn>--%>
+                                        <dx:GridViewDataTextColumn Name="colCarLicensePlate" Caption="CarLicensePlate" FieldName="CarLicensePlate" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="11">
                                             <HeaderStyle Font-Bold="true" />
                                         </dx:GridViewDataTextColumn>
-                                        <dx:GridViewDataTextColumn Name="colCarLicensePlate" Caption="CarLicensePlate" FieldName="CarLicensePlate" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="16">
+                                        <dx:GridViewDataTextColumn Name="colRequestPickLoc" Caption="RequestPickLoc" FieldName="RequestPickLoc" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="12">
                                             <HeaderStyle Font-Bold="true" />
                                         </dx:GridViewDataTextColumn>
-                                        <dx:GridViewDataTextColumn Name="colRequestPickLoc" Caption="RequestPickLoc" FieldName="RequestPickLoc" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="17">
+                                        <dx:GridViewDataTextColumn Name="colRequestDestLoc" Caption="RequestDestLoc" FieldName="RequestDestLoc" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="13">
                                             <HeaderStyle Font-Bold="true" />
                                         </dx:GridViewDataTextColumn>
-                                        <dx:GridViewDataTextColumn Name="colRequestDestLoc" Caption="RequestDestLoc" FieldName="RequestDestLoc" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="18">
+                                        <dx:GridViewDataTextColumn Name="colTripDetail" Caption="Detail" FieldName="TripDetails" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="14">
                                             <HeaderStyle Font-Bold="true" />
-                                        </dx:GridViewDataTextColumn>
-                                        
+                                        </dx:GridViewDataTextColumn>                                        
                                     </Columns>
                                     <Styles>
                                         <AlternatingRow Enabled="True"></AlternatingRow>

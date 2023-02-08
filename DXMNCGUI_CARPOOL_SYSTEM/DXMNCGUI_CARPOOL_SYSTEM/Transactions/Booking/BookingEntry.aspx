@@ -424,14 +424,14 @@
                                     ClientInstanceName="cbDepartment"
                                     NullText="-- Select --"
                                     AutoPostBack="false"
-                                    KeyFieldName="Code" ValueField="Department" TextField="Department"
+                                    KeyFieldName="Code" ValueField="DESCS" TextField="DESCS"
                                     DisplayFormatString="{1}"
                                     TextFormatString="{1}"
                                     SelectionMode="Single"
                                     OnDataBinding="cbDepartment_DataBinding">
                                     <Columns>
                                         <dx:ListBoxColumn Caption="Code" FieldName="CODE" />
-                                        <dx:ListBoxColumn Caption="Desc" FieldName="DEPARTMENT" />
+                                        <dx:ListBoxColumn Caption="Descs" FieldName="DESCS" />
                                     </Columns>
                                     <ValidationSettings Display="Dynamic" SetFocusOnError="True" ValidationGroup="ValidationSave" ErrorDisplayMode="ImageWithTooltip">
                                         <RequiredField ErrorText="Department is required." IsRequired="True" />
