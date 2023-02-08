@@ -216,7 +216,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                                   FROM [dbo].[Booking] BO
                                   INNER JOIN [dbo].[BookingAdmin] BOA ON BO.DocKey = BOA.SourceKey
                                   INNER JOIN [dbo].[BookingDriver] BOD ON BO.DocKey = BOD.SourceKey
-                                  WHERE Status='FINISH' AND IsSettlement='F' and BO.CreatedBy=?
+                                  WHERE Status='FINISH' AND IsSettlement='F'
                                   ORDER BY DocDate";
                 myBookingTable = myLocalDBSetting.GetDataTable(sQuery, false, UserName);
                 luBookNo.DataSource = myBookingTable;

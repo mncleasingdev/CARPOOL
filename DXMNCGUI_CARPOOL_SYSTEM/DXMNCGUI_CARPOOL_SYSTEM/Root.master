@@ -78,7 +78,7 @@
                                 <Items>
                                     <dx:MenuItem Text="Home" Name="MenuHome" Image-Url="Content/Images/HomeIcon-16x16.png" NavigateUrl="Default.aspx"></dx:MenuItem>
                                     <dx:MenuItem Text="Booking" Name="MenuBooking" Image-Url="Content/Images/BookIcon-16x16.png" NavigateUrl="Transactions/Booking/BookingList.aspx"></dx:MenuItem>
-                                    <dx:MenuItem Text="Settlement" Name="MenuSettlement" Image-Url="Content/Images/WorkListIcon-16x16.png" NavigateUrl="Transactions/Settlement/SettlementList.aspx"></dx:MenuItem>
+                                    <dx:MenuItem Text="Settlement" Name="MenuSettlement" Image-Url="Content/Images/WorkListIcon-16x16.png" NavigateUrl="Transactions/Settlement/SettlementList.aspx" Visible="false"></dx:MenuItem>
                                     <dx:MenuItem Text="History" Name="MenuHistory" Image-Url="Content/Images/WorkListIcon-16x16.png" Visible="false"></dx:MenuItem>
                                     <dx:MenuItem Text="Reporting" Name="MenuReporting" Image-Url="Content/Images/WorkListIcon-16x16.png" NavigateUrl="Reporting/RptPenggunaanKendaraan/ReportPenggunaanKendaraan.aspx" Visible="false"></dx:MenuItem>
                                     <dx:MenuItem Text="Update Password" Name="UpdatePassword" Image-Url="Content/Images/EditIcon-16x16.png" NavigateUrl="Maintenance/UserMaintenance/UserUpdatePass.aspx"></dx:MenuItem>

@@ -129,6 +129,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers
             return false;
         }
 
+        public virtual bool IsApprover(string userID)
+        {
+            return false;
+        }
+
         public virtual bool IsAccessible(string cmdID)
         {
             return false;
@@ -351,6 +356,41 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers
                 connection.Close();
                 connection.Dispose();
             }
+        }
+
+        public override bool IsApprover(string userID)
+        {
+            bool flag = false;
+            try
+            {
+                SqlConnection connection = new SqlConnection(this.LocalDBSetting.ConnectionString);
+                try
+                {
+                    connection.Open();
+                    SqlCommand sqlCommand = new SqlCommand("SELECT COUNT(*) FROM Settlement WHERE Approver='" + userID + "'", connection);
+
+                    if (System.Convert.ToInt32(sqlCommand.ExecuteScalar()) > 0)
+                    {
+                        flag = true;
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    DataError.HandleSqlException(ex);
+                }
+                finally
+                {
+                    connection.Close();
+                    connection.Dispose();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logic.ExceptionUtility.LogException(ex, "HttpCall in AccesRright.cs");
+                flag = false;
+            }
+            return flag;
         }
 
         public override bool IsAccessibleByUserID(string userID, string cmdID)

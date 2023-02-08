@@ -42,6 +42,12 @@ namespace DXMNCGUI_CARPOOL_SYSTEM {
             {
                 HeaderMenu.Items.FindByName("MenuMaintenance").Visible = true;
                 HeaderMenu.Items.FindByName("MenuReporting").Visible = true;
+                HeaderMenu.Items.FindByName("MenuSettlement").Visible = true;
+            }
+
+            if (accessright.IsApprover(Email.ToString()))
+            {
+                HeaderMenu.Items.FindByName("MenuSettlement").Visible = true;
             }
 
             try
