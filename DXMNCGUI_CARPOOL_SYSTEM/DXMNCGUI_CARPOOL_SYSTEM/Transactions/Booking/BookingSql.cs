@@ -284,7 +284,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     ClearBookingAdmin(ds);
                     SaveBookingAdmin(ds, userName);
 
-                    SendNotifEmail();
+                    SendNotifEmail(Booking);
                     // SendSMS(Booking, saveaction);
                 }
 
@@ -784,9 +784,9 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             }
         }
 
-        protected override void SendNotifEmail()
+        protected override void SendNotifEmail(BookingEntity Booking)
         {
-            string ssql = "exec SP_Email_Notification_Approval_CarPool";
+            string ssql = "exec SP_Email_Notification_Approval_CarPool '"+Booking.EmployeeName+"'";
             SqlConnection myconn = new SqlConnection(myDBSetting.ConnectionString);
             myconn.Open();
             try

@@ -360,7 +360,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
         { }
         protected virtual void SendSMS(BookingEntity Booking, SaveAction saveaction)
         { }
-        protected virtual void SendNotifEmail()
+        protected virtual void SendNotifEmail(BookingEntity Booking)
         { }
     }
 }
