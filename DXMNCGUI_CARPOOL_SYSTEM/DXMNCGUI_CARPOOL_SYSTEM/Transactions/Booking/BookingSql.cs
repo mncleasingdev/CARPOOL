@@ -283,7 +283,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     dataRow["LastModifiedDateTime"] = Mydate;
                     ClearBookingAdmin(ds);
                     SaveBookingAdmin(ds, userName);
-             
+
+                    SendNotifEmail();
                     // SendSMS(Booking, saveaction);
                 }
 
@@ -369,6 +370,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 localdbSetting.EndTransaction();
             }
         }
+
 
         protected override void SaveBookingAdmin(DataSet ds, string userName)
         {
@@ -781,6 +783,29 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 myconn.Dispose();
             }
         }
+
+        protected override void SendNotifEmail()
+        {
+            string ssql = "exec SP_Email_Notification_Approval_CarPool";
+            SqlConnection myconn = new SqlConnection(myDBSetting.ConnectionString);
+            myconn.Open();
+            try
+            {
+                SqlCommand sqlCommand = new SqlCommand(ssql);
+                sqlCommand.CommandType = CommandType.Text;
+                sqlCommand.Connection = myconn;
+                sqlCommand.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
+            finally
+            {
+                myconn.Close();
+            }
+        }
+
         protected override void SendSMS(BookingEntity Booking, SaveAction saveaction)
         {
             string sRedaksi1 = "Hallo Customer, Booking anda sudah diproses oleh dispatcher : " + Booking.DocNo.ToString() + ", terima kasih.";
