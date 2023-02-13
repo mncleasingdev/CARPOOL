@@ -464,7 +464,7 @@
                         </LayoutItemNestedControlCollection>
                     </dx:LayoutItem>
                     <dx:EmptyLayoutItem Width="80%"></dx:EmptyLayoutItem>
-                    <dx:LayoutItem ShowCaption="True" Caption="Booking Type" Width="20%">
+                    <%--<dx:LayoutItem ShowCaption="True" Caption="Booking Type" Width="20%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
                                 <dx:ASPxComboBox
@@ -488,7 +488,7 @@
                                 </dx:ASPxComboBox>
                             </dx:LayoutItemNestedControlContainer>
                         </LayoutItemNestedControlCollection>
-                    </dx:LayoutItem>
+                    </dx:LayoutItem>--%>
                     <dx:LayoutItem ShowCaption="True" Caption="Start Time" Width="20%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
@@ -519,8 +519,8 @@
                             </dx:LayoutItemNestedControlContainer>
                         </LayoutItemNestedControlCollection>
                     </dx:LayoutItem>
-                    <dx:EmptyLayoutItem Width="40%"></dx:EmptyLayoutItem>
-                    <dx:LayoutItem ShowCaption="True" Caption="Number of seat" Width="20%">
+                    <dx:EmptyLayoutItem Width="60%"></dx:EmptyLayoutItem>
+                    <%--<dx:LayoutItem ShowCaption="True" Caption="Number of seat" Width="20%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
                                 <dx:ASPxComboBox
@@ -545,7 +545,7 @@
                                 </dx:ASPxComboBox>
                             </dx:LayoutItemNestedControlContainer>
                         </LayoutItemNestedControlCollection>
-                    </dx:LayoutItem>
+                    </dx:LayoutItem>--%>
                     <dx:LayoutItem ShowCaption="True" Caption="Pickup" Width="20%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
@@ -749,14 +749,14 @@
                                         <SettingsSearchPanel ShowApplyButton="True" ShowClearButton="True" Visible="True" />
                                     </GridViewProperties>
                                     <Columns>
-                                        <dx:GridViewDataColumn Caption="Type" FieldName="CarType" ShowInCustomizationForm="True" VisibleIndex="0">
-                                        </dx:GridViewDataColumn>
+                                       <%-- <dx:GridViewDataColumn Caption="Type" FieldName="CarType" ShowInCustomizationForm="True" VisibleIndex="0">
+                                        </dx:GridViewDataColumn>--%>
                                         <dx:GridViewDataColumn Caption="Name" FieldName="CarName" ShowInCustomizationForm="True" VisibleIndex="1">
                                         </dx:GridViewDataColumn>
                                         <dx:GridViewDataColumn Caption="License" FieldName="CarLicense" ShowInCustomizationForm="True" VisibleIndex="2">
                                         </dx:GridViewDataColumn>
-                                        <dx:GridViewDataColumn Caption="Number of seat" FieldName="NumberOfSeat" ShowInCustomizationForm="True" VisibleIndex="3">
-                                        </dx:GridViewDataColumn>
+                                       <%-- <dx:GridViewDataColumn Caption="Number of seat" FieldName="NumberOfSeat" ShowInCustomizationForm="True" VisibleIndex="3">
+                                        </dx:GridViewDataColumn>--%>
                                         <dx:GridViewDataColumn Caption="Last KM" FieldName="Kilometer" ShowInCustomizationForm="True" VisibleIndex="4">
                                         </dx:GridViewDataColumn>
                                     </Columns>

@@ -130,7 +130,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             row["DocKey"] = DocKeyUniqueKey();
             row["DocNo"] = "NEED APPROVAL";
             row["DocDate"] = mydate;
-            row["DocType"] = "";
+            //row["DocType"] = "";
             row["Note"] = DBNull.Value;
             row["Remark1"] = DBNull.Value;
             row["Remark2"] = DBNull.Value;
@@ -139,7 +139,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             row["EmployeeName"] = myrow["USER_NAME"].ToString();
             row["EmployeeCompanyName"] = "MNC Leasing";//myrow["CompanyName"].ToString();
             row["Status"] = "NEED APPROVAL";
-            row["NumberOfSeat"] = DBNull.Value;
+            //row["NumberOfSeat"] = DBNull.Value;
             row["RequestStartTime"] = DBNull.Value;
             row["RequestFinishTime"] = DBNull.Value;
             row["RequestPickLoc"] = DBNull.Value;

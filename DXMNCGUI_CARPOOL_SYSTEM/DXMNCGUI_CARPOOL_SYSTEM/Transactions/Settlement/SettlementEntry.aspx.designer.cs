@@ -211,15 +211,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement {
         protected global::DevExpress.Web.ASPxTextBox txtCarType;
         
         /// <summary>
-        /// txtBookingType control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.ASPxTextBox txtBookingType;
-        
-        /// <summary>
         /// txtBookingBy control.
         /// </summary>
         /// <remarks>
@@ -236,15 +227,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::DevExpress.Web.ASPxTextBox txtLicense;
-        
-        /// <summary>
-        /// txtNumberOfSeat control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.ASPxTextBox txtNumberOfSeat;
         
         /// <summary>
         /// deBookingPickupDate control.

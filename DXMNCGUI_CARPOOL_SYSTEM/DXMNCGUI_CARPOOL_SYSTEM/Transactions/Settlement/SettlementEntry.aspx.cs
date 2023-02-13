@@ -191,7 +191,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 }
 
                 myAction = this.mySettlementEntity.Action;
-                myDocType = this.mySettlementEntity.DocumentType;
+                //myDocType = this.mySettlementEntity.DocumentType;
                 myds = mySettlementEntity.myDataSet;
                 myStatus = this.mySettlementEntity.Cancelled.ToString();
                 myHeaderTable = myds.Tables[0];
@@ -235,8 +235,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             txtBookNo.Value = mySettlementEntity.BookNo;
             luBookNo.Value = mySettlementEntity.BookNo;
             deBookingDate.Value = mySettlementEntity.BookDate;
-            txtBookingType.Value = mySettlementEntity.BookType;
-            txtNumberOfSeat.Value = mySettlementEntity.BookSeatNumber;
+            //txtBookingType.Value = mySettlementEntity.BookType;
+            //txtNumberOfSeat.Value = mySettlementEntity.BookSeatNumber;
             txtBookingBy.Value = mySettlementEntity.BookBy;
             txtCompany.Value = mySettlementEntity.BookCompany;
             txtDepartement.Value = mySettlementEntity.BookDept;
@@ -292,8 +292,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             txtStatus.ReadOnly = true;
             txtBookNo.ReadOnly = true;
             deBookingDate.ReadOnly = true;
-            txtBookingType.ReadOnly = true;
-            txtNumberOfSeat.ReadOnly = true;
+            //txtBookingType.ReadOnly = true;
+            //txtNumberOfSeat.ReadOnly = true;
             txtBookingBy.ReadOnly = true;
             txtCompany.ReadOnly = true;
             txtDepartement.ReadOnly = true;
@@ -349,8 +349,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             txtStatus.BackColor = txtStatus.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
             txtBookNo.BackColor = txtDocNo.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
             deBookingDate.BackColor = deBookingDate.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
-            txtBookingType.BackColor = txtBookingType.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
-            txtNumberOfSeat.BackColor = txtNumberOfSeat.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
+            //txtBookingType.BackColor = txtBookingType.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
+            //txtNumberOfSeat.BackColor = txtNumberOfSeat.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
             txtBookingBy.BackColor = txtBookingBy.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
             txtCompany.BackColor = txtCompany.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
             txtDepartement.BackColor = txtDepartement.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
@@ -584,8 +584,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 mySettlementEntity.BookNo = txtBookNo.Text;
             }
             mySettlementEntity.BookDate = deBookingDate.Value;
-            mySettlementEntity.BookType = txtBookingType.Value;
-            mySettlementEntity.BookSeatNumber = txtNumberOfSeat.Value;
+            //mySettlementEntity.BookType = txtBookingType.Value;
+            //mySettlementEntity.BookSeatNumber = txtNumberOfSeat.Value;
             mySettlementEntity.BookCompany = txtCompany.Value;
             mySettlementEntity.BookDept = txtDepartement.Value;
             mySettlementEntity.BookBy = txtBookingBy.Value;

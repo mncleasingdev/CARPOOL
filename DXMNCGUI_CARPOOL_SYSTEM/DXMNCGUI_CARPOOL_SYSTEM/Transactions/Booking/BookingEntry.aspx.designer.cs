@@ -274,15 +274,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking {
         protected global::DevExpress.Web.ASPxDateEdit deDocDate;
         
         /// <summary>
-        /// cbBookType control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.ASPxComboBox cbBookType;
-        
-        /// <summary>
         /// deReqPickupTime control.
         /// </summary>
         /// <remarks>
@@ -299,15 +290,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::DevExpress.Web.ASPxDateEdit deReqArrivalTime;
-        
-        /// <summary>
-        /// cbNumberSeat control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::DevExpress.Web.ASPxComboBox cbNumberSeat;
         
         /// <summary>
         /// txtPickupLoc control.

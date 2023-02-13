@@ -209,6 +209,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
         protected override void SaveData(BookingEntity Booking, DataSet ds, string strDocName, SaveAction saveaction, string strUpline, string userID, string userName, string approver)
         {
             SqlLocalDBSetting localdbSetting = this.myLocalDBSetting.StartTransaction();
+            SqlDBSetting dbsetting = this.myDBSetting.StartTransaction();
             SqlConnection con = new SqlConnection(localdbSetting.ConnectionString);
             DateTime Mydate = myLocalDBSetting.GetServerTime();
             DataRow dataRow = ds.Tables["User"].Rows[0];
@@ -284,7 +285,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     ClearBookingAdmin(ds);
                     SaveBookingAdmin(ds, userName);
 
-                    SendNotifEmail(Booking);
+                    //SendNotifEmail(Booking);
                     // SendSMS(Booking, saveaction);
                 }
 
@@ -321,7 +322,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     dataDriverRow["LastModifiedBy"] = userName;
                     dataDriverRow["LastModifiedDateTime"] = Mydate;
 
-                    localdbSetting.ExecuteNonQuery("UPDATE [dbo].[MasterCar] SET Kilometer=? WHERE CarLicense=?", Convert.ToString(Booking.AdminLastKilometer), Convert.ToString(Booking.AdminCarLicensePlate));
+                    //localdbSetting.ExecuteNonQuery("UPDATE [dbo].[MasterCar] SET Kilometer=? WHERE CarLicense=?", Convert.ToString(Booking.AdminLastKilometer), Convert.ToString(Booking.AdminCarLicensePlate));
+                    dbsetting.ExecuteNonQuery("Exec spUpdateKilometerMobil ?,?", Convert.ToString(Booking.AdminLastKilometer), Convert.ToString(Booking.AdminCarLicensePlate));
                 }
 
                 //if (Booking.DocKey != null && saveaction == SaveAction.Approve)
@@ -343,31 +345,37 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 if (Booking.strErrorGenTicket == "null")
                 {
                     localdbSetting.Commit();
+                    dbsetting.Commit();
                 }
                 else
                 {
                     localdbSetting.Rollback();
+                    dbsetting.Rollback();
                     throw new ArgumentException(Booking.strErrorGenTicket);
                 }
             }
             catch (SqlException ex)
             {
                 localdbSetting.Rollback();
+                dbsetting.Rollback();
                 throw new ArgumentException(ex.Message);
             }
             catch (HttpUnhandledException ex)
             {
                 localdbSetting.Rollback();
+                dbsetting.Rollback();
                 throw new ArgumentException(ex.Message);
             }
             catch (Exception ex)
             {
                 localdbSetting.Rollback();
+                dbsetting.Rollback();
                 throw new ArgumentException(ex.Message);
             }
             finally
             {
                 localdbSetting.EndTransaction();
+                dbsetting.EndTransaction();
             }
         }
 

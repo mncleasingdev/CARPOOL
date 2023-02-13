@@ -99,26 +99,26 @@
         function OnBookNoChange(s, e)
         {
             var grid = luBookNo.GetGridView();
-            grid.GetRowValues(grid.GetFocusedRowIndex(), 'DocDate;DocType;NumberOfSeat;EmployeeCompanyName;Department;EmployeeName;CarType;CarLicensePlate;ActualPickDateTime;ActualArriveDateTime;RequestPickLoc;RequestDestLoc;RequestPickAddress;RequestDestAddress;TripDetails', OnGetSelectedFieldValues);
+            grid.GetRowValues(grid.GetFocusedRowIndex(), 'DocDate;EmployeeCompanyName;Department;EmployeeName;CarType;CarLicensePlate;ActualPickDateTime;ActualArriveDateTime;RequestPickLoc;RequestDestLoc;RequestPickAddress;RequestDestAddress;TripDetails', OnGetSelectedFieldValues);
         }
         function OnGetSelectedFieldValues(selectedValues)
         {
             deBookingDate.SetValue(selectedValues[0]);
-            txtBookingType.SetValue(selectedValues[1]);
-            txtNumberOfSeat.SetValue(selectedValues[2]);
-            txtCompany.SetValue(selectedValues[3]);
-            txtDepartement.SetValue(selectedValues[4]);
-            txtBookingBy.SetValue(selectedValues[5]);
+            //txtBookingType.SetValue(selectedValues[1]);
+            //txtNumberOfSeat.SetValue(selectedValues[2]);s
+            txtCompany.SetValue(selectedValues[1]);
+            txtDepartement.SetValue(selectedValues[2]);
+            txtBookingBy.SetValue(selectedValues[3]);
             //txtDriver.SetValue(selectedValues[6]);
-            txtCarType.SetValue(selectedValues[6]);
-            txtLicense.SetValue(selectedValues[7]);
-            deBookingPickupDate.SetValue(selectedValues[8]);
-            deBookingArrivalDate.SetValue(selectedValues[9]);
-            txtBookingPickupLoc.SetValue(selectedValues[10]);
-            txtBookingDestinationLoc.SetValue(selectedValues[11]);
-            mmBookingPickupAddress.SetValue(selectedValues[12]);
-            mmBookingDestinationAddress.SetValue(selectedValues[13]);
-            mmBookingTripDetail.SetValue(selectedValues[14]);
+            txtCarType.SetValue(selectedValues[4]);
+            txtLicense.SetValue(selectedValues[5]);
+            deBookingPickupDate.SetValue(selectedValues[6]);
+            deBookingArrivalDate.SetValue(selectedValues[7]);
+            txtBookingPickupLoc.SetValue(selectedValues[8]);
+            txtBookingDestinationLoc.SetValue(selectedValues[9]);
+            mmBookingPickupAddress.SetValue(selectedValues[10]);
+            mmBookingDestinationAddress.SetValue(selectedValues[11]);
+            mmBookingTripDetail.SetValue(selectedValues[12]);
             //txtApprover.SetValue(selectedValues[16]);
             //String(selectedValues[17]) == "T" ? chkNeedApproval.SetValue(true) : chkNeedApproval.SetValue(false);        
         }
@@ -267,10 +267,10 @@
                                         </dx:GridViewDataColumn>
                                         <dx:GridViewDataDateColumn Caption="Booking Date" Name="colDocDate" FieldName="DocDate" PropertiesDateEdit-DisplayFormatString="dd/MM/yyyy" ShowInCustomizationForm="True" VisibleIndex="1">
                                         </dx:GridViewDataDateColumn>
-                                        <dx:GridViewDataColumn Name="colDocType" FieldName="DocType" Visible="false">
-                                        </dx:GridViewDataColumn>
-                                        <dx:GridViewDataColumn Name="colNumberOfSeat" FieldName="NumberOfSeat" Visible="false">
-                                        </dx:GridViewDataColumn>
+                                       <%-- <dx:GridViewDataColumn Name="colDocType" FieldName="DocType" Visible="false">
+                                        </dx:GridViewDataColumn>--%>
+                                        <%--<dx:GridViewDataColumn Name="colNumberOfSeat" FieldName="NumberOfSeat" Visible="false">
+                                        </dx:GridViewDataColumn>--%>
                                         <dx:GridViewDataColumn Name="colEmployeeCompanyName" FieldName="EmployeeCompanyName" Visible="false">
                                         </dx:GridViewDataColumn>
                                         <dx:GridViewDataColumn Name="colDepartement" FieldName="Department" Visible="false">
@@ -366,13 +366,13 @@
                         </LayoutItemNestedControlCollection>
                     </dx:LayoutItem>--%>
                     <dx:EmptyLayoutItem Width="40%"></dx:EmptyLayoutItem>
-                    <dx:LayoutItem ShowCaption="True" Caption="Book Type" Width="20%">
+                <%--    <dx:LayoutItem ShowCaption="True" Caption="Book Type" Width="20%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
                                 <dx:ASPxTextBox runat="server" ID="txtBookingType" ClientInstanceName="txtBookingType"></dx:ASPxTextBox>
                             </dx:LayoutItemNestedControlContainer>
                         </LayoutItemNestedControlCollection>
-                    </dx:LayoutItem>
+                    </dx:LayoutItem>--%>
                     <dx:LayoutItem ShowCaption="True" Caption="Booking By" Width="20%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
@@ -388,14 +388,14 @@
                         </LayoutItemNestedControlCollection>
                     </dx:LayoutItem>
                     <dx:EmptyLayoutItem Width="20%"></dx:EmptyLayoutItem>
-                    <dx:EmptyLayoutItem Width="20%"></dx:EmptyLayoutItem>
-                    <dx:LayoutItem ShowCaption="True" Caption="Number Of Seat" Width="20%">
+                    <dx:EmptyLayoutItem Width="40%"></dx:EmptyLayoutItem>
+                  <%--  <dx:LayoutItem ShowCaption="True" Caption="Number Of Seat" Width="20%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
                                 <dx:ASPxTextBox runat="server" ID="txtNumberOfSeat" ClientInstanceName="txtNumberOfSeat"></dx:ASPxTextBox>
                             </dx:LayoutItemNestedControlContainer>
                         </LayoutItemNestedControlCollection>
-                    </dx:LayoutItem>
+                    </dx:LayoutItem>--%>
                     <dx:LayoutItem ShowCaption="True" Caption="Pickup" Width="20%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>

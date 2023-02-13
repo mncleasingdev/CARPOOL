@@ -71,11 +71,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             get { isValidLogin(false); return (DataTable)HttpContext.Current.Session["myDepartmentTable" + this.ViewState["_PageID"]]; }
             set { HttpContext.Current.Session["myDepartmentTable" + this.ViewState["_PageID"]] = value; }
         }
-        protected DataTable myNumberOfSeatTable
-        {
-            get { isValidLogin(false); return (DataTable)HttpContext.Current.Session["myNumberOfSeatTable" + this.ViewState["_PageID"]]; }
-            set { HttpContext.Current.Session["myNumberOfSeatTable" + this.ViewState["_PageID"]] = value; }
-        }
+        //protected DataTable myNumberOfSeatTable
+        //{
+        //    get { isValidLogin(false); return (DataTable)HttpContext.Current.Session["myNumberOfSeatTable" + this.ViewState["_PageID"]]; }
+        //    set { HttpContext.Current.Session["myNumberOfSeatTable" + this.ViewState["_PageID"]] = value; }
+        //}
         protected DataTable myApprovalTable
         {
             get { isValidLogin(false); return (DataTable)HttpContext.Current.Session["myApprovalTable" + this.ViewState["_PageID"]]; }
@@ -131,11 +131,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             get { isValidLogin(false); return (DXCAction)HttpContext.Current.Session["myAction" + this.ViewState["_PageID"]]; }
             set { HttpContext.Current.Session["myAction" + this.ViewState["_PageID"]] = value; }
         }
-        protected DXCType myDocType
-        {
-            get { isValidLogin(false); return (DXCType)HttpContext.Current.Session["myDocType" + this.ViewState["_PageID"]]; }
-            set { HttpContext.Current.Session["myDocType" + this.ViewState["_PageID"]] = value; }
-        }
+        //protected DXCType myDocType
+        //{
+        //    get { isValidLogin(false); return (DXCType)HttpContext.Current.Session["myDocType" + this.ViewState["_PageID"]]; }
+        //    set { HttpContext.Current.Session["myDocType" + this.ViewState["_PageID"]] = value; }
+        //}
         protected string myStatus
         {
             get { isValidLogin(false); return (string)HttpContext.Current.Session["myStatus" + this.ViewState["_PageID"]]; }
@@ -182,7 +182,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 mySectionTable = new DataTable();
                 myBookTypeTable = new DataTable();
                 myDepartmentTable = new DataTable();
-                myNumberOfSeatTable = new DataTable();
+                //myNumberOfSeatTable = new DataTable();
                 //myDriverTable = new DataTable();
                 myApprovalTable = new DataTable();
                 myApprovalGATable = new DataTable();
@@ -232,7 +232,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 //deEstArrivalTime.MinDate = myDBSetting.GetServerTime().AddMinutes(+15);
 
                 myAction = this.myBookingEntity.Action;
-                myDocType = this.myBookingEntity.DocumentType;
+                //myDocType = this.myBookingEntity.DocumentType;
                 myds = myBookingEntity.myDataSet;
                 myStatus = this.myBookingEntity.Status.ToString();
                 myHeaderTable = myds.Tables[0];              
@@ -258,23 +258,23 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 gvPersonDetail.DataSource = myDetailTable;
                 gvPersonDetail.DataBind();
 
-                myBookTypeTable = myLocalDBSetting.GetDataTable("SELECT * FROM [dbo].[BookingType] ORDER BY BookTypeCode", false);
-                cbBookType.DataSource = myBookTypeTable;
-                cbBookType.DataBind();
+                //myBookTypeTable = myLocalDBSetting.GetDataTable("SELECT * FROM [dbo].[BookingType] ORDER BY BookTypeCode", false);
+                //cbBookType.DataSource = myBookTypeTable;
+                //cbBookType.DataBind();
 
                 myDepartmentTable = myDBSetting.GetDataTable("SELECT * FROM [dbo].[PC_DEPT] ORDER BY CODE", false);
                 cbDepartment.DataSource = myDepartmentTable;
                 cbDepartment.DataBind();
 
-                myNumberOfSeatTable = myLocalDBSetting.GetDataTable("SELECT * FROM [dbo].[NumberOfSeat] ORDER BY NumberOfSeat", false);
-                cbNumberSeat.DataSource = myNumberOfSeatTable;
-                cbNumberSeat.DataBind();
+                //myNumberOfSeatTable = myLocalDBSetting.GetDataTable("SELECT * FROM [dbo].[NumberOfSeat] ORDER BY NumberOfSeat", false);
+                //cbNumberSeat.DataSource = myNumberOfSeatTable;
+                //cbNumberSeat.DataBind();
 
                 //myDriverTable = myDBSetting.GetDataTable("SELECT USER_NAME FROM [dbo].[Master_User] WHERE IsDriver=? ORDER BY USER_NAME", false, "T");
                 //cbDriver.DataSource = myDetailTable;
                 //cbDriver.DataBind();
 
-                myCarTable = myLocalDBSetting.GetDataTable("SELECT CarCode, CarType, CarName, CarLicense, NumberOfSeat, Kilometer FROM [dbo].[MasterCar] ORDER BY CarType", false);
+                myCarTable = myDBSetting.GetDataTable("exec spGetListMobil", false);
                 luCarType.DataSource = myCarTable;
                 luCarType.DataBind();
 
@@ -296,8 +296,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             cbDepartment.Value = myBookingEntity.Department.ToString();
             txtHp.Value = myBookingEntity.Hp.ToString();
             deDocDate.Value = myBookingEntity.DocDate;
-            cbBookType.Value = myBookingEntity.DocType;
-            cbNumberSeat.Value = myBookingEntity.NumberOfSeat;
+            //cbBookType.Value = myBookingEntity.DocType;
+            //cbNumberSeat.Value = myBookingEntity.NumberOfSeat;
             deReqPickupTime.Value = myBookingEntity.RequestStartTime;
             deReqArrivalTime.Value = myBookingEntity.RequestFinishTime;
             txtPickupLoc.Value = myBookingEntity.RequestPickLoc;
@@ -444,11 +444,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 btnSubmit.Visible = false;
                 btnCancel.Visible = false;
                 deDocDate.ClientEnabled = false;
-                cbBookType.ClientEnabled = false;
+                //cbBookType.ClientEnabled = false;
                 cbDepartment.ClientEnabled = false;
                 deReqPickupTime.ClientEnabled = false;
                 deReqArrivalTime.ClientEnabled = false;
-                cbNumberSeat.ClientEnabled = false;
+                //cbNumberSeat.ClientEnabled = false;
                 txtPickupLoc.ClientEnabled = false;
                 txtDestinationLoc.ClientEnabled = false;
                 mmPickupAddress.ClientEnabled = false;
@@ -482,11 +482,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 btnSubmit.Visible = false;
                 btnCancel.Visible = false;
                 deDocDate.ClientEnabled = false;
-                cbBookType.ClientEnabled = false;
+                //cbBookType.ClientEnabled = false;
                 cbDepartment.ClientEnabled = false;
                 deReqPickupTime.ClientEnabled = false;
                 deReqArrivalTime.ClientEnabled = false;
-                cbNumberSeat.ClientEnabled = false;
+                //cbNumberSeat.ClientEnabled = false;
                 txtPickupLoc.ClientEnabled = false;
                 txtDestinationLoc.ClientEnabled = false;
                 mmPickupAddress.ClientEnabled = false;
@@ -768,8 +768,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             cbDepartment.BackColor = cbDepartment.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
             txtHp.BackColor = txtHp.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
             deDocDate.BackColor = deDocDate.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
-            cbBookType.BackColor = cbBookType.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
-            cbNumberSeat.BackColor = cbNumberSeat.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
+            //cbBookType.BackColor = cbBookType.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
+            //cbNumberSeat.BackColor = cbNumberSeat.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
             deReqPickupTime.BackColor = deReqPickupTime.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
             deReqArrivalTime.BackColor = deReqArrivalTime.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
             txtPickupLoc.BackColor = txtPickupLoc.ReadOnly == true ? System.Drawing.Color.Transparent : System.Drawing.Color.White;
@@ -1122,11 +1122,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             myBookingEntity.DocDate = deDocDate.Value;
             myBookingEntity.Department = cbDepartment.Value;
             myBookingEntity.Hp = txtHp.Value;
-            myBookingEntity.DocType = cbBookType.Value;
+            //myBookingEntity.DocType = cbBookType.Value;
             myBookingEntity.EmployeeName = txtEmployee.Value;
             myBookingEntity.EmployeeCompanyName = txtComapany.Value;
             myBookingEntity.Status = txtStatus.Value;
-            myBookingEntity.NumberOfSeat = cbNumberSeat.Value;
+            //myBookingEntity.NumberOfSeat = cbNumberSeat.Value;
             myBookingEntity.RequestStartTime = deReqPickupTime.Value;
             myBookingEntity.RequestFinishTime = deReqArrivalTime.Value;
             myBookingEntity.RequestPickLoc = txtPickupLoc.Value;
@@ -1425,14 +1425,14 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             (sender as ASPxComboBox).DataSource = myDepartmentTable;
         }
 
-        protected void cbBookType_DataBinding(object sender, EventArgs e)
-        {
-            (sender as ASPxComboBox).DataSource = myBookTypeTable;
-        }
-        protected void cbNumberSeat_DataBinding(object sender, EventArgs e)
-        {
-            (sender as ASPxComboBox).DataSource = myNumberOfSeatTable;
-        }
+        //protected void cbBookType_DataBinding(object sender, EventArgs e)
+        //{
+        //    (sender as ASPxComboBox).DataSource = myBookTypeTable;
+        //}
+        //protected void cbNumberSeat_DataBinding(object sender, EventArgs e)
+        //{
+        //    (sender as ASPxComboBox).DataSource = myNumberOfSeatTable;
+        //}
         //protected void cbDriver_DataBinding(object sender, EventArgs e)
         //{
         //    (sender as ASPxComboBox).DataSource = myDriverTable;
