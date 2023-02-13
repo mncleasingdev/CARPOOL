@@ -285,7 +285,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     ClearBookingAdmin(ds);
                     SaveBookingAdmin(ds, userName);
 
-                    //SendNotifEmail(Booking);
+                    SendNotifEmail(Booking);
                     // SendSMS(Booking, saveaction);
                 }
 
