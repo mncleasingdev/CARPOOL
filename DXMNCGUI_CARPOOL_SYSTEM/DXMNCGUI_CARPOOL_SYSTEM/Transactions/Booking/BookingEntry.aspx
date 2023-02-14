@@ -738,8 +738,8 @@
                                     NullText="-- Select --"
                                     AutoPostBack="false"
                                     KeyFieldName="CarCode" ValueField="CarName" TextField="CarName"
-                                    DisplayFormatString="{1}"
-                                    TextFormatString="{1}"
+                                    DisplayFormatString="{0}"
+                                    TextFormatString="{0}"
                                     SelectionMode="Single"
                                     OnDataBinding="luCarType_DataBinding">
                                     <ClientSideEvents ValueChanged="OnCarTypeChanged" />
@@ -751,13 +751,13 @@
                                     <Columns>
                                        <%-- <dx:GridViewDataColumn Caption="Type" FieldName="CarType" ShowInCustomizationForm="True" VisibleIndex="0">
                                         </dx:GridViewDataColumn>--%>
-                                        <dx:GridViewDataColumn Caption="Name" FieldName="CarName" ShowInCustomizationForm="True" VisibleIndex="1">
+                                        <dx:GridViewDataColumn Caption="Name" FieldName="CarName" ShowInCustomizationForm="True" VisibleIndex="0">
                                         </dx:GridViewDataColumn>
-                                        <dx:GridViewDataColumn Caption="License" FieldName="CarLicense" ShowInCustomizationForm="True" VisibleIndex="2">
+                                        <dx:GridViewDataColumn Caption="License" FieldName="CarLicense" ShowInCustomizationForm="True" VisibleIndex="1">
                                         </dx:GridViewDataColumn>
                                        <%-- <dx:GridViewDataColumn Caption="Number of seat" FieldName="NumberOfSeat" ShowInCustomizationForm="True" VisibleIndex="3">
                                         </dx:GridViewDataColumn>--%>
-                                        <dx:GridViewDataColumn Caption="Last KM" FieldName="Kilometer" ShowInCustomizationForm="True" VisibleIndex="4">
+                                        <dx:GridViewDataColumn Caption="Last KM" FieldName="Kilometer" ShowInCustomizationForm="True" VisibleIndex="2">
                                         </dx:GridViewDataColumn>
                                     </Columns>
                                     <GridViewStyles AdaptiveDetailButtonWidth="22">

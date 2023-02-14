@@ -1212,6 +1212,36 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             return bSave;
         }
 
+        private string cekKilometerMobil()
+        {
+            string lastkilometer = "";
+            SqlConnection connection = new SqlConnection(this.myLocalDBSetting.ConnectionString);
+            //bool flag = false;
+            try
+            {
+                connection.Open();
+                object obj = null;
+
+                obj = myLocalDBSetting.ExecuteScalar("select lastkilometer from bookingadmin where CarLicensePlate=?", myBookingEntity.AdminCarLicensePlate);
+                if (obj != null && obj != DBNull.Value)
+                {
+                    lastkilometer = obj.ToString();
+                }
+            }
+            catch (SqlException ex)
+            {
+                DataError.HandleSqlException(ex);
+            }
+            finally
+            {
+                connection.Close();
+                connection.Dispose();
+            }
+
+            return lastkilometer;
+
+        }
+
         //private void UpdateApprover(string sApprover)
         //{
         //    //myApprovalTable.Rows(Nama);
@@ -1374,10 +1404,19 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 //    }
                 //    break;
                 case "FINISH":
-                    Save(SaveAction.FinishByDriver);
-                    cplMain.JSProperties["cpAlertMessage"] = "Transaction has been finish...";
-                    cplMain.JSProperties["cplblActionButton"] = "FINISH";
-                    DevExpress.Web.ASPxWebControl.RedirectOnCallback("BookingList.aspx");
+                    string lastkilometer = cekKilometerMobil();
+                    string currentkilometer = txtLastKM.Text;
+                    if (currentkilometer == lastkilometer)
+                    {
+                        cplMain.JSProperties["cpAlertMessage"] = "Kilometer Mobil Belum diUpdate!";
+                    }
+                    else
+                    {
+                        Save(SaveAction.FinishByDriver);
+                        cplMain.JSProperties["cpAlertMessage"] = "Transaction has been finish...";
+                        cplMain.JSProperties["cplblActionButton"] = "FINISH";
+                        DevExpress.Web.ASPxWebControl.RedirectOnCallback("BookingList.aspx");
+                    }
                     break;
                 case "FINISH_CONFIRM":
                     cplMain.JSProperties["cplblmessageError"] = "";
