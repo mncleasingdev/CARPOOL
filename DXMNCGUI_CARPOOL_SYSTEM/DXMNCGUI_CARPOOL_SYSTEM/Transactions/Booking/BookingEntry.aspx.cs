@@ -309,7 +309,14 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             //cbDriver.Value = myBookingEntity.AdminDriverName;
             luCarType.Value = myBookingEntity.AdminCarType;
             txtLicensePlate.Value = myBookingEntity.AdminCarLicensePlate;
-            txtLastKM.Value = myBookingEntity.AdminLastKilometer;
+            if (this.Request.QueryString["Action"] == "OnSchedule")
+            {
+                txtLastKM.Value = myBookingEntity.AdminLastKilometer;
+            }
+            else
+            {
+                txtLastKM.Value = myBookingEntity.AdminCurrentKilometer;
+            }
             //deEstPickupTime.Value = myBookingEntity.AdminEstPickDateTime;
             //deEstArrivalTime.Value = myBookingEntity.AdminEstArriveDateTime;
             mmAdminRemark.Value = myBookingEntity.AdminRemark;
@@ -1138,7 +1145,14 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             //myBookingEntity.AdminDriverName = cbDriver.Value;
             myBookingEntity.AdminCarType = luCarType.Value;
             myBookingEntity.AdminCarLicensePlate = txtLicensePlate.Value;
-            myBookingEntity.AdminLastKilometer = txtLastKM.Value;
+            if (saveAction == SaveAction.ApproveByAdmin)
+            {
+                myBookingEntity.AdminLastKilometer = txtLastKM.Value;
+            }
+            else if (saveAction == SaveAction.FinishByDriver)
+            {
+                myBookingEntity.AdminCurrentKilometer = txtLastKM.Value;
+            }
             //myBookingEntity.AdminEstPickDateTime = deEstPickupTime.Value == null ? DBNull.Value : deEstPickupTime.Value;
             //myBookingEntity.AdminEstArriveDateTime = deEstArrivalTime.Value == null ? DBNull.Value : deEstArrivalTime.Value;
             myBookingEntity.AdminRemark = mmAdminRemark.Value;

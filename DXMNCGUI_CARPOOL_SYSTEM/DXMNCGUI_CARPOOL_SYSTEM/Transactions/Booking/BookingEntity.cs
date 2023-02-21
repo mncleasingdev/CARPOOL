@@ -571,6 +571,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             get { return myRowAdmin["LastKilometer"]; }
             set { myRowAdmin["LastKilometer"] = value; }
         }
+        public object AdminCurrentKilometer
+        {
+            get { return myRowAdmin["CurrentKilometer"]; }
+            set { myRowAdmin["CurrentKilometer"] = value; }
+        }
         #endregion
         #region DRIVER ENTITY
         public object DriverDocKey
