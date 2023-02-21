@@ -427,7 +427,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             txtHp.ReadOnly = true;
             deDocDate.ReadOnly = false;
 
-            if (!accessright.IsAccessibleByUserID(Email, "IS_GA"))
+            if ((!accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
             {
                 ASPxFormLayout1.FindItemOrGroupByName("LayoutGroupAdminEntry").Visible = false;
                 luCarType.ClientVisible = true;
@@ -500,7 +500,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 gvApproval.Columns["ClmnCommand"].Visible = false;
 
                 //if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
-                if (accessright.IsAccessibleByUserID(Email, "IS_GA"))
+                if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
                 {
                     //btnAdminOnHold.ClientVisible = true;
                     btnAdminApprove.ClientVisible = true;
@@ -1262,17 +1262,17 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             {
                 #region ACTION BY USER
                 case "SUBMIT":
-                    //if (cekOutStandingBooking())
-                    //{
-                    //    cplMain.JSProperties["cpAlertMessage"] = "There are Transaction Not Complete yet, Please Contact General Affair!";
-                    //}
-                    //else
-                    //{ 
-                        Save(SaveAction.Save);
+                    if (myApprovalTable.Rows.Count == 0)
+                    {
+                        cplMain.JSProperties["cpAlertMessage"] = "Please fill in approval...";
+                    }
+                    else
+                    { 
+                    Save(SaveAction.Save);
                         cplMain.JSProperties["cpAlertMessage"] = "Transaction has been submit...";
                         cplMain.JSProperties["cplblActionButton"] = "SUBMIT";
                         DevExpress.Web.ASPxWebControl.RedirectOnCallback(urlsave + updatedQueryString);
-                    //}
+                    }
                     break;
                 case "SUBMITCONFIRM":
                     cplMain.JSProperties["cplblmessageError"] = "";

@@ -90,8 +90,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 }
 
                // if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
-                 if (accessright.IsAccessibleByUserID(Email, "IS_GA"))
-                 {
+                 if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
+                {
                     if (myFinishTable.Rows.Count > 0)
                     {
                         btnOnSchedule.Text += " (" + Convert.ToString(myFinishTable.Rows.Count) + ")";
@@ -116,7 +116,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
         private void accessable()
         {
             //if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
-            if (accessright.IsAccessibleByUserID(Email, "IS_GA"))
+            if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
             {
                 btnOnSchedule.ClientVisible = true;
             }
@@ -172,7 +172,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             //    }
             //}
             //if ((accessright.IsAccessibleByUserID(Email, "IS_ADMIN")) || (accessright.IsAccessibleByUserID(Email, "IS_GA")))
-            if (accessright.IsAccessibleByUserID(Email, "IS_GA"))
+            if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
             {
                 myMainTable = this.myBookingDB.LoadBrowseTable(true, false, UserName, "");
             }
