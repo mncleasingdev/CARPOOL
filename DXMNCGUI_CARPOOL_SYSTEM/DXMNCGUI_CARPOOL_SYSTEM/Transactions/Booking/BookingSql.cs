@@ -322,8 +322,9 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     dataDriverRow["LastModifiedBy"] = userName;
                     dataDriverRow["LastModifiedDateTime"] = Mydate;
 
+                    localdbSetting.ExecuteNonQuery("UPDATE [dbo].[MasterCar] SET Kilometer=? WHERE CarLicense=?", Convert.ToString(Booking.AdminCurrentKilometer), Convert.ToString(Booking.AdminCarLicensePlate));
                     //localdbSetting.ExecuteNonQuery("UPDATE [dbo].[BookingAdmin] SET CurrentKilometer=? WHERE SourceKey=?", Convert.ToString(Booking.AdminCurrentKilometer), Booking.AdminSourceKey);
-                    dbsetting.ExecuteNonQuery("Exec spUpdateKilometerMobil ?,?", Convert.ToString(Booking.AdminCurrentKilometer), Convert.ToString(Booking.AdminCarLicensePlate));
+                    //dbsetting.ExecuteNonQuery("Exec spUpdateKilometerMobil ?,?", Convert.ToString(Booking.AdminCurrentKilometer), Convert.ToString(Booking.AdminCarLicensePlate));
                 }
 
                 //if (Booking.DocKey != null && saveaction == SaveAction.Approve)
@@ -396,7 +397,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
 
                     SqlCommand sqlCommand = new SqlCommand(@"INSERT INTO [dbo].[BookingAdmin] (DocKey,SourceKey,DriverCode,DriverName,CarCode,
                     CarType,CarLicensePlate,Remark,EstPickDateTime,EstArriveDateTime,AdminCode,AdminName,CreatedBy,CreatedDateTime,LastModifiedBy,
-                    LastModifiedDateTime,LastKilometer) VALUES (@DocKey,@SourceKey,@DriverCode,@DriverName,@CarCode,@CarType,@CarLicensePlate,@Remark,
+                    LastModifiedDateTime,LastKilometer,CurrentKilometer) VALUES (@DocKey,@SourceKey,@DriverCode,@DriverName,@CarCode,@CarType,@CarLicensePlate,@Remark,
                     @EstPickDateTime,@EstArriveDateTime,@AdminCode,@AdminName,@CreatedBy,@CreatedDateTime,@LastModifiedBy,@LastModifiedDateTime,@LastKilometer,@CurrentKilometer)");
                     sqlCommand.Connection = myconn;
                     sqlCommand.Transaction = trans;

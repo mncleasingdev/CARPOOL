@@ -274,7 +274,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 //cbDriver.DataSource = myDetailTable;
                 //cbDriver.DataBind();
 
-                myCarTable = myDBSetting.GetDataTable("exec spGetListMobil", false);
+                myCarTable = myLocalDBSetting.GetDataTable("select * from MasterCar where IsActive='T'", false);
                 luCarType.DataSource = myCarTable;
                 luCarType.DataBind();
 
@@ -507,7 +507,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 gvApproval.Columns["ClmnCommand"].Visible = false;
 
                 //if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
-                if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
+                if ((accessright.IsAccessibleByUserID(Email, "IS_GA")))
                 {
                     //btnAdminOnHold.ClientVisible = true;
                     btnAdminApprove.ClientVisible = true;

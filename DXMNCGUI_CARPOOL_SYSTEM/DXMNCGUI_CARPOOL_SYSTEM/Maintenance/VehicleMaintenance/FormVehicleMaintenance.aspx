@@ -45,10 +45,10 @@
                                     <Columns>
                                         <dx:GridViewCommandColumn Name="ClmnCommand" ShowApplyFilterButton="true" ShowClearFilterButton="true" ShowDeleteButton="true" ShowEditButton="true" ShowInCustomizationForm="true" ShowNewButtonInHeader="True" VisibleIndex="0" Visible="true" Width="100px"></dx:GridViewCommandColumn>
                                         <dx:GridViewDataTextColumn Name="colCarCode" Caption="Car Code" FieldName="CarCode" Width="10%"></dx:GridViewDataTextColumn>
-                                        <dx:GridViewDataTextColumn Name="colCarType" Caption="Car Type" FieldName="CarType"></dx:GridViewDataTextColumn>
+                                        <%--<dx:GridViewDataTextColumn Name="colCarType" Caption="Car Type" FieldName="CarType"></dx:GridViewDataTextColumn>--%>
                                         <dx:GridViewDataTextColumn Name="colCarName" Caption="Name" FieldName="CarName" Width="50%"></dx:GridViewDataTextColumn>
                                         <dx:GridViewDataTextColumn Name="colLicense" Caption="License Plate" FieldName="CarLicense"></dx:GridViewDataTextColumn>
-                                        <dx:GridViewDataTextColumn Name="colNumberOfSeat" Caption="Maximum Seat" FieldName="NumberOfSeat"></dx:GridViewDataTextColumn>
+                                        <%--<dx:GridViewDataTextColumn Name="colNumberOfSeat" Caption="Maximum Seat" FieldName="NumberOfSeat"></dx:GridViewDataTextColumn>--%>
                                         <dx:GridViewDataSpinEditColumn Name="colKilometer" Caption="Current KM." FieldName="Kilometer" PropertiesSpinEdit-DisplayFormatString="#,0.00"></dx:GridViewDataSpinEditColumn>
                                         <dx:GridViewDataCheckColumn Name="colIsActive" FieldName="IsActive" Width="80px">
                                             <PropertiesCheckEdit ValueChecked="T" ValueUnchecked="F" ValueGrayed="F" AllowGrayed="false" ValueType="System.String"></PropertiesCheckEdit>
@@ -58,11 +58,11 @@
                                         <Items>
                                             <dx:GridViewLayoutGroup Caption="Vehicle Detail" GroupBoxDecoration="HeadingLine" ColCount="2">
                                                 <Items>
-                                                    <dx:GridViewColumnLayoutItem ColumnName="colCarType" Caption="Car Type" RequiredMarkDisplayMode="Required"></dx:GridViewColumnLayoutItem>
+                                                    <%--<dx:GridViewColumnLayoutItem ColumnName="colCarType" Caption="Car Type" RequiredMarkDisplayMode="Required"></dx:GridViewColumnLayoutItem>--%>
                                                     <dx:GridViewColumnLayoutItem ColumnName="colIsActive" Caption="Is Active ?" RequiredMarkDisplayMode="Required"></dx:GridViewColumnLayoutItem>
-                                                    <dx:GridViewColumnLayoutItem ColumnName="colCarName" Caption="Name" Width="100%" RequiredMarkDisplayMode="Required"></dx:GridViewColumnLayoutItem>
+                                                    <dx:GridViewColumnLayoutItem ColumnName="colCarName" Caption="Name" RequiredMarkDisplayMode="Required"></dx:GridViewColumnLayoutItem>
                                                     <dx:GridViewColumnLayoutItem ColumnName="colLicense" Caption="License Plat" RequiredMarkDisplayMode="Required"></dx:GridViewColumnLayoutItem>
-                                                    <dx:GridViewColumnLayoutItem ColumnName="colNumberOfSeat" Caption="Maximum Seat" RequiredMarkDisplayMode="Required"></dx:GridViewColumnLayoutItem>
+                                                    <%--<dx:GridViewColumnLayoutItem ColumnName="colNumberOfSeat" Caption="Maximum Seat" RequiredMarkDisplayMode="Required"></dx:GridViewColumnLayoutItem>--%>
                                                     <dx:GridViewColumnLayoutItem ColumnName="colKilometer" Caption="Current Kilometer" RequiredMarkDisplayMode="Required"></dx:GridViewColumnLayoutItem>
                                                     <dx:EditModeCommandLayoutItem Width="100%" HorizontalAlign="Right"></dx:EditModeCommandLayoutItem>
                                                 </Items>
