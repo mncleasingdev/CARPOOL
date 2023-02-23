@@ -188,47 +188,18 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             if (saveaction == SaveAction.Cancel)
             {
                 this.myAction = DXCAction.Cancel;
-            }
-            //if(saveaction == SaveAction.PickupByDriver)
-            //{
-            //    this.myRowUser["Status"] = "PICKUP";
-            //}
-            //if (saveaction == SaveAction.FinishByDriver)
-            //{
-            //    this.myRowUser["Status"] = "FINISH";
-            //}
-            //if (saveaction == SaveAction.RejectByDriver)
-            //{
-            //    this.myRowUser["Status"] = "REJECTED BY DRIVER";
-            //}
-            //if (saveaction == SaveAction.Approve)
-            //{
-            //this.myRowUser["Status"] = "NEW";
-            //this.myRowUser["Status"] = "APPROVED BY " + userID +"-"+ userName;
-            //}
+            }          
             if (saveaction == SaveAction.Reject)
             {
                 this.myRowUser["Status"] = "REJECTED";
             }
-            {
-                //bool flag = this.myRowUser.RowState != DataRowState.Unchanged;
-                //foreach (DataRow dataRow in this.ValidDetailLinesRows)
-                //{
-                //    if (!flag && dataRow.RowState != DataRowState.Unchanged)
-                //        flag = true;
-                //}
-                //if (!flag && this.myUserDetailTable.Select("", "Seq", DataViewRowState.Deleted).Length > 0)
-                //    flag = true;
-                //if (flag)
-                //{
-                    //userID = this.myRowUser["EmployeeName"].ToString();
-                    this.myRowUser["LastModifiedBy"] = this.myRowUser["EmployeeName"];
-                    this.myRowUser["LastModifiedDateTime"] = (object)this.myBookingCommand.DBSetting.GetServerTime();
-                    if (this.myRowUser["CreatedBy"].ToString().Length == 0)
-                        this.myRowUser["CreatedBy"] = this.myRowUser["LastModifiedUser"];
-                    this.myRowUser.EndEdit();
-                    myBookingCommand.SaveEntity(this, strDocName, saveaction, sCurrentStat, userID, userName, approver);
-                //}
+            {      
+                this.myRowUser["LastModifiedBy"] = this.myRowUser["EmployeeName"];
+                this.myRowUser["LastModifiedDateTime"] = (object)this.myBookingCommand.DBSetting.GetServerTime();
+                if (this.myRowUser["CreatedBy"].ToString().Length == 0)
+                    this.myRowUser["CreatedBy"] = this.myRowUser["LastModifiedUser"];
+                this.myRowUser.EndEdit();
+                myBookingCommand.SaveEntity(this, strDocName, saveaction, sCurrentStat, userID, userName, approver);               
                 this.myAction = DXCAction.View;
             }
         }

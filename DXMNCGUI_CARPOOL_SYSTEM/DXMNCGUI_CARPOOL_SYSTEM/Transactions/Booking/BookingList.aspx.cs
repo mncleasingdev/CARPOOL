@@ -89,7 +89,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     btnApprovalList.Text += " (" + Convert.ToString(myApprovalTable.Rows.Count) + ")";
                 }
 
-               // if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
                  if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
                 {
                     if (myFinishTable.Rows.Count > 0)
@@ -115,18 +114,16 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
 
         private void accessable()
         {
-            //if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
             if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
             {
                 btnOnSchedule.ClientVisible = true;
             }
-
         }
 
         protected void GetApprovalTable()
         {
             string cmdID = "";
-            //if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
+
             if (accessright.IsAccessibleByUserID(Email, "IS_GA"))
             {
                 cmdID = "IS_GA";
@@ -150,28 +147,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             return errorF;
         }
         private void refreshdatagrid()
-        {
-            //if (accessright.IsAccessibleByUserID(Email, "IS_CUSTOMER"))
-            //{
-            //    myMainTable = this.myBookingDB.LoadBrowseTable(false, false, UserName, "");
-            //}
-            //if (accessright.IsAccessibleByUserID(Email, "IS_DISPATCHER"))
-            //{
-            //    object obj = myLocalDBSetting.ExecuteScalar("SELECT Department FROM MasterUser WHERE Email=?", Email);
-            //    if (obj != null || obj != DBNull.Value)
-            //    {
-            //        myMainTable = this.myBookingDB.LoadBrowseTable(false, true, UserName, Convert.ToString(obj));
-            //    }
-            //}
-            //if (accessright.IsAccessibleByUserID(Email, "IS_CUSTOMER") && accessright.IsAccessibleByUserID(Email, "IS_DISPATCHER"))
-            //{
-            //    object obj = myLocalDBSetting.ExecuteScalar("SELECT Department FROM MasterUser WHERE Email=?", Email);
-            //    if (obj != null || obj != DBNull.Value)
-            //    {
-            //        myMainTable = this.myBookingDB.LoadBrowseTable(false, true, UserName, Convert.ToString(obj));
-            //    }
-            //}
-            //if ((accessright.IsAccessibleByUserID(Email, "IS_ADMIN")) || (accessright.IsAccessibleByUserID(Email, "IS_GA")))
+        {  
             if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
             {
                 myMainTable = this.myBookingDB.LoadBrowseTable(true, false, UserName, "");
@@ -180,26 +156,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             {
                 myMainTable = this.myBookingDB.LoadBrowseTable(false, false, UserName, "");
             }
-            //if (accessright.IsAccessibleByUserID(Email, "IS_DRIVER"))
-            //{
-            //    string updatedQueryString = "";
-            //    myMainTable = this.myBookingDB.LoadBrowseTableForDriver(UserName);
-            //    if (myMainTable.Rows.Count > 0)
-            //    {
-            //        DataRow[] myrow = myMainTable.Select("Status='PICKUP'");
-            //        if (myrow.Length > 0)
-            //        {
-            //            var nameValues = HttpUtility.ParseQueryString(Request.QueryString.ToString());
-            //            nameValues.Set("Key", this.ViewState["_PageID"].ToString());
-            //            updatedQueryString = "?" + nameValues.ToString();
-            //            myBookingEntity = myBookingDB.View(System.Convert.ToInt32(myrow[0]["DocKey"]));
-            //            if (accessright.IsAccessibleByUserID(Email, "IS_DRIVER"))
-            //            {
-            //                Response.Redirect("~/Transactions/Booking/DriverActionForm.aspx" + updatedQueryString);
-            //            }
-            //        }
-            //    }
-            //}
+ 
             gvMain.DataSource = myMainTable;
             gvMain.DataBind();
 
@@ -243,12 +200,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
         {
             string updatedQueryString = "";
 
-            //if (!accessright.IsAccessibleByUserID(Email, "IS_DRIVER"))
-            //{
-            //    ClientScript.RegisterStartupScript(this.GetType(), "myalert", "alert('Sorry, you are an driver, cannot create booking ticket !');", true);
-            //    return;
-            //}
-
             try
             {
                 if (cekOutStandingBooking())
@@ -281,15 +232,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     var nameValues = HttpUtility.ParseQueryString(Request.QueryString.ToString());
                     nameValues.Set("Key", this.ViewState["_PageID"].ToString());
                     updatedQueryString = "?" + nameValues.ToString();
-                    myBookingEntity = myBookingDB.View(System.Convert.ToInt32(myrow["DocKey"]));
-                    //if (accessright.IsAccessibleByUserID(Email, "IS_DRIVER"))
-                    //{
-                    //    Response.Redirect("~/Transactions/Booking/DriverActionForm.aspx" + updatedQueryString);
-                    //}
-                    //else
-                    //{
-                        Response.Redirect("~/Transactions/Booking/BookingEntry.aspx" + updatedQueryString);
-                    //}
+                    myBookingEntity = myBookingDB.View(System.Convert.ToInt32(myrow["DocKey"]));                    
+                    Response.Redirect("~/Transactions/Booking/BookingEntry.aspx" + updatedQueryString);                    
                 }
                 else
                 {
@@ -363,7 +307,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
 
                     nameValues.Set("Action", "Approval");
                     updatedQueryString = "?" + nameValues.ToString();
-                    //Response.Redirect("RequestReleaseDoc.aspx" + updatedQueryString);
                     ASPxWebControl.RedirectOnCallback("~/Transactions/Booking/BookingEntry.aspx" + updatedQueryString);
                     break;
                 case "ONSCHEDULE":
@@ -378,7 +321,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
 
                     nameValuesSchedule.Set("Action", "OnSchedule");
                     updatedQueryString = "?" + nameValuesSchedule.ToString();
-                    //Response.Redirect("RequestReleaseDoc.aspx" + updatedQueryString);
                     ASPxWebControl.RedirectOnCallback("~/Transactions/Booking/BookingEntry.aspx" + updatedQueryString);
                     break;
                 case "APPROVE":

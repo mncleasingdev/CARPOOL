@@ -71,11 +71,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             get { isValidLogin(false); return (DataTable)HttpContext.Current.Session["myDepartmentTable" + this.ViewState["_PageID"]]; }
             set { HttpContext.Current.Session["myDepartmentTable" + this.ViewState["_PageID"]] = value; }
         }
-        //protected DataTable myNumberOfSeatTable
-        //{
-        //    get { isValidLogin(false); return (DataTable)HttpContext.Current.Session["myNumberOfSeatTable" + this.ViewState["_PageID"]]; }
-        //    set { HttpContext.Current.Session["myNumberOfSeatTable" + this.ViewState["_PageID"]] = value; }
-        //}
         protected DataTable myApprovalTable
         {
             get { isValidLogin(false); return (DataTable)HttpContext.Current.Session["myApprovalTable" + this.ViewState["_PageID"]]; }
@@ -86,11 +81,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             get { isValidLogin(false); return (DataTable)HttpContext.Current.Session["myApprovalGATable" + this.ViewState["_PageID"]]; }
             set { HttpContext.Current.Session["myApprovalGATable" + this.ViewState["_PageID"]] = value; }
         }
-        //protected DataTable myDriverTable
-        //{
-        //    get { isValidLogin(false); return (DataTable)HttpContext.Current.Session["myDriverTable" + this.ViewState["_PageID"]]; }
-        //    set { HttpContext.Current.Session["myDriverTable" + this.ViewState["_PageID"]] = value; }
-        //}
         protected DataTable myCarTable
         {
             get { isValidLogin(false); return (DataTable)HttpContext.Current.Session["myCarTable" + this.ViewState["_PageID"]]; }
@@ -131,11 +121,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             get { isValidLogin(false); return (DXCAction)HttpContext.Current.Session["myAction" + this.ViewState["_PageID"]]; }
             set { HttpContext.Current.Session["myAction" + this.ViewState["_PageID"]] = value; }
         }
-        //protected DXCType myDocType
-        //{
-        //    get { isValidLogin(false); return (DXCType)HttpContext.Current.Session["myDocType" + this.ViewState["_PageID"]]; }
-        //    set { HttpContext.Current.Session["myDocType" + this.ViewState["_PageID"]] = value; }
-        //}
         protected string myStatus
         {
             get { isValidLogin(false); return (string)HttpContext.Current.Session["myStatus" + this.ViewState["_PageID"]]; }
@@ -171,19 +156,12 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 myDBSetting = dbsetting;
                 myDBSession = dbsession;
                 myLocalDBSetting = localdbsetting;
-                //if (this.Request.QueryString["SourceKey"] != null && this.Request.QueryString["Type"] != null)
-                //{
-                //    this.myBookingDB = BookingDB.Create(dbsetting, myDBSession,myLocalDBSetting);
-                //    myBookingEntity = this.myBookingDB.View(Convert.ToInt32(this.Request.QueryString["SourceKey"]));
-                //}
                 myHeaderTable = new DataTable();
                 myDetailTable = new DataTable();
                 myDocNoFormatTable = new DataTable();
                 mySectionTable = new DataTable();
                 myBookTypeTable = new DataTable();
                 myDepartmentTable = new DataTable();
-                //myNumberOfSeatTable = new DataTable();
-                //myDriverTable = new DataTable();
                 myApprovalTable = new DataTable();
                 myApprovalGATable = new DataTable();
                 myCarTable = new DataTable();
@@ -226,13 +204,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     this.myBookingEntity = BookingEntity;
                 }
 
-                //deReqPickupTime.MinDate = myDBSetting.GetServerTime().AddMinutes(+15);
-                //deReqArrivalTime.MinDate = myDBSetting.GetServerTime().AddMinutes(+15);
-                //deEstPickupTime.MinDate = myDBSetting.GetServerTime().AddMinutes(+15);
-                //deEstArrivalTime.MinDate = myDBSetting.GetServerTime().AddMinutes(+15);
-
                 myAction = this.myBookingEntity.Action;
-                //myDocType = this.myBookingEntity.DocumentType;
                 myds = myBookingEntity.myDataSet;
                 myStatus = this.myBookingEntity.Status.ToString();
                 myHeaderTable = myds.Tables[0];              
@@ -248,31 +220,13 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 DataView dv = new DataView(myBookingEntity.LoadDocNoFormatTable());
                 myDocNoFormatTable = dv.ToTable();
 
-                //myDetailTable = myDBSetting.GetDataTable(@"SELECT a.ID AS DtlKey, '' Dockey,'' Seq, A.CODE AS NIK, A.DESCS AS Nama, c.USERGROUPDESC AS Jabatan, A.Email FROM SYS_TBLEMPLOYEE a
-                //                                            left join MASTER_USER_COMPANY_GROUP b on a.HEAD = b.USER_ID
-                //                                            left join MASTER_GROUP c on b.GROUP_CODE = c.USERGROUP
-                //                                            where a.isactive = 1 and a.id = 0", false);//myds.Tables[1];
-                //myds.Tables[1].DefaultView.Sort = "DtlKey";
-
                 myDetailTable = myLocalDBSetting.GetDataTable("SELECT DtlKey,Dockey,Seq,NIK,Name,Jabatan,Email FROM [dbo].[BookingDetail] where DtlKey = 0 ORDER BY DtlKey", false);
                 gvPersonDetail.DataSource = myDetailTable;
                 gvPersonDetail.DataBind();
 
-                //myBookTypeTable = myLocalDBSetting.GetDataTable("SELECT * FROM [dbo].[BookingType] ORDER BY BookTypeCode", false);
-                //cbBookType.DataSource = myBookTypeTable;
-                //cbBookType.DataBind();
-
                 myDepartmentTable = myDBSetting.GetDataTable("SELECT * FROM [dbo].[PC_DEPT] ORDER BY CODE", false);
                 cbDepartment.DataSource = myDepartmentTable;
                 cbDepartment.DataBind();
-
-                //myNumberOfSeatTable = myLocalDBSetting.GetDataTable("SELECT * FROM [dbo].[NumberOfSeat] ORDER BY NumberOfSeat", false);
-                //cbNumberSeat.DataSource = myNumberOfSeatTable;
-                //cbNumberSeat.DataBind();
-
-                //myDriverTable = myDBSetting.GetDataTable("SELECT USER_NAME FROM [dbo].[Master_User] WHERE IsDriver=? ORDER BY USER_NAME", false, "T");
-                //cbDriver.DataSource = myDetailTable;
-                //cbDriver.DataBind();
 
                 myCarTable = myLocalDBSetting.GetDataTable("select * from MasterCar where IsActive='T'", false);
                 luCarType.DataSource = myCarTable;
@@ -296,8 +250,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             cbDepartment.Value = myBookingEntity.Department.ToString();
             txtHp.Value = myBookingEntity.Hp.ToString();
             deDocDate.Value = myBookingEntity.DocDate;
-            //cbBookType.Value = myBookingEntity.DocType;
-            //cbNumberSeat.Value = myBookingEntity.NumberOfSeat;
             deReqPickupTime.Value = myBookingEntity.RequestStartTime;
             deReqArrivalTime.Value = myBookingEntity.RequestFinishTime;
             txtPickupLoc.Value = myBookingEntity.RequestPickLoc;
@@ -306,7 +258,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             mmDestinationAddress.Value = myBookingEntity.RequestDestAddress;
             mmTripDetail.Value = myBookingEntity.TripDetails;
 
-            //cbDriver.Value = myBookingEntity.AdminDriverName;
             luCarType.Value = myBookingEntity.AdminCarType;
             txtLicensePlate.Value = myBookingEntity.AdminCarLicensePlate;
             if (this.Request.QueryString["Action"] == "OnSchedule")
@@ -317,14 +268,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             {
                 txtLastKM.Value = myBookingEntity.AdminCurrentKilometer;
             }
-            //deEstPickupTime.Value = myBookingEntity.AdminEstPickDateTime;
-            //deEstArrivalTime.Value = myBookingEntity.AdminEstArriveDateTime;
             mmAdminRemark.Value = myBookingEntity.AdminRemark;
-
-            //txtActDriverName.Value = myBookingEntity.DriverName;
-            //deActPickupTime.Value = myBookingEntity.DriverActualPickDateTime;
-            //deActArrivalTime.Value = myBookingEntity.DriverActualArriveDateTime;
-            //mmActRemark.Value = myBookingEntity.DriverRemark;
 
             if (myAction == DXCAction.View || myAction == DXCAction.Approve)
             {
@@ -355,25 +299,10 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 }
             }
             #region ADMIN
-            //if (accessright.IsAccessibleByUserID(Email, "IS_ADMIN"))
             if (accessright.IsAccessibleByUserID(Email, ""))
             {
                 if (myAction != DXCAction.New)
                 {
-                    //if (cbDriver.Value == null)
-                    //{
-                    //    errorF = true;
-                    //    cbDriver.IsValid = false;
-                    //    cbDriver.ErrorText = "Driver can't be empty.";
-                    //    if (!focusF)
-                    //    {
-                    //        cbDriver.Focus();
-                    //        focusF = true;
-                    //        strmessageError = "Driver, can't be empty.";
-                    //        cplMain.JSProperties["cplblmessageError"] = strmessageError;
-                    //        cplMain.JSProperties["cplActiveTabIndex"] = 1;
-                    //    }
-                    //}
                     if (luCarType.Value == null)
                     {
                         errorF = true;
@@ -388,34 +317,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                             cplMain.JSProperties["cplActiveTabIndex"] = 1;
                         }
                     }
-                    //if (deEstPickupTime.Value == null)
-                    //{
-                    //    errorF = true;
-                    //    deEstPickupTime.IsValid = false;
-                    //    deEstPickupTime.ErrorText = "Estimate pick-up date time can't be empty.";
-                    //    if (!focusF)
-                    //    {
-                    //        deEstPickupTime.Focus();
-                    //        focusF = true;
-                    //        strmessageError = "Estimate pick-up date time can't be empty.";
-                    //        cplMain.JSProperties["cplblmessageError"] = strmessageError;
-                    //        cplMain.JSProperties["cplActiveTabIndex"] = 1;
-                    //    }
-                    //}
-                    //if (deEstArrivalTime.Value == null)
-                    //{
-                    //    errorF = true;
-                    //    deEstArrivalTime.IsValid = false;
-                    //    deEstArrivalTime.ErrorText = "Estimate arrival date time can't be empty.";
-                    //    if (!focusF)
-                    //    {
-                    //        deEstArrivalTime.Focus();
-                    //        focusF = true;
-                    //        strmessageError = "Estimate arrival date time can't abe empty.";
-                    //        cplMain.JSProperties["cplblmessageError"] = strmessageError;
-                    //        cplMain.JSProperties["cplActiveTabIndex"] = 1;
-                    //    }
-                    //}
                 }
             }
             #endregion
@@ -451,19 +352,15 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 btnSubmit.Visible = false;
                 btnCancel.Visible = false;
                 deDocDate.ClientEnabled = false;
-                //cbBookType.ClientEnabled = false;
                 cbDepartment.ClientEnabled = false;
                 deReqPickupTime.ClientEnabled = false;
                 deReqArrivalTime.ClientEnabled = false;
-                //cbNumberSeat.ClientEnabled = false;
                 txtPickupLoc.ClientEnabled = false;
                 txtDestinationLoc.ClientEnabled = false;
                 mmPickupAddress.ClientEnabled = false;
                 mmDestinationAddress.ClientEnabled = false;
                 mmTripDetail.ClientEnabled = false;
-                //deEstPickupTime.ClientEnabled = false;
                 luCarType.ClientEnabled = false;
-                //deEstArrivalTime.ClientEnabled = false;
                 mmAdminRemark.ClientEnabled = false;
                 txtLastKM.ClientEnabled = false;
                 gvPersonDetail.Columns["ClmnCommand"].Visible = false;
@@ -489,27 +386,20 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 btnSubmit.Visible = false;
                 btnCancel.Visible = false;
                 deDocDate.ClientEnabled = false;
-                //cbBookType.ClientEnabled = false;
                 cbDepartment.ClientEnabled = false;
                 deReqPickupTime.ClientEnabled = false;
                 deReqArrivalTime.ClientEnabled = false;
-                //cbNumberSeat.ClientEnabled = false;
                 txtPickupLoc.ClientEnabled = false;
                 txtDestinationLoc.ClientEnabled = false;
                 mmPickupAddress.ClientEnabled = false;
                 mmDestinationAddress.ClientEnabled = false;
                 mmTripDetail.ClientEnabled = false;
-                //deestpickuptime.clientenabled = false;
                 luCarType.ClientEnabled = false;
-                //deEstArrivalTime.ClientEnabled = false;
-                //mmAdminRemark.ClientEnabled = false;
                 gvPersonDetail.Columns["ClmnCommand"].Visible = false;
                 gvApproval.Columns["ClmnCommand"].Visible = false;
 
-                //if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
                 if ((accessright.IsAccessibleByUserID(Email, "IS_GA")))
                 {
-                    //btnAdminOnHold.ClientVisible = true;
                     btnAdminApprove.ClientVisible = true;
                     btnAdminReject.ClientVisible = true;
                     btnApprove.ClientVisible = false;
@@ -519,243 +409,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     mmAdminRemark.ClientEnabled = true;
                 }
             }
-
-
-
-            //#region Super Admin Accessable
-            //if (accessright.IsAccessibleByUserID(Email, "IS_SUPER_ADMIN"))
-            //{
-
-            //}
-            //#endregion
-            //#region Customer Accessablea
-            //if (accessright.IsAccessibleByUserID(Email, "IS_CUSTOMER"))
-            //{
-            //    deDocDate.ReadOnly = false;
-            //    cbBookType.ReadOnly = false;
-            //    cbNumberSeat.ReadOnly = false;
-            //    deReqPickupTime.ReadOnly = false;
-            //    deReqArrivalTime.ReadOnly = false;
-            //    txtPickupLoc.ReadOnly = false;
-            //    txtDestinationLoc.ReadOnly = false;
-            //    mmPickupAddress.ReadOnly = false;
-            //    mmDestinationAddress.ReadOnly = false;
-            //    mmTripDetail.ReadOnly = false;
-            //    gvPersonDetail.Columns["ClmnCommand"].Visible = true;
-            //    //gvPersonDetail.Columns["colNo"].Visible = false;
-
-            //    cbDriver.ReadOnly = true;
-            //    luCarType.ReadOnly = true;
-            //    deEstPickupTime.ReadOnly = true;
-            //    deEstArrivalTime.ReadOnly = true;
-            //    txtLicensePlate.ReadOnly = true;
-            //    txtLastKM.ReadOnly = true;
-            //    mmAdminRemark.ReadOnly = true;
-            //    btnAdminOnHold.ClientEnabled = false;
-            //    btnAdminReject.ClientEnabled = false;
-            //    btnAdminApprove.ClientEnabled = false;
-            //    btnAdminApprove.ClientEnabled = false;
-            //    btnAdminOnHold.ClientEnabled = false;
-            //    btnAdminReject.ClientEnabled = false;
-
-            //    mmActRemark.ReadOnly = true;
-            //    deActPickupTime.ReadOnly = true;
-            //    deActArrivalTime.ReadOnly = true;
-            //    btnDriverPickUp.ClientEnabled = false;
-            //    btnDriverReject.ClientEnabled = false;
-            //    btnDriverFinish.ClientEnabled = false;
-
-            //    btnCancel.ClientEnabled = myBookingEntity.DocNo.ToString() == "NEW" ? false : true;
-
-            //    if (myBookingEntity.Status.ToString() != "NEW")
-            //    {
-            //        deDocDate.ReadOnly = true;
-            //        cbBookType.ReadOnly = true;
-            //        cbNumberSeat.ReadOnly = true;
-            //        deReqPickupTime.ReadOnly = true;
-            //        deReqArrivalTime.ReadOnly = true;
-            //        txtPickupLoc.ReadOnly = true;
-            //        txtDestinationLoc.ReadOnly = true;
-            //        mmPickupAddress.ReadOnly = true;
-            //        mmDestinationAddress.ReadOnly = true;
-            //        mmTripDetail.ReadOnly = true;
-            //        gvPersonDetail.Columns["ClmnCommand"].Visible = false;
-            //        //gvPersonDetail.Columns["colNo"].Visible = true;
-
-            //        btnSubmit.ClientEnabled = false;
-            //        btnCancel.ClientEnabled = false;
-            //    }
-            //}
-            //#endregion
-            //#region Dispatcher Accessable
-            //if (accessright.IsAccessibleByUserID(Email, "IS_DISPATCHER"))
-            //{
-            //    btnSubmit.ClientEnabled = false;
-            //    btnCancel.ClientEnabled = false;
-
-            //    if (!accessright.IsAccessibleByUserID(Email, "IS_CUSTOMER"))
-            //    {
-            //        deDocDate.ReadOnly = true;
-            //        cbBookType.ReadOnly = true;
-            //        cbNumberSeat.ReadOnly = true;
-            //        deReqPickupTime.ReadOnly = true;
-            //        deReqArrivalTime.ReadOnly = true;
-            //        txtPickupLoc.ReadOnly = true;
-            //        txtDestinationLoc.ReadOnly = true;
-            //        mmPickupAddress.ReadOnly = true;
-            //        mmDestinationAddress.ReadOnly = true;
-            //        mmTripDetail.ReadOnly = true;
-            //        gvPersonDetail.Columns["ClmnCommand"].Visible = false;
-            //        //gvPersonDetail.Columns["colNo"].Visible = true;
-            //    }
-            //    if (accessright.IsAccessibleByUserID(Email, "IS_CUSTOMER"))
-            //    {
-            //        btnSubmit.ClientEnabled = true;
-            //        btnCancel.ClientEnabled = true;
-            //    }
-
-            //    mmActRemark.ReadOnly = true;
-            //    btnDriverPickUp.ClientEnabled = false;
-            //    btnDriverReject.ClientEnabled = false;
-            //    btnDriverFinish.ClientEnabled = false;
-
-            //    if (myStatus.Contains("ON SCHEDULE")
-            //        || myStatus.Contains("REJECTED BY ADMIN")
-            //            || myStatus.ToString().Contains("PICKUP")
-            //                || myStatus.Contains("REJECTED BY DRIVER")
-            //                    || myStatus.Contains("FINISH")
-            //                        || myStatus.Contains("WAITING APPROVAL") 
-            //                            || myStatus.Contains("REJECT BY SUPERIOR"))
-            //    {
-            //        cbDriver.ReadOnly = true;
-            //        luCarType.ReadOnly = true;
-            //        deEstPickupTime.ReadOnly = true;
-            //        deEstArrivalTime.ReadOnly = true;
-            //        txtLicensePlate.ReadOnly = true;
-            //        txtLastKM.ReadOnly = true;
-            //        mmAdminRemark.ReadOnly = true;
-
-            //        btnAdminApprove.ClientEnabled = false;
-            //        btnAdminOnHold.ClientEnabled = false;
-            //        btnAdminReject.ClientEnabled = false;
-
-            //        btnSubmit.ClientVisible = false;
-            //    }
-            //    if (myStatus.Contains("NEW"))
-            //    {
-            //        if (myAction != DXCAction.New)
-            //        {
-            //            cbDriver.ReadOnly = false;
-            //            luCarType.ReadOnly = false;
-            //            deEstPickupTime.ReadOnly = false;
-            //            deEstArrivalTime.ReadOnly = false;
-            //            mmAdminRemark.ReadOnly = false;
-
-            //            btnAdminApprove.ClientEnabled = true;
-            //            btnAdminOnHold.ClientEnabled = true;
-            //            btnAdminReject.ClientEnabled = true;
-
-            //            btnSubmit.ClientVisible = false;
-            //        }
-            //    }
-            //    if (myStatus == "HOLD BY ADMIN")
-            //    {
-            //        btnAdminApprove.ClientEnabled = true;
-            //        btnAdminOnHold.ClientEnabled = false;
-            //        btnAdminReject.ClientEnabled = true;
-            //    }
-            //}
-            //#endregion
-            // #region Driver Accessable
-            //if (!accessright.IsAccessibleByUserID(Email, "IS_DRIVER"))
-            //{
-            //    deDocDate.ReadOnly = true;
-            //    cbBookType.ReadOnly = true;
-            //    cbNumberSeat.ReadOnly = true;
-            //    deReqPickupTime.ReadOnly = true;
-            //    deReqArrivalTime.ReadOnly = true;
-            //    txtPickupLoc.ReadOnly = true;
-            //    txtDestinationLoc.ReadOnly = true;
-            //    mmPickupAddress.ReadOnly = true;
-            //    mmDestinationAddress.ReadOnly = true;
-            //    mmTripDetail.ReadOnly = true;
-            //    gvPersonDetail.Columns["ClmnCommand"].Visible = false;
-            //   // gvPersonDetail.Columns["colNo"].Visible = true;
-
-            //    cbDriver.ReadOnly = true;
-            //    luCarType.ReadOnly = true;
-            //    deEstPickupTime.ReadOnly = true;
-            //    deEstArrivalTime.ReadOnly = true;
-            //    txtLicensePlate.ReadOnly = true;
-            //    txtLastKM.ReadOnly = true;
-            //    mmAdminRemark.ReadOnly = true;
-            //    btnAdminOnHold.ClientEnabled = false;
-            //    btnAdminReject.ClientEnabled = false;
-            //    btnAdminApprove.ClientEnabled = false;
-
-            //    btnSubmit.ClientEnabled = false;
-            //    btnCancel.ClientEnabled = false;
-            //}
-            //#endregion
-            //#region Admin Accessable
-            //if (accessright.IsAccessibleByUserID(Email, "IS_ADMIN"))
-            //{
-            //    btnSubmit.ClientEnabled = true;
-            //    btnCancel.ClientEnabled = true;
-
-            //mmActRemark.ReadOnly = true;
-            //btnDriverPickUp.ClientEnabled = false;
-            //btnDriverReject.ClientEnabled = false;
-            //btnDriverFinish.ClientEnabled = false;
-
-            //if (myStatus.Contains("ON SCHEDULE")
-            //    || myStatus.Contains("REJECTED BY ADMIN")
-            //        || myStatus.ToString().Contains("PICKUP")
-            //            || myStatus.Contains("REJECTED BY DRIVER")
-            //                || myStatus.Contains("FINISH")
-            //                    || myStatus.Contains("WAITING APPROVAL")
-            //                        || myStatus.Contains("REJECT BY SUPERIOR"))
-            //{
-            //    //cbDriver.ReadOnly = true;
-            //    luCarType.ReadOnly = true;
-            //    deEstPickupTime.ReadOnly = true;
-            //    deEstArrivalTime.ReadOnly = true;
-            //    txtLicensePlate.ReadOnly = true;
-            //    txtLastKM.ReadOnly = true;
-            //    mmAdminRemark.ReadOnly = true;
-
-            //    //btnAdminApprove.ClientEnabled = false;
-            //    //btnAdminOnHold.ClientEnabled = false;
-            //    //btnAdminReject.ClientEnabled = false;
-
-            //    btnSubmit.ClientVisible = false;
-            //}
-            //if (myStatus.Contains("NEW"))
-            //{
-            //    if (myAction != DXCAction.New)
-            //    {
-            //cbDriver.ReadOnly = false;
-            //luCarType.ReadOnly = false;
-            //deEstPickupTime.ReadOnly = false;
-            //deEstArrivalTime.ReadOnly = false;
-            //mmAdminRemark.ReadOnly = false;
-
-            //btnAdminApprove.ClientEnabled = true;
-            //btnAdminOnHold.ClientEnabled = true;
-            //btnAdminReject.ClientEnabled = true;
-
-            //btnSubmit.ClientVisible = false;
-            //    }
-            //}
-            //if (myStatus == "HOLD BY DISPATCHER")
-            //{
-            //btnAdminApprove.ClientEnabled = true;
-            //btnAdminOnHold.ClientEnabled = false;
-            //btnAdminReject.ClientEnabled = true;
-            //    }          
-            //}
-            //#endregion
-
             #region Control Color
             btnSubmit.ForeColor = btnSubmit.ClientEnabled == false ? System.Drawing.Color.Gray : System.Drawing.Color.DarkSlateBlue;
             btnCancel.ForeColor = btnCancel.ClientEnabled == false ? System.Drawing.Color.Gray : System.Drawing.Color.Red;
@@ -867,7 +520,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     gvApproval.JSProperties["cpCmd"] = "UPDATE";
                     int editingRowVisibleIndex = gvApproval.EditingRowVisibleIndex;
                     int id = (int)gvApproval.GetRowValues(editingRowVisibleIndex, "DtlKey");
-                    //DataRow dr = myApprovalTable.Rows.Find(id);
 
                     var searchExpression = "DtlKey = " + id.ToString();
                     DataRow[] foundRow = myApprovalTable.Select(searchExpression);
@@ -892,7 +544,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             {
                 gvApproval.JSProperties["cpCmd"] = "DELETE";
                 int id = (int)e.Keys["DtlKey"];
-                //DataRow dr = myDetailTable.Rows.Find(id);
 
                 var searchExpression = "DtlKey = " + id.ToString();
                 DataRow[] foundRow = myApprovalTable.Select(searchExpression);
@@ -1091,34 +742,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             }
         }
 
-        //private bool cekOutStandingBooking()
-        //{
-        //    SqlConnection connection = new SqlConnection(this.myLocalDBSetting.ConnectionString);
-        //    bool flag = false;
-        //    try
-        //    {
-        //        connection.Open();
-        //        SqlCommand sqlCommand = new SqlCommand(@"SELECT status,Approver FROM BOOKING                                                        
-        //                                                 WHERE CreatedBy='" + UserName + "' AND ISNULL(Status,'') = 'NEED_APPROVAL' ", connection);
-        //        if (System.Convert.ToInt32(sqlCommand.ExecuteScalar()) > 0)
-        //        {
-
-        //            flag = true;
-        //        }
-        //    }
-        //    catch (SqlException ex)
-        //    {
-        //        DataError.HandleSqlException(ex);
-        //    }
-        //    finally
-        //    {
-        //        connection.Close();
-        //        connection.Dispose();
-        //    }
-
-        //    return flag;
-
-        //}
         private bool Save(SaveAction saveAction)
         {
             bool bSave = true;
@@ -1129,11 +752,9 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             myBookingEntity.DocDate = deDocDate.Value;
             myBookingEntity.Department = cbDepartment.Value;
             myBookingEntity.Hp = txtHp.Value;
-            //myBookingEntity.DocType = cbBookType.Value;
             myBookingEntity.EmployeeName = txtEmployee.Value;
             myBookingEntity.EmployeeCompanyName = txtComapany.Value;
             myBookingEntity.Status = txtStatus.Value;
-            //myBookingEntity.NumberOfSeat = cbNumberSeat.Value;
             myBookingEntity.RequestStartTime = deReqPickupTime.Value;
             myBookingEntity.RequestFinishTime = deReqArrivalTime.Value;
             myBookingEntity.RequestPickLoc = txtPickupLoc.Value;
@@ -1141,8 +762,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             myBookingEntity.RequestPickAddress = mmPickupAddress.Value;
             myBookingEntity.RequestDestAddress = mmDestinationAddress.Value;
             myBookingEntity.TripDetails = mmTripDetail.Value;
-
-            //myBookingEntity.AdminDriverName = cbDriver.Value;
+            
             myBookingEntity.AdminCarType = luCarType.Value;
             myBookingEntity.AdminCarLicensePlate = txtLicensePlate.Value;
             if (saveAction == SaveAction.ApproveByAdmin)
@@ -1153,14 +773,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             {
                 myBookingEntity.AdminCurrentKilometer = txtLastKM.Value;
             }
-            //myBookingEntity.AdminEstPickDateTime = deEstPickupTime.Value == null ? DBNull.Value : deEstPickupTime.Value;
-            //myBookingEntity.AdminEstArriveDateTime = deEstArrivalTime.Value == null ? DBNull.Value : deEstArrivalTime.Value;
-            myBookingEntity.AdminRemark = mmAdminRemark.Value;
 
-            //myBookingEntity.DriverName = txtActDriverName.Value;
-            //myBookingEntity.DriverActualPickDateTime = deActPickupTime.Value == null ? DBNull.Value : deActPickupTime.Value;
-            //myBookingEntity.DriverActualArriveDateTime = deActArrivalTime.Value == null ? DBNull.Value : deActArrivalTime.Value;
-            //myBookingEntity.DriverRemark = mmActRemark.Value;
+            myBookingEntity.AdminRemark = mmAdminRemark.Value;
 
             if (saveAction == SaveAction.ApproveByAdmin)
             {
@@ -1230,7 +844,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
         {
             string lastkilometer = "";
             SqlConnection connection = new SqlConnection(this.myLocalDBSetting.ConnectionString);
-            //bool flag = false;
             try
             {
                 connection.Open();
@@ -1256,10 +869,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
 
         }
 
-        //private void UpdateApprover(string sApprover)
-        //{
-        //    //myApprovalTable.Rows(Nama);
-        //}
         protected void cplMain_Callback(object source, CallbackEventArgs e)
         {
             string urlsave = "";
@@ -1300,7 +909,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 case "APPROVE":
                     SaveApprove(SaveAction.Approve);
                     cplMain.JSProperties["cpAlertMessage"] = "This book has been approved..";
-                    //cplMain.JSProperties["cplblActionButton"] = "APPROVE_CONFIRM";
                     DevExpress.Web.ASPxWebControl.RedirectOnCallback("BookingList.aspx");
                     break;
                 case "APPROVECONFIRM":
@@ -1385,38 +993,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                         cplMain.JSProperties["cplblmessageError"] = strmessageError;
                     }
                     break;
-                #endregion
-                //#region ACYION BY DRIVER
-                //case "DRIVER_PICKUP":
-                //    Save(SaveAction.PickupByDriver);
-                //    cplMain.JSProperties["cpAlertMessage"] = "Transaction has been pickup...";
-                //    cplMain.JSProperties["cplblActionButton"] = "DRIVER_PICKUP";
-                //    DevExpress.Web.ASPxWebControl.RedirectOnCallback(urlsave + updatedQueryString);
-                //    break;
-                //case "DRIVER_PICKUP_CONFIRM":
-                //    cplMain.JSProperties["cplblmessageError"] = "";
-                //    cplMain.JSProperties["cplblmessage"] = "are you sure want to pick-up this book?";
-                //    cplMain.JSProperties["cplblActionButton"] = "DRIVER_PICKUP";
-                //    if (ErrorInField(out strmessageError, SaveAction.Save))
-                //    {
-                //        cplMain.JSProperties["cplblmessageError"] = strmessageError;
-                //    }
-                //    break;
-                //case "DRIVER_REJECT":
-                //    Save(SaveAction.RejectByDriver);
-                //    cplMain.JSProperties["cpAlertMessage"] = "Transaction has been rejected...";
-                //    cplMain.JSProperties["cplblActionButton"] = "DRIVER_REJECT";
-                //    DevExpress.Web.ASPxWebControl.RedirectOnCallback(urlsave + updatedQueryString);
-                //    break;
-                //case "DRIVER_REJECT_CONFIRM":
-                //    cplMain.JSProperties["cplblmessageError"] = "";
-                //    cplMain.JSProperties["cplblmessage"] = "are you sure want to rejected this book?";
-                //    cplMain.JSProperties["cplblActionButton"] = "DRIVER_REJECT";
-                //    if (ErrorInField(out strmessageError, SaveAction.Save))
-                //    {
-                //        cplMain.JSProperties["cplblmessageError"] = strmessageError;
-                //    }
-                //    break;
+                #endregion             
                 case "FINISH":
                     string lastkilometer = cekKilometerMobil();
                     string currentkilometer = txtLastKM.Text;
@@ -1441,13 +1018,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                         cplMain.JSProperties["cplblmessageError"] = strmessageError;
                     }
                     break;
-                //#endregion
             }
         }
         private bool SaveApprove(SaveAction saveAction)
         {
             bool bSave = true;
-           // DataRow myrow = gvApprovalList.GetDataRow(gvApprovalList.FocusedRowIndex);
             try
             {
                 this.myBookingDB = BookingDB.Create(myDBSetting, myDBSession, myLocalDBSetting);
@@ -1476,20 +1051,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
         protected void cbDepartment_DataBinding(object sender, EventArgs e)
         {
             (sender as ASPxComboBox).DataSource = myDepartmentTable;
-        }
-
-        //protected void cbBookType_DataBinding(object sender, EventArgs e)
-        //{
-        //    (sender as ASPxComboBox).DataSource = myBookTypeTable;
-        //}
-        //protected void cbNumberSeat_DataBinding(object sender, EventArgs e)
-        //{
-        //    (sender as ASPxComboBox).DataSource = myNumberOfSeatTable;
-        //}
-        //protected void cbDriver_DataBinding(object sender, EventArgs e)
-        //{
-        //    (sender as ASPxComboBox).DataSource = myDriverTable;
-        //}
+        }        
         protected void luCarType_DataBinding(object sender, EventArgs e)
         {
             (sender as ASPxGridLookup).DataSource = myCarTable;
@@ -1500,25 +1062,17 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
         }
         protected void gvPersonDetail_InitNewRow(object sender, DevExpress.Web.Data.ASPxDataInitNewRowEventArgs e)
         {
-            //e.NewValues["Remark1"] = DBNull.Value;
-            //e.NewValues["Remark2"] = DBNull.Value;
-            //e.NewValues["Remark3"] = DBNull.Value;
+      
         }
         protected void gvPersonDetail_RowInserting(object sender, DevExpress.Web.Data.ASPxDataInsertingEventArgs e)
         {
             string StrErrorMsg = "";
             if (e.NewValues["Name"] == null) throw new Exception("Column 'Name' is mandatory.");
-            //if (e.NewValues["Gender"] == null) throw new Exception("Column 'Gender' is mandatory.");
-            //if (e.NewValues["Status"] == null) throw new Exception("Column 'Status' is mandatory.");
 
             if (StrErrorMsg == "")
             {
-               // DataRow[] ValidLinesRows = myDetailTable.Select("", "Seq", DataViewRowState.Unchanged | DataViewRowState.Added | DataViewRowState.ModifiedCurrent);
-               // int seq = SeqUtils.GetLastSeq(ValidLinesRows);
-                //myDetailTable.Rows.Add(myBookingEntity.Bookingcommand.DtlKeyUniqueKey(), myBookingEntity.DocKey, seq, e.NewValues["Name"], e.NewValues["Gender"], e.NewValues["Status"], e.NewValues["Remark1"], e.NewValues["Remark2"], e.NewValues["Remark3"]);
                 int seq = gvPersonDetail.VisibleRowCount;
 
-               // myDetailTable.Rows.Add(e.NewValues["DtlKey"],e.NewValues["NIK"], e.NewValues["Nama"], e.NewValues["Jabatan"], e.NewValues["Email"]);
                 myDetailTable.Rows.Add(myBookingEntity.Bookingcommand.DtlKeyUniqueKey(), myBookingEntity.DocKey, seq, e.NewValues["NIK"], e.NewValues["Name"], e.NewValues["Jabatan"], e.NewValues["Email"]);
 
 
@@ -1531,12 +1085,9 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
         {
             string StrErrorMsg = "";
             if (e.NewValues["Name"] == null) throw new Exception("Column 'Name' is mandatory.");
-            //if (e.NewValues["Gender"] == null) throw new Exception("Column 'Gender' is mandatory.");
-            //if (e.NewValues["Status"] == null) throw new Exception("Column 'Status' is mandatory.");
             if (StrErrorMsg == "")
             {
                 int editingRowVisibleIndex = gvPersonDetail.EditingRowVisibleIndex;
-                //int id = (int)gvPersonDetail.GetRowValues(editingRowVisibleIndex, "Seq");
                 int id = Convert.ToInt32(gvPersonDetail.GetRowValues(editingRowVisibleIndex, "DtlKey"));
                 var searchExpression = "DtlKey = " + id.ToString();
                 DataRow[] foundRow = myDetailTable.Select(searchExpression);

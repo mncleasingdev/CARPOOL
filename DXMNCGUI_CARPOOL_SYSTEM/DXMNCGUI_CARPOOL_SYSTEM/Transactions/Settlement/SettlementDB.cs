@@ -159,7 +159,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             row["BookCompany"] = DBNull.Value;
             row["BookBy"] = DBNull.Value;
             row["BookDept"] = DBNull.Value;
-            //row["BookType"] = DBNull.Value;
             row["BookSeatNumber"] = DBNull.Value;
             row["BookPickupLoc"] = DBNull.Value;
             row["BookDestinationLoc"] = DBNull.Value;

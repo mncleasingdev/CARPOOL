@@ -74,7 +74,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             string sQuery = "";
             string cmdID = "";
             myBrowseTableApproval.Clear();
-            //if ((accessright.IsAccessibleByUserID(UserCode, "IS_GA")) || (accessright.IsAccessibleByUserID(UserCode, "IS_ADMIN")))
             if (accessright.IsAccessibleByUserID(UserCode, "IS_GA"))
             {
                 cmdID = "IS_GA";
@@ -111,10 +110,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             DataTable myDriverTable = new DataTable();
 
             string sQueryUser = "SELECT * FROM [dbo].[Booking] WHERE DocKey=@DocKey";
-            //string sQueryUserDetail = @"SELECT A.CODE AS NIK, A.DESCS AS Nama, c.USERGROUPDESC AS Jabatan, A.Email FROM SYS_TBLEMPLOYEE a
-            //                            left join MASTER_USER_COMPANY_GROUP b on a.HEAD = b.USER_ID
-            //                            left join MASTER_GROUP c on b.GROUP_CODE = c.USERGROUP
-            //                            where a.isactive = 1 AND ID=@DocKey";
             string sQueryUserDetail = "SELECT DtlKey,Dockey,Seq,NIK,Name,Jabatan,Email FROM [dbo].[BookingDetail] WHERE Dockey=@DocKey";
             string sQueryAdmin = "SELECT * FROM [dbo].[BookingAdmin] WHERE SourceKey=@SourceKey";
             string sQueryDriver = "SELECT * FROM [dbo].[BookingDriver] WHERE SourceKey=@SourceKey";
@@ -220,19 +215,12 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 localdbSetting.StartTransaction();
                 if (saveaction == SaveAction.Save)
                 {
-                    //if (dataRow["DocNo"].ToString().ToUpper() == "NEED APPROVAL")
-                    //{
                         DataRow[] myrowDocNo = localdbSetting.GetDataTable("select * from DocNoFormat", false, "").Select("DocType='BK'", "", DataViewRowState.CurrentRows);
                         if (myrowDocNo != null)
                         {
                             dataRow["DocNo"] = Document.FormatDocumentNo(myrowDocNo[0]["Format"].ToString(), System.Convert.ToInt32(myrowDocNo[0]["NextNo"]), DBSetting.GetServerTime());
                             localdbSetting.ExecuteNonQuery("Update DocNoFormat set NextNo=NextNo+1 Where DocType=?", strDocName);
                         }
-                  //  }
-                    //if(dataRow["NeedApproval"].ToString() == "T")
-                    //{
-                    //    dataRow["Status"] = "WAITING APPROVAL";
-                    //}
                 }
                 if (saveaction == SaveAction.Save)
                 {
@@ -285,30 +273,9 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     ClearBookingAdmin(ds);
                     SaveBookingAdmin(ds, userName);
 
-                    //SendNotifEmail(Booking);
+                    SendNotifEmail(Booking);
                     // SendSMS(Booking, saveaction);
                 }
-
-                //if (saveaction == SaveAction.PickupByDriver)
-                //{
-                //    dataRow["Status"] = "PICKUP";
-                //    dataRow["LastModifiedBy"] = userName;
-                //    dataRow["LastModifiedDateTime"] = Mydate;
-
-                //    dataDriverRow["DriverName"] = userName;
-                //    dataDriverRow["ActualPickDateTime"] = Mydate;
-                //    dataDriverRow["LastModifiedBy"] = userName;
-                //    dataDriverRow["LastModifiedDateTime"] = Mydate;
-                //}
-                //if (saveaction == SaveAction.RejectByDriver)
-                //{
-                //    dataRow["Status"] = "REJECTED BY DRIVER";
-                //    dataRow["LastModifiedBy"] = userName;
-                //    dataRow["LastModifiedDateTime"] = Mydate;
-
-                //    dataDriverRow["LastModifiedBy"] = userName;
-                //    dataDriverRow["LastModifiedDateTime"] = Mydate;
-                //}
                 if (saveaction == SaveAction.FinishByDriver)
                 {
                     dataRow["Status"] = "FINISH";
@@ -323,17 +290,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     dataDriverRow["LastModifiedDateTime"] = Mydate;
 
                     localdbSetting.ExecuteNonQuery("UPDATE [dbo].[MasterCar] SET Kilometer=? WHERE CarLicense=?", Convert.ToString(Booking.AdminCurrentKilometer), Convert.ToString(Booking.AdminCarLicensePlate));
-                    //localdbSetting.ExecuteNonQuery("UPDATE [dbo].[BookingAdmin] SET CurrentKilometer=? WHERE SourceKey=?", Convert.ToString(Booking.AdminCurrentKilometer), Booking.AdminSourceKey);
-                    //dbsetting.ExecuteNonQuery("Exec spUpdateKilometerMobil ?,?", Convert.ToString(Booking.AdminCurrentKilometer), Convert.ToString(Booking.AdminCarLicensePlate));
                 }
 
-                //if (Booking.DocKey != null && saveaction == SaveAction.Approve)
-                //if (Booking.DocKey != null)
-                //{
-                //    ClearDetail(Booking, saveaction);
-                //}
-
-                //localdbSetting.ExecuteNonQuery("UPDATE [dbo].[MasterCar] SET Kilometer=? WHERE CarLicense=?", (object)dataDriverRow["CurrentKilometer"], (object)dataAdminRow["CarLicensePlate"]);
                 localdbSetting.SimpleSaveDataTable(ds.Tables["User"], "SELECT * FROM [dbo].[Booking]");
                 if (saveaction != SaveAction.ApproveByAdmin)
                 {
@@ -390,10 +348,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             try
             {
                 DataRow dataRow = ds.Tables["Admin"].Rows[0];
-
-                //foreach (DataRow dataRow in ds.Tables["Admin"].Rows)
-                //{
-                    //myLocalDBSetting.ExecuteNonQuery("UPDATE [dbo].[BookingAdmin] SET CarType=?, CarLicensePlate=?, Remark=?, LastKilometer=? WHERE SourceKey=?", (object)dataRow["CarType"], (object)dataRow["CarLicensePlate"], (object)dataRow["Remark"], (object)dataRow["LastKilometer"], (object)dataRow["SourceKey"]);
 
                     SqlCommand sqlCommand = new SqlCommand(@"INSERT INTO [dbo].[BookingAdmin] (DocKey,SourceKey,DriverCode,DriverName,CarCode,
                     CarType,CarLicensePlate,Remark,EstPickDateTime,EstArriveDateTime,AdminCode,AdminName,CreatedBy,CreatedDateTime,LastModifiedBy,
@@ -479,7 +433,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     sqlParameter18.Direction = ParameterDirection.Input;
 
                 sqlCommand.ExecuteNonQuery();
-                //}
+              
                 trans.Commit();
             }
             catch (Exception ex)

@@ -63,7 +63,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 myMainTable = new DataTable();
                 this.mySettlementDB = SettlementDB.Create(myDBSetting, dbsession, localdbsetting);
 
-                //if ((accessright.IsAccessibleByUserID(Email, "IS_ADMIN")) || (accessright.IsAccessibleByUserID(Email, "IS_GA")))
                 if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
                 {
                     myMainTable = this.mySettlementDB.LoadBrowseTable(true, UserName);
@@ -72,14 +71,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 {
                     myMainTable = this.mySettlementDB.LoadBrowseTable(false, UserName);
                 }
-                //if (accessright.IsAccessibleByUserID(Email, "IS_GA"))
-                //{
-                //    myMainTable = this.mySettlementDB.LoadBrowseTable(true, UserName);
-                //}
-                //else
-                //{
-                //    myMainTable = this.mySettlementDB.LoadBrowseTable(false, UserName);
-                //}
+          
                 gvMain.DataBind();
                 GetApprovalTable();
                 gvApprovalList.DataBind();
@@ -97,7 +89,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 {
                     gvMain.FocusedRowIndex = -1;
                 }
-               // refreshdatagrid();
                 setEnabledButton();
             }
         }
@@ -120,7 +111,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
         }
         private void refreshdatagrid()
         {
-            //if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
             if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
             {
                 myMainTable = this.mySettlementDB.LoadBrowseTable(true, UserName);
@@ -143,17 +133,10 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 var docKeyValues = HttpUtility.ParseQueryString(Request.QueryString.ToString());
                 docKeyValues.Set("DocKey", this.ViewState["_PageID"].ToString());
 
-                //var dockeyValues = HttpUtility.ParseQueryString(Request.QueryString.ToString()); 
-                //dockeyValues.Set("DocKey", mySettlementEntity.DocKey.ToString());
-
-                //mySettlementEntity = mySettlementDB.View(Convert.ToInt32(mySettlementEntity.DocKey));
-                //updatedQueryString = "?" + nameValues.ToString() + "&" + dockeyValues.ToString();
-
                 var actionType = HttpUtility.ParseQueryString(Request.QueryString.ToString());
                 actionType.Set("Action", "New");
 
                 updatedQueryString = "?" + docKeyValues.ToString() + "&" + actionType.ToString();
-                //updatedQueryString = "?" + docKeyValues.ToString();
             }
             catch (Exception ex)
             {
@@ -171,8 +154,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 DataRow myrow = gvMain.GetDataRow(gvMain.FocusedRowIndex);
                 if (myrow != null)
                 {
-                    //var nameValues = HttpUtility.ParseQueryString(Request.QueryString.ToString());
-                    //nameValues.Set("Key", this.ViewState["_PageID"].ToString());
 
                     var dockeyValues = HttpUtility.ParseQueryString(Request.QueryString.ToString());
                     dockeyValues.Set("DocKey", myrow["DocKey"].ToString());
@@ -246,7 +227,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
 
                     nameValues.Set("Action", "Approval");
                     updatedQueryString = "?" + nameValues.ToString();
-                    //Response.Redirect("RequestReleaseDoc.aspx" + updatedQueryString);
                     ASPxWebControl.RedirectOnCallback("~/Transactions/Settlement/SettlementEntry.aspx" + updatedQueryString);
                     break;
                 case "APPROVE":

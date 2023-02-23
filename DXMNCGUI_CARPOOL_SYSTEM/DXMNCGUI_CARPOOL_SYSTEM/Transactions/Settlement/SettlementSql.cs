@@ -120,20 +120,13 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 localdbSetting.StartTransaction();
                 if (saveaction == SaveAction.Save)
                 {
-                    //if (dataRow["DocNo"].ToString().ToUpper() == "NEED APPROVAL")
-                    //{
-                        dataRow["DocDate"] = Mydate;
-                        DataRow[] myrowDocNo = localdbSetting.GetDataTable("select * from DocNoFormat", false, "").Select("DocType='ST'", "", DataViewRowState.CurrentRows);
-                        if (myrowDocNo != null)
-                        {
-                            dataRow["DocNo"] = Document.FormatDocumentNo(myrowDocNo[0]["Format"].ToString(), System.Convert.ToInt32(myrowDocNo[0]["NextNo"]), DBSetting.GetServerTime());
-                            localdbSetting.ExecuteNonQuery("Update DocNoFormat set NextNo=NextNo+1 Where DocType=?", strDocName);
-                        }
-                    //}
-                    //if (dataRow["Status"].ToString().ToUpper() == "NEW" && IsApproval)
-                    //{
-                    //    dataRow["Status"] = "WAITING APPROVAL";
-                    //}
+                    dataRow["DocDate"] = Mydate;
+                    DataRow[] myrowDocNo = localdbSetting.GetDataTable("select * from DocNoFormat", false, "").Select("DocType='ST'", "", DataViewRowState.CurrentRows);
+                    if (myrowDocNo != null)
+                    {
+                        dataRow["DocNo"] = Document.FormatDocumentNo(myrowDocNo[0]["Format"].ToString(), System.Convert.ToInt32(myrowDocNo[0]["NextNo"]), DBSetting.GetServerTime());
+                        localdbSetting.ExecuteNonQuery("Update DocNoFormat set NextNo=NextNo+1 Where DocType=?", strDocName);
+                    }        
                 }
                 if (saveaction == SaveAction.Save)
                 {
@@ -150,7 +143,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 }
                 if (saveaction == SaveAction.Approve)
                 {
-                    //dataRow["Status"] = "APPROVED BY SUPERIOR";
                     dataRow["Approver"] = Settlement.Approver;
                     dataRow["Status"] = "COMPLETE";
                     dataRow["LastModifiedBy"] = strUserName;
@@ -159,7 +151,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                 }
                 if (saveaction == SaveAction.Reject)
                 {
-                    //dataRow["Status"] = "REJECTED BY SUPERIOR";
                     dataRow["Status"] = "REJECTED";
                     dataRow["LastModifiedBy"] = strUserName;
                     dataRow["LastModifiedDateTime"] = Mydate;
@@ -285,9 +276,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                     SqlParameter sqlParameter10 = sqlCommand.Parameters.Add("@Remark4", SqlDbType.NVarChar);
                     sqlParameter10.Value = varRemark4;
                     sqlParameter10.Direction = ParameterDirection.Input;
-                    //SqlParameter sqlParameter11 = sqlCommand.Parameters.Add("@Image", SqlDbType.Image, 1);
                     SqlParameter sqlParameter11 = sqlCommand.Parameters.Add("@Image", SqlDbType.Binary);
-                    sqlParameter11.Value = DBNull.Value;//dataRow.Field<byte>("Image");
+                    sqlParameter11.Value = DBNull.Value;
                     sqlParameter11.Direction = ParameterDirection.Input;
                     SqlParameter sqlParameter12 = sqlCommand.Parameters.Add("@Qty", SqlDbType.Float);
                     sqlParameter12.Value = dataRow.Field<Decimal>("Qty");
@@ -330,7 +320,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
                     sqlParameter1.Value = dataRow.Field<string>("BookNo");
                     sqlParameter1.Direction = ParameterDirection.Input;
                     SqlParameter sqlParameter2 = sqlCommand.Parameters.Add("@IsSettlement", SqlDbType.NVarChar, 1);
-                    sqlParameter2.Value = "T";//saveaction == SaveAction.Approve ? "T" : "F";
+                    sqlParameter2.Value = "T";
                     sqlParameter2.Direction = ParameterDirection.Input;
                     SqlParameter sqlParameter3 = sqlCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 60);
                     sqlParameter3.Value = "COMPLETE";

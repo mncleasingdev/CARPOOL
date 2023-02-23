@@ -104,13 +104,7 @@
             }
         }
         function gvApprovalList_CustomButtonClick(s, e) {
-            switch (e.buttonID) {
-                //case "btnApprove":
-                //    gvApprovalList.GetRowValues(e.visibleIndex, "DocKey;", cplMain.PerformCallback("APPROVE_CONFIRM;APPROVE_CONFIRM"));
-                //    break;
-                //case "btnReject":
-                //    gvApprovalList.GetRowValues(e.visibleIndex, "DocKey;", cplMain.PerformCallback("REJECT_CONFIRM;REJECT_CONFIRM"));
-                //    break;
+            switch (e.buttonID) {    
                 case "btnShow":
                     cplMain.PerformCallback("SHOW;SHOW");
                     break;
@@ -216,19 +210,7 @@
                                                         <CustomButtons>
                                                         <dx:GridViewCommandColumnCustomButton ID="btnShow" Text="Show"></dx:GridViewCommandColumnCustomButton>
                                                         </CustomButtons>
-                                                    </dx:GridViewCommandColumn>
-                                                    <%--<dx:GridViewCommandColumn ButtonType="Button" VisibleIndex="5" Caption=" " Width="6%">
-                                                        <HeaderStyle Font-Bold="true" />
-                                                        <CustomButtons>
-                                                        <dx:GridViewCommandColumnCustomButton ID="btnApprove" Text="Approve"></dx:GridViewCommandColumnCustomButton>
-                                                        </CustomButtons>
-                                                    </dx:GridViewCommandColumn>
-                                                    <dx:GridViewCommandColumn ButtonType="Button" VisibleIndex="6" Caption=" " Width="6%">
-                                                        <HeaderStyle Font-Bold="true" />
-                                                        <CustomButtons>
-                                                        <dx:GridViewCommandColumnCustomButton ID="btnReject" Text="Reject"></dx:GridViewCommandColumnCustomButton>
-                                                        </CustomButtons>
-                                                    </dx:GridViewCommandColumn>--%>
+                                                    </dx:GridViewCommandColumn>                                                 
                                                 </Columns>
                                             </dx:GridViewBandColumn>
                                         </Columns>

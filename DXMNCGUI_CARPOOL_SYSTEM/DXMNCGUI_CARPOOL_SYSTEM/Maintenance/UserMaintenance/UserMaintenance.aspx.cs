@@ -127,7 +127,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Maintenance.UserMaintenance
             ASPxGridView gridView = (ASPxGridView)sender;
             DataTable mytable = myMainDataSet.Tables[0];
             DataRow row = mytable.NewRow();
-            //e.NewValues["USER_ID"] = GetNewId();
             IDictionaryEnumerator enumerator = e.NewValues.GetEnumerator();
             enumerator.Reset();
             while (enumerator.MoveNext())

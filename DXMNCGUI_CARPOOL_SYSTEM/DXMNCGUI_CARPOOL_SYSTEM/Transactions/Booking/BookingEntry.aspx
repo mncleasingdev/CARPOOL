@@ -137,37 +137,6 @@
                         lblmessage.SetText(cplMain.cplblmessage);
                     }
                     break;
-
-                //case "DRIVER_PICKUP":
-                //    apcalert.SetContentHtml(cplMain.cpAlertMessage);
-                //    apcalert.Show();
-                //    break;
-                //case "DRIVER_PICKUP_CONFIRM":
-                //    if (cplMain.cplblmessageError.length > 0) {
-                //        apcalert.SetContentHtml(cplMain.cplblmessageError);
-                //        apcalert.Show();
-                //        break;
-                //    }
-                //    if (ASPxClientEdit.ValidateGroup("ValidationSave")) {
-                //        apcconfirm.Show();
-                //        lblmessage.SetText(cplMain.cplblmessage);
-                //    }
-                //    break;
-                //case "DRIVER_REJECT":
-                //    apcalert.SetContentHtml(cplMain.cpAlertMessage);
-                //    apcalert.Show();
-                //    break;
-                //case "DRIVER_REJECT_CONFIRM":
-                //    if (cplMain.cplblmessageError.length > 0) {
-                //        apcalert.SetContentHtml(cplMain.cplblmessageError);
-                //        apcalert.Show();
-                //        break;
-                //    }
-                //    if (ASPxClientEdit.ValidateGroup("ValidationSave")) {
-                //        apcconfirm.Show();
-                //        lblmessage.SetText(cplMain.cplblmessage);
-                //    }
-                //    break;
                 case "FINISH":
                     apcalert.SetContentHtml(cplMain.cpAlertMessage);
                     apcalert.Show();
@@ -178,12 +147,6 @@
                         apcalert.Show();
                         break;
                     }
-                //    if (ASPxClientEdit.ValidateGroup("ValidationSave")) {
-                //        apcconfirm.Show();
-                //        lblmessage.SetText(cplMain.cplblmessage);
-                //    }
-                //    break;
-
             }
         }
         function gvApproval_EndCallback(s, e) {
@@ -397,7 +360,6 @@
                     <dx:LayoutItem ShowCaption="false" Caption="" Width="40%" HorizontalAlign="Right">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
-                                <%--<dx:ASPxLabel runat="server" ID="lbl1" ClientInstanceName="lbl1" Text="*Customers only need to fill in 'Detail Booking' section." ForeColor="SteelBlue" Font-Names="Calibri" Font-Size="Small" Font-Italic="true"></dx:ASPxLabel>--%>
                             </dx:LayoutItemNestedControlContainer>
                         </LayoutItemNestedControlCollection>
                     </dx:LayoutItem>
@@ -408,13 +370,6 @@
                             </dx:LayoutItemNestedControlContainer>
                         </LayoutItemNestedControlCollection>
                     </dx:LayoutItem>
-<%--                    <dx:LayoutItem ShowCaption="True" Caption="Department" Width="20%">
-                        <LayoutItemNestedControlCollection>
-                            <dx:LayoutItemNestedControlContainer>
-                                <dx:ASPxTextBox runat="server" ID="txtDepartment" ClientInstanceName="txtDepartment"></dx:ASPxTextBox>
-                            </dx:LayoutItemNestedControlContainer>
-                        </LayoutItemNestedControlCollection>
-                    </dx:LayoutItem>--%>
                     <dx:LayoutItem ShowCaption="True" Caption="Department" Width="20%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
@@ -463,32 +418,7 @@
                             </dx:LayoutItemNestedControlContainer>
                         </LayoutItemNestedControlCollection>
                     </dx:LayoutItem>
-                    <dx:EmptyLayoutItem Width="80%"></dx:EmptyLayoutItem>
-                    <%--<dx:LayoutItem ShowCaption="True" Caption="Booking Type" Width="20%">
-                        <LayoutItemNestedControlCollection>
-                            <dx:LayoutItemNestedControlContainer>
-                                <dx:ASPxComboBox
-                                    runat="server"
-                                    ID="cbBookType"
-                                    ClientInstanceName="cbBookType"
-                                    NullText="-- Select --"
-                                    AutoPostBack="false"
-                                    KeyFieldName="BookTypeCode" ValueField="BookTypeDesc" TextField="BookTypeDesc"
-                                    DisplayFormatString="{1}"
-                                    TextFormatString="{1}"
-                                    SelectionMode="Single"
-                                    OnDataBinding="cbBookType_DataBinding">
-                                    <Columns>
-                                        <dx:ListBoxColumn Caption="Code" FieldName="BookTypeCode" />
-                                        <dx:ListBoxColumn Caption="Type" FieldName="BookTypeDesc" />
-                                    </Columns>
-                                    <ValidationSettings Display="Dynamic" SetFocusOnError="True" ValidationGroup="ValidationSave" ErrorDisplayMode="ImageWithTooltip">
-                                        <RequiredField ErrorText="Booking type is required." IsRequired="True" />
-                                    </ValidationSettings>
-                                </dx:ASPxComboBox>
-                            </dx:LayoutItemNestedControlContainer>
-                        </LayoutItemNestedControlCollection>
-                    </dx:LayoutItem>--%>
+                    <dx:EmptyLayoutItem Width="80%"></dx:EmptyLayoutItem>  
                     <dx:LayoutItem ShowCaption="True" Caption="Start Time" Width="20%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
@@ -520,32 +450,6 @@
                         </LayoutItemNestedControlCollection>
                     </dx:LayoutItem>
                     <dx:EmptyLayoutItem Width="60%"></dx:EmptyLayoutItem>
-                    <%--<dx:LayoutItem ShowCaption="True" Caption="Number of seat" Width="20%">
-                        <LayoutItemNestedControlCollection>
-                            <dx:LayoutItemNestedControlContainer>
-                                <dx:ASPxComboBox
-                                    runat="server"
-                                    ID="cbNumberSeat"
-                                    ClientInstanceName="cbNumberSeat"
-                                    AutoPostBack="false"
-                                    NullText="-- Select --"
-                                    KeyFieldName="NumberOfSeat"
-                                    ValueField="NumberOfSeat"
-                                    TextField="NumberOfSeat"
-                                    DisplayFormatString="{0}"
-                                    TextFormatString="{0}"
-                                    SelectionMode="Single"
-                                    OnDataBinding="cbNumberSeat_DataBinding" ValueType="System.Int32">
-                                    <Columns>
-                                        <dx:ListBoxColumn Caption="Number Of Seat" FieldName="NumberOfSeat"/>
-                                    </Columns>
-                                    <ValidationSettings Display="Dynamic" SetFocusOnError="True" ValidationGroup="ValidationSave" ErrorDisplayMode="ImageWithTooltip">
-                                        <RequiredField ErrorText="Number of seat is required." IsRequired="True" />
-                                    </ValidationSettings>
-                                </dx:ASPxComboBox>
-                            </dx:LayoutItemNestedControlContainer>
-                        </LayoutItemNestedControlCollection>
-                    </dx:LayoutItem>--%>
                     <dx:LayoutItem ShowCaption="True" Caption="Pickup" Width="20%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
@@ -694,40 +598,7 @@
                 <GroupBoxStyle>
                     <Caption ForeColor="SteelBlue" Font-Size="Larger" Font-Bold="true" Font-Names="Calibri" BackColor="WhiteSmoke"></Caption>
                 </GroupBoxStyle>
-                <Items>
-                    <%--<dx:LayoutItem ShowCaption="True" Caption="Driver" Width="50%">
-                        <LayoutItemNestedControlCollection>
-                            <dx:LayoutItemNestedControlContainer>
-                                <dx:ASPxComboBox
-                                    runat="server"
-                                    ID="cbDriver"
-                                    ClientInstanceName="cbDriver"
-                                    NullText="-- Select --"
-                                    AutoPostBack="false"
-                                    KeyFieldName="USER_NAME" ValueField="USER_NAME" TextField="USER_NAME"
-                                    DisplayFormatString="{0}"
-                                    TextFormatString="{0}"
-                                    SelectionMode="Single"
-                                    OnDataBinding="cbDriver_DataBinding">
-                                    <Columns>
-                                        <dx:ListBoxColumn Caption="Driver" FieldName="USER_NAME" />
-                                    </Columns>
-                                </dx:ASPxComboBox>
-                            </dx:LayoutItemNestedControlContainer>
-                        </LayoutItemNestedControlCollection>
-                    </dx:LayoutItem>--%>
-                    <%--<dx:LayoutItem ShowCaption="True" Caption="Est. Pickup Time" Width="50%">
-                        <LayoutItemNestedControlCollection>
-                            <dx:LayoutItemNestedControlContainer>
-                                <dx:ASPxDateEdit runat="server" ID="deEstPickupTime" ClientInstanceName="deEstPickupTime" EditFormat="DateTime" EditFormatString="dd/MM/yyyy HH:mm:ss">
-                                    <TimeSectionProperties Visible="True">
-                                        <TimeEditProperties EditFormatString="HH:mm:ss">
-                                        </TimeEditProperties>
-                                    </TimeSectionProperties>
-                                </dx:ASPxDateEdit>
-                            </dx:LayoutItemNestedControlContainer>
-                        </LayoutItemNestedControlCollection>
-                    </dx:LayoutItem>--%>
+                <Items>             
                     <dx:LayoutItem ShowCaption="True" Caption="Car Type" Width="50%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
@@ -749,38 +620,20 @@
                                         <SettingsSearchPanel ShowApplyButton="True" ShowClearButton="True" Visible="True" />
                                     </GridViewProperties>
                                     <Columns>
-                                       <%-- <dx:GridViewDataColumn Caption="Type" FieldName="CarType" ShowInCustomizationForm="True" VisibleIndex="0">
-                                        </dx:GridViewDataColumn>--%>
                                         <dx:GridViewDataColumn Caption="Name" FieldName="CarName" ShowInCustomizationForm="True" VisibleIndex="0">
                                         </dx:GridViewDataColumn>
                                         <dx:GridViewDataColumn Caption="License" FieldName="CarLicense" ShowInCustomizationForm="True" VisibleIndex="1">
                                         </dx:GridViewDataColumn>
-                                       <%-- <dx:GridViewDataColumn Caption="Number of seat" FieldName="NumberOfSeat" ShowInCustomizationForm="True" VisibleIndex="3">
-                                        </dx:GridViewDataColumn>--%>
                                         <dx:GridViewDataColumn Caption="Last KM" FieldName="Kilometer" ShowInCustomizationForm="True" VisibleIndex="2">
                                         </dx:GridViewDataColumn>
                                     </Columns>
                                     <GridViewStyles AdaptiveDetailButtonWidth="22">
                                     </GridViewStyles>
-                          <%--          <ValidationSettings Display="Dynamic" SetFocusOnError="True" ValidationGroup="ValidationSave">
-                                        <RequiredField ErrorText="* Value can't be empty." IsRequired="True" />
-                                    </ValidationSettings>--%>
                                 </dx:ASPxGridLookup>
                             </dx:LayoutItemNestedControlContainer>
                         </LayoutItemNestedControlCollection>
                     </dx:LayoutItem>
-                    <%--<dx:LayoutItem ShowCaption="True" Caption="Est. Arrival Time" Width="50%">
-                        <LayoutItemNestedControlCollection>
-                            <dx:LayoutItemNestedControlContainer>
-                                <dx:ASPxDateEdit runat="server" ID="deEstArrivalTime" ClientInstanceName="deEstArrivalTime" EditFormat="DateTime" EditFormatString="dd/MM/yyyy HH:mm:ss">
-                                    <TimeSectionProperties Visible="True">
-                                        <TimeEditProperties EditFormatString="HH:mm:ss">
-                                        </TimeEditProperties>
-                                    </TimeSectionProperties>
-                                </dx:ASPxDateEdit>
-                            </dx:LayoutItemNestedControlContainer>
-                        </LayoutItemNestedControlCollection>
-                    </dx:LayoutItem>--%>
+  
                     <dx:LayoutItem ShowCaption="True" Caption="License Plate" Width="50%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
@@ -949,81 +802,7 @@
                             </dx:LayoutItem>
                         </Items>
             </dx:LayoutGroup>
-           <%-- <dx:LayoutGroup Name="LayoutGroupActualEntry" GroupBoxDecoration="Box" Caption="Actual Booking - For Driver Only" Width="50%" ColCount="1">
-                <GroupBoxStyle>
-                    <Caption ForeColor="SteelBlue" Font-Size="Larger" Font-Bold="true" Font-Names="Calibri" BackColor="WhiteSmoke"></Caption>
-                </GroupBoxStyle>
-                <Items>
-                    <dx:LayoutItem ShowCaption="True" Caption="Driver" Width="50%">
-                        <LayoutItemNestedControlCollection>
-                            <dx:LayoutItemNestedControlContainer>
-                                <dx:ASPxTextBox runat="server" ID="txtActDriverName" ClientInstanceName="txtActDriverName" ReadOnly="true"></dx:ASPxTextBox>
-                            </dx:LayoutItemNestedControlContainer>
-                        </LayoutItemNestedControlCollection>
-                    </dx:LayoutItem>
-                    <dx:EmptyLayoutItem Width="50%"></dx:EmptyLayoutItem>
-                    <dx:LayoutItem ShowCaption="True" Caption="Act. Pickup" Width="50%">
-                        <LayoutItemNestedControlCollection>
-                            <dx:LayoutItemNestedControlContainer>
-                                <dx:ASPxDateEdit runat="server" ID="deActPickupTime" ClientInstanceName="deActPickupTime" EditFormat="DateTime" EditFormatString="dd/MM/yyyy HH:mm:ss" ReadOnly="true">
-                                    <TimeSectionProperties Visible="True">
-                                        <TimeEditProperties EditFormatString="HH:mm:ss">
-                                        </TimeEditProperties>
-                                    </TimeSectionProperties>
-                                </dx:ASPxDateEdit>
-                            </dx:LayoutItemNestedControlContainer>
-                        </LayoutItemNestedControlCollection>
-                    </dx:LayoutItem>
-                    <dx:EmptyLayoutItem Width="50%"></dx:EmptyLayoutItem>
-                    <dx:LayoutItem ShowCaption="True" Caption="Act. Arrival" Width="50%">
-                        <LayoutItemNestedControlCollection>
-                            <dx:LayoutItemNestedControlContainer>
-                                <dx:ASPxDateEdit runat="server" ID="deActArrivalTime" ClientInstanceName="deActArrivalTime" EditFormat="DateTime" EditFormatString="dd/MM/yyyy HH:mm:ss" ReadOnly="true">
-                                    <TimeSectionProperties Visible="True">
-                                        <TimeEditProperties EditFormatString="HH:mm:ss">
-                                        </TimeEditProperties>
-                                    </TimeSectionProperties>
-                                </dx:ASPxDateEdit>
-                            </dx:LayoutItemNestedControlContainer>
-                        </LayoutItemNestedControlCollection>
-                    </dx:LayoutItem>
-                    <dx:EmptyLayoutItem Width="100%"></dx:EmptyLayoutItem>
-                    <dx:LayoutItem ShowCaption="True" Caption="Driver Remark" Width="100%" RowSpan="2">
-                        <LayoutItemNestedControlCollection>
-                            <dx:LayoutItemNestedControlContainer>
-                                <dx:ASPxMemo runat="server" ID="mmActRemark" ClientInstanceName="mmActRemark" Height="50px" NullText="..." ClientEnabled="true"></dx:ASPxMemo>
-                            </dx:LayoutItemNestedControlContainer>
-                        </LayoutItemNestedControlCollection>
-                    </dx:LayoutItem>
-                    <dx:LayoutItem ShowCaption="True" Caption="" Width="100%">
-                        <LayoutItemNestedControlCollection>
-                            <dx:LayoutItemNestedControlContainer>
-                                <dx:ASPxButton runat="server" ID="btnDriverPickUp" ClientInstanceName="btnDriverPickUp" Text="Pickup" ForeColor="DarkSlateBlue" Width="25%" AutoPostBack="false" UseSubmitBehavior="false" ValidationGroup="ValidationSave" Theme="Office2010Blue" Border-BorderColor="WhiteSmoke" Border-BorderWidth="2" Border-BorderStyle="Outset" ClientVisible="true">
-                                    <ClientSideEvents Click="function(s,e) { cplMain.PerformCallback('DRIVER_PICKUP_CONFIRM;' + 'DRIVER_PICKUP_CONFIRM'); }" />
-                                </dx:ASPxButton>
-                            </dx:LayoutItemNestedControlContainer>
-                        </LayoutItemNestedControlCollection>
-                    </dx:LayoutItem>
-                    <dx:LayoutItem ShowCaption="True" Caption="" Width="100%">
-                        <LayoutItemNestedControlCollection>
-                            <dx:LayoutItemNestedControlContainer>
-                                <dx:ASPxButton runat="server" ID="btnDriverReject" ClientInstanceName="btnDriverReject" Text="Reject" ForeColor="Red" Width="25%" AutoPostBack="false" UseSubmitBehavior="false" ValidationGroup="ValidationSave" Theme="Office2010Blue" Border-BorderColor="WhiteSmoke" Border-BorderWidth="2" Border-BorderStyle="Outset" ClientVisible="true">
-                                    <ClientSideEvents Click="function(s,e) { cplMain.PerformCallback('DRIVER_REJECT_CONFIRM;' + 'DRIVER_REJECT_CONFIRM'); }" />
-                                </dx:ASPxButton>
-                            </dx:LayoutItemNestedControlContainer>
-                        </LayoutItemNestedControlCollection>
-                    </dx:LayoutItem>
-                    <dx:LayoutItem ShowCaption="True" Caption="" Width="100%">
-                        <LayoutItemNestedControlCollection>
-                            <dx:LayoutItemNestedControlContainer>
-                                <dx:ASPxButton runat="server" ID="btnDriverFinish" ClientInstanceName="btnDriverFinish" Text="Finish" ForeColor="DarkSlateBlue" Width="25%" AutoPostBack="false" UseSubmitBehavior="false" ValidationGroup="ValidationSave" Theme="Office2010Blue" Border-BorderColor="WhiteSmoke" Border-BorderWidth="2" Border-BorderStyle="Outset" ClientVisible="true">
-                                    <ClientSideEvents Click="function(s,e) { cplMain.PerformCallback('DRIVER_FINISH_CONFIRM;' + 'DRIVER_FINISH_CONFIRM'); }" />
-                                </dx:ASPxButton>
-                            </dx:LayoutItemNestedControlContainer>
-                        </LayoutItemNestedControlCollection>
-                    </dx:LayoutItem>
-                </Items>
-            </dx:LayoutGroup>--%>
+
             <dx:EmptyLayoutItem Width="60%"></dx:EmptyLayoutItem>
             <dx:LayoutItem ShowCaption="False" Width="10%">
                 <LayoutItemNestedControlCollection>
