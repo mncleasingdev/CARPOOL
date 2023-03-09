@@ -162,12 +162,13 @@
         function OnCarTypeChanged(s, e)
         {
             var grid = luCarType.GetGridView();
-            grid.GetRowValues(grid.GetFocusedRowIndex(), 'CarLicense;Kilometer', OnGetSelectedFieldValues);
+            grid.GetRowValues(grid.GetFocusedRowIndex(), 'CarLicense;Kilometer;Remark', OnGetSelectedFieldValues);
         }
         function OnGetSelectedFieldValues(selectedValues)
         {
             txtLicensePlate.SetValue(selectedValues[0]);
             txtLastKM.SetValue(selectedValues[1]);
+            mmAdminRemark.SetValue(selectedValues[2]);
         }
         function OnNameChanged(s, e) {
             gvPersonDetail.GetEditor("colDtlKey").SetValue(s.GetSelectedItem().GetColumnText('DtlKey'));
@@ -625,6 +626,8 @@
                                         <dx:GridViewDataColumn Caption="License" FieldName="CarLicense" ShowInCustomizationForm="True" VisibleIndex="1">
                                         </dx:GridViewDataColumn>
                                         <dx:GridViewDataColumn Caption="Last KM" FieldName="Kilometer" ShowInCustomizationForm="True" VisibleIndex="2">
+                                        </dx:GridViewDataColumn>
+                                        <dx:GridViewDataColumn Caption="Remark" FieldName="Remark" ShowInCustomizationForm="True" VisibleIndex="2">
                                         </dx:GridViewDataColumn>
                                     </Columns>
                                     <GridViewStyles AdaptiveDetailButtonWidth="22">

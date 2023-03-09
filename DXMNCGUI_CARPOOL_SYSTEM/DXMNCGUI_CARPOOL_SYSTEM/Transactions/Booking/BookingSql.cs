@@ -7,6 +7,9 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
+using System.Net.Mail;
+using System.Security.Cryptography.X509Certificates;
+using System.Net.Security;
 
 namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
 {
@@ -289,7 +292,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     dataDriverRow["LastModifiedBy"] = userName;
                     dataDriverRow["LastModifiedDateTime"] = Mydate;
 
-                    localdbSetting.ExecuteNonQuery("UPDATE [dbo].[MasterCar] SET Kilometer=? WHERE CarLicense=?", Convert.ToString(Booking.AdminCurrentKilometer), Convert.ToString(Booking.AdminCarLicensePlate));
+                    localdbSetting.ExecuteNonQuery("UPDATE [dbo].[MasterCar] SET Kilometer=?, Remark=? WHERE CarLicense=?", Convert.ToString(Booking.AdminCurrentKilometer), Convert.ToString(Booking.AdminRemark), Convert.ToString(Booking.AdminCarLicensePlate));
                 }
 
                 localdbSetting.SimpleSaveDataTable(ds.Tables["User"], "SELECT * FROM [dbo].[Booking]");
@@ -337,7 +340,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 dbsetting.EndTransaction();
             }
         }
-
+       
 
         protected override void SaveBookingAdmin(DataSet ds, string userName)
         {

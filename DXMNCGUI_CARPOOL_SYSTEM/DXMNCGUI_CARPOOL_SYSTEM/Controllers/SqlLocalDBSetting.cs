@@ -710,24 +710,25 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Controllers
             else
             {
                 SqlLocalDBSetting localdbSetting = this.myLevel == 0 ? this.StartTransaction() : this;
-                try
-                {
+                //try
+                //{
                     SqlDataAdapter adapter = new SqlDataAdapter(localdbSetting.CreateCommand(selectCmdText, new object[0]));
                     SqlCommandBuilder sqlCommandBuilder = new SqlCommandBuilder(adapter);
                     int num = adapter.Update(table);
                     if (this.myLevel == 0)
                         localdbSetting.Commit();
                     return num;
-                }
-                catch (SqlException ex)
-                {
-                    DataError.HandleSqlException(ex);
-                }
-                finally
-                {
+                //}
+                //catch (SqlException ex)
+                //{
+                    //DataError.HandleSqlException(ex);
+                  //  throw new InvalidOperationException(localdbSetting.ConnectionString);
+                //}
+                //finally
+                //{
                     if (this.myLevel == 0)
                         localdbSetting.EndTransaction();
-                }
+                //}
                 return 0;
             }
         }
