@@ -10,6 +10,9 @@ using System.Web;
 using System.Net.Mail;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
+using System.Net.Mail;
+using System.Security.Cryptography.X509Certificates;
+using System.Net.Security;
 
 namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
 {
@@ -232,6 +235,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
 
                 if (saveaction == SaveAction.Approve)
                 {
+                    SendEmailApproveHead(Convert.ToString(Booking.EmployeeName), Convert.ToString(Booking.DocNo), Convert.ToString(Booking.Approver));
                     dataRow["Status"] = "NEED APPROVAL";
                     dataRow["Approver"] = "IS_GA";
                     dataRow["LastModifiedBy"] = userName;
@@ -276,7 +280,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     ClearBookingAdmin(ds);
                     SaveBookingAdmin(ds, userName);
 
-                    SendNotifEmail(Booking);
+                    SendEmailApproveGA(Convert.ToString(Booking.EmployeeName), Convert.ToString(Booking.AdminCarType), Convert.ToString(Booking.AdminCarLicensePlate), Convert.ToString(Booking.AdminRemark));
+                    //SendNotifEmail(Booking);
                     // SendSMS(Booking, saveaction);
                 }
                 if (saveaction == SaveAction.FinishByDriver)
@@ -340,7 +345,155 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 dbsetting.EndTransaction();
             }
         }
-       
+
+        private string getRecipient(string EmployeeName)
+        {
+            string lastkilometer = "";
+            SqlConnection connection = new SqlConnection(this.myLocalDBSetting.ConnectionString);
+            try
+            {
+                connection.Open();
+                object obj = null;
+
+                obj = myLocalDBSetting.ExecuteScalar("Exec sp_GetRecepient ?", EmployeeName);
+                if (obj != null && obj != DBNull.Value)
+                {
+                    lastkilometer = obj.ToString();
+                }
+            }
+            catch (SqlException ex)
+            {
+                DataError.HandleSqlException(ex);
+            }
+            finally
+            {
+                connection.Close();
+                connection.Dispose();
+            }
+
+            return lastkilometer;
+
+        }
+
+
+        private string getCarName(string platno)
+        {
+            string lastkilometer = "";
+            SqlConnection connection = new SqlConnection(this.myLocalDBSetting.ConnectionString);
+            try
+            {
+                connection.Open();
+                object obj = null;
+
+                obj = myLocalDBSetting.ExecuteScalar("SELECT CarName FROM MASTERCAR WHERE CarLicense= ?", platno);
+                if (obj != null && obj != DBNull.Value)
+                {
+                    lastkilometer = obj.ToString();
+                }
+            }
+            catch (SqlException ex)
+            {
+                DataError.HandleSqlException(ex);
+            }
+            finally
+            {
+                connection.Close();
+                connection.Dispose();
+            }
+
+            return lastkilometer;
+
+        }
+
+        public void SendEmailApproveGA(string EmployeeName, string CarType, string PlatNo, string Remark)
+        {
+            try
+            {
+                string recipient = getRecipient(EmployeeName);
+                string carName = getCarName(PlatNo);
+                SmtpClient smtp = new SmtpClient();
+                MailMessage mm = new MailMessage();
+
+                mm.From = new MailAddress("no-reply@mncleasing.com", "Admin CARPOOL");            
+                mm.To.Add(new MailAddress(recipient));
+                mm.To.Add(new MailAddress("arief.syamsudin@mncgroup.com"));
+                mm.IsBodyHtml = true;
+                mm.Body = @"<head><style>body {font-family: arial; font-size: 12px;}</style></head>";
+                mm.Body = mm.Body + "<body>";
+                mm.Body = mm.Body + "Dear " + EmployeeName + ",<br><br>";
+                mm.Body = mm.Body + "Peminjaman Kendaraan Mobil sudah di approve oleh tim GA.<br>";
+                mm.Body = mm.Body + "Kendaraan Mobil dapat segera diambil dengan detail berikut:<br><br>";
+                mm.Body = mm.Body + "<table border=1 width=800><tr style=font - weight: bold; text - align:center;>";
+                mm.Body = mm.Body + "<td width=100>Jenis Mobil</td>";
+                mm.Body = mm.Body + "<td width=10>No. Plat</td>";
+                mm.Body = mm.Body + "<td width=100>Remarks</td></tr>";
+                mm.Body = mm.Body + "<tr><td style=text - align:center;>"+ carName + "</td>";
+                mm.Body = mm.Body + "<td style=text - align:center;>"+ PlatNo +"</td>";
+                mm.Body = mm.Body + "<td style=text - align:left;>"+ Remark +"</td></tr>";
+                mm.Body = mm.Body + "</table><br><br>";
+                mm.Body = mm.Body + "Regards,<br>MNC Leasing SMILE Application – Auto Notification</body>";
+                mm.Subject = "CARPOOL - Approve";
+                
+                smtp.Port = 25;
+                smtp.Host = "172.31.215.100";//"zsmtp.mnc-cloud.xyz";//"27.0.198.70"; //for gmail host  
+                smtp.EnableSsl = false;
+                smtp.UseDefaultCredentials = false;
+                smtp.Credentials = new NetworkCredential("no-reply@mncleasing.com", "Welcome.21");
+                smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                smtp.EnableSsl = true;
+                ServicePointManager.ServerCertificateValidationCallback = delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
+                smtp.Send(mm);
+            }
+            catch (Exception e)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine("Unable to send email. Error : " + e);
+            }
+        }
+
+        public void SendEmailApproveHead(string EmployeeName, string BookNo, string Approval)
+        {
+            try
+            {
+                SmtpClient smtp = new SmtpClient();
+                MailMessage mm = new MailMessage();
+
+                mm.From = new MailAddress("no-reply@mncleasing.com", "Admin CARPOOL");                
+                mm.To.Add(new MailAddress("gateam.mncleasing@mncgroup.com"));
+                mm.To.Add(new MailAddress("arief.syamsudin@mncgroup.com"));
+                mm.IsBodyHtml = true;
+                mm.Body = @"<head><style>body {font-family: arial; font-size: 12px;}</style></head>";
+                mm.Body = mm.Body + "<body>";
+                mm.Body = mm.Body + "Dear Tim GA,<br><br>";
+                mm.Body = mm.Body + "Pengajuan peminjaman Kendaraan Mobil atas karyawan berikut:<br><br>";
+                mm.Body = mm.Body + "<table border=1 width=800><tr style=font - weight: bold; text - align:center;>";
+                mm.Body = mm.Body + "<td width=20>Booking No</td>";
+                mm.Body = mm.Body + "<td width=30>Employee Name</td>";
+                mm.Body = mm.Body + "<td width=30>Approval</td></tr>";
+                mm.Body = mm.Body + "<tr><td style=text - align:center;>" + BookNo + "</td>";
+                mm.Body = mm.Body + "<td style=text - align:center;>" + EmployeeName + "</td>";
+                mm.Body = mm.Body + "<td style=text - align:left;>" + Approval + "</td></tr>";
+                mm.Body = mm.Body + "</table><br><br>";
+                mm.Body = mm.Body + "Regards,<br>MNC Leasing SMILE Application – Auto Notification</body>";
+                mm.Subject = "CARPOOL - Pengajuan Kendaraan";
+
+                smtp.Port = 25;
+                smtp.Host = "172.31.215.100";//"zsmtp.mnc-cloud.xyz";//"27.0.198.70"; //for gmail host  
+                smtp.EnableSsl = false;
+                smtp.UseDefaultCredentials = false;
+                smtp.Credentials = new NetworkCredential("no-reply@mncleasing.com", "Welcome.21");
+                smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                smtp.EnableSsl = true;
+                ServicePointManager.ServerCertificateValidationCallback = delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
+                smtp.Send(mm);
+            }
+            catch (Exception e)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine("Unable to send email. Error : " + e);
+            }
+        }
+
 
         protected override void SaveBookingAdmin(DataSet ds, string userName)
         {
