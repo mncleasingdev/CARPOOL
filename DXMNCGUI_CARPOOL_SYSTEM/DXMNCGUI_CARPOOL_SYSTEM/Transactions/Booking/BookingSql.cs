@@ -32,7 +32,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 myLocalDBSetting.LoadDataTable(myBrowseTable, @"SELECT CASE WHEN a.approver + '-' + ISNULL(b.DESCS,'') ='IS_GA-' THEN 'GENERAL AFFAIR'
                                                                 ELSE a.approver + ' - ' + ISNULL(b.DESCS,'') END [NextApprover],* 
                                                                 FROM dbo.Booking a
-                                                                left join IFINANCING_GOLIVE..SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE                                                                
+                                                                left join [172.31.215.2\MSSQLSRVGUI].IFINANCING_GOLIVE.DBO.SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE                                                                
                                                                 WHERE EmployeeName='" + userID + "' OR b.DESCS='" + userID + "' ORDER BY DocDate DESC", true);
             }
             else
@@ -41,7 +41,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 myLocalDBSetting.LoadDataTable(myBrowseTable, @"SELECT CASE WHEN a.approver + '-' + ISNULL(b.DESCS,'') ='IS_GA-' THEN 'GENERAL AFFAIR'
                                                                 ELSE a.approver + ' - ' + ISNULL(b.DESCS,'') END [NextApprover],* 
                                                                 FROM dbo.Booking a
-                                                                left join IFINANCING_GOLIVE..SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE                                
+                                                                left join [172.31.215.2\MSSQLSRVGUI].IFINANCING_GOLIVE.DBO.SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE                                
                                                                 ORDER BY DocDate DESC", true);
             }
 
@@ -51,7 +51,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 myLocalDBSetting.LoadDataTable(myBrowseTable, @"SELECT CASE WHEN a.approver + '-' + ISNULL(b.DESCS,'') ='IS_GA-' THEN 'GENERAL AFFAIR'
                                                                 ELSE a.approver + ' - ' + ISNULL(b.DESCS, '') END[NextApprover], *
                                                                 FROM dbo.Booking a
-                                                                left join IFINANCING_GOLIVE..SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE
+                                                                left join [172.31.215.2\MSSQLSRVGUI].IFINANCING_GOLIVE.DBO.SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE
                                                                 WHERE EmployeeName =? OR Department =?
                                                                 ORDER BY DocDate DESC", true, userID, department);
             }
@@ -235,7 +235,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
 
                 if (saveaction == SaveAction.Approve)
                 {
-                    SendEmailApproveHead(Convert.ToString(Booking.EmployeeName), Convert.ToString(Booking.DocNo), Convert.ToString(Booking.Approver));
+                    string approverName = getApprover(Convert.ToString(Booking.Approver));
+                    SendEmailApproveHead(Convert.ToString(Booking.EmployeeName), Convert.ToString(Booking.DocNo), approverName);
                     dataRow["Status"] = "NEED APPROVAL";
                     dataRow["Approver"] = "IS_GA";
                     dataRow["LastModifiedBy"] = userName;
@@ -375,6 +376,35 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
 
         }
 
+        private string getApprover(string NIK)
+        {
+            string lastkilometer = "";
+            SqlConnection connection = new SqlConnection(this.myLocalDBSetting.ConnectionString);
+            try
+            {
+                connection.Open();
+                object obj = null;
+
+                obj = myLocalDBSetting.ExecuteScalar("Exec sp_getApproverName ?", NIK);
+                if (obj != null && obj != DBNull.Value)
+                {
+                    lastkilometer = obj.ToString();
+                }
+            }
+            catch (SqlException ex)
+            {
+                DataError.HandleSqlException(ex);
+            }
+            finally
+            {
+                connection.Close();
+                connection.Dispose();
+            }
+
+            return lastkilometer;
+
+        }
+
 
         private string getCarName(string platno)
         {
@@ -414,9 +444,10 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 SmtpClient smtp = new SmtpClient();
                 MailMessage mm = new MailMessage();
 
-                mm.From = new MailAddress("no-reply@mncleasing.com", "Admin CARPOOL");            
+                mm.From = new MailAddress("no-reply@mncleasing.com", "Admin CARPOOL");
                 mm.To.Add(new MailAddress(recipient));
                 mm.To.Add(new MailAddress("arief.syamsudin@mncgroup.com"));
+                mm.To.Add(new MailAddress("garry.florence@mncgroup.com"));
                 mm.IsBodyHtml = true;
                 mm.Body = @"<head><style>body {font-family: arial; font-size: 12px;}</style></head>";
                 mm.Body = mm.Body + "<body>";
@@ -458,9 +489,10 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 SmtpClient smtp = new SmtpClient();
                 MailMessage mm = new MailMessage();
 
-                mm.From = new MailAddress("no-reply@mncleasing.com", "Admin CARPOOL");                
+                mm.From = new MailAddress("no-reply@mncleasing.com", "Admin CARPOOL");
                 mm.To.Add(new MailAddress("gateam.mncleasing@mncgroup.com"));
                 mm.To.Add(new MailAddress("arief.syamsudin@mncgroup.com"));
+                mm.To.Add(new MailAddress("garry.florence@mncgroup.com"));
                 mm.IsBodyHtml = true;
                 mm.Body = @"<head><style>body {font-family: arial; font-size: 12px;}</style></head>";
                 mm.Body = mm.Body + "<body>";
