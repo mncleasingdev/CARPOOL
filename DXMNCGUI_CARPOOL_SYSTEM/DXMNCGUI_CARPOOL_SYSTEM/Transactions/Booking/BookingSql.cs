@@ -462,7 +462,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 mm.Body = mm.Body + "<td style=text - align:center;>"+ PlatNo +"</td>";
                 mm.Body = mm.Body + "<td style=text - align:left;>"+ Remark +"</td></tr>";
                 mm.Body = mm.Body + "</table><br><br>";
-                mm.Body = mm.Body + "Regards,<br>MNC Leasing SMILE Application – Auto Notification</body>";
+                mm.Body = mm.Body + "Regards,<br>MNC Leasing CARPOOL Auto Notification</body>";
                 mm.Subject = "CARPOOL - Approve";
                 
                 smtp.Port = 25;
@@ -506,8 +506,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 mm.Body = mm.Body + "<td style=text - align:center;>" + EmployeeName + "</td>";
                 mm.Body = mm.Body + "<td style=text - align:left;>" + Approval + "</td></tr>";
                 mm.Body = mm.Body + "</table><br><br>";
-                mm.Body = mm.Body + "Regards,<br>MNC Leasing SMILE Application – Auto Notification</body>";
-                mm.Subject = "CARPOOL - Pengajuan Kendaraan";
+                mm.Body = mm.Body + "Regards,<br>MNC Leasing CARPOOL Auto Notification</body>";
+                mm.Subject = "CARPOOL - Pengajuan Peminjaman Kendaraan";
 
                 smtp.Port = 25;
                 smtp.Host = "172.31.215.100";//"zsmtp.mnc-cloud.xyz";//"27.0.198.70"; //for gmail host  
