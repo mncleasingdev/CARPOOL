@@ -31,10 +31,15 @@
                     break;
                 case "SUBMITCONFIRM":
                     var today = new Date();
-                    var starttime = deReqPickupTime.GetDate();
-                    var finishtime = deReqArrivalTime.GetDate();                    
-                    if (formatDate(deReqPickupTime) < formatDate(today) || formatDate(finishtime) < formatDate(today)) {
-                        apcalert.SetContentHtml("Start time dan finish time tidak bisa back date..");
+                    var starttime = formatDate(deReqPickupTime.GetDate());
+                    var finishtime = formatDate(deReqArrivalTime.GetDate());
+                    if (starttime < formatDate(today)) {
+                        apcalert.SetContentHtml("Start time tidak bisa back date..");
+                        apcalert.Show();
+                        break;
+                    }
+                    if (finishtime < formatDate(today)) {
+                        apcalert.SetContentHtml("Finish time tidak bisa back date..");
                         apcalert.Show();
                         break;
                     }
