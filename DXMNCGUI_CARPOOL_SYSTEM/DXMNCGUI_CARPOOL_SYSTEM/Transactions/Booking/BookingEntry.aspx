@@ -25,11 +25,19 @@
                 case "OPEN_MAP":
                     apcMap.Show();
                     break;
-                case "SUBMIT":
+                case "SUBMIT":                   
                     apcalert.SetContentHtml(cplMain.cpAlertMessage);
                     apcalert.Show();
                     break;
                 case "SUBMITCONFIRM":
+                    var today = new Date();
+                    var starttime = deReqPickupTime.GetDate();
+                    var finishtime = deReqArrivalTime.GetDate();                    
+                    if (formatDate(deReqPickupTime) < formatDate(today) || formatDate(finishtime) < formatDate(today)) {
+                        apcalert.SetContentHtml("Start time dan finish time tidak bisa back date..");
+                        apcalert.Show();
+                        break;
+                    }
                     if (cplMain.cplblmessageError.length > 0)
                     {
                         apcalert.SetContentHtml(cplMain.cplblmessageError);
@@ -148,6 +156,19 @@
                         break;
                     }
             }
+        }
+        function formatDate(date) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+
+            return [year, month, day].join('-');
         }
         function gvApproval_EndCallback(s, e) {
             if (s.cpCmd == "INSERT" || s.cpCmd == "UPDATE" || s.cpCmd == "DELETE") {
