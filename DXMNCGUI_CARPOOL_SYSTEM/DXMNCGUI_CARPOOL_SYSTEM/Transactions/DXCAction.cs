@@ -11,6 +11,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions
         View,
         Edit,
         Cancel,
-        Approve,
+        Approve
     }
 }

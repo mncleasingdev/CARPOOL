@@ -105,6 +105,19 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             myBrowseTableSchedule.PrimaryKey = keyHeader;
             return myBrowseTableSchedule;
         }
+
+        public override DataTable LoadBrowseTableChangeCar(string UserCode)
+        {
+            string sQuery = "";
+            sQuery = "EXEC GetDataChangeCar";
+            myLocalDBSetting.LoadDataTable(myBrowseTableChangeCar, sQuery, true, UserCode);
+
+            DataColumn[] keyHeader = new DataColumn[1];
+            keyHeader[0] = myBrowseTableSchedule.Columns["DocKey"];
+            myBrowseTableChangeCar.PrimaryKey = keyHeader;
+            return myBrowseTableChangeCar;
+        }
+
         protected override DataSet LoadData(long headerid)
         {
             SqlConnection myconn = new SqlConnection(myLocalDBSetting.ConnectionString);
@@ -285,6 +298,16 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     //SendNotifEmail(Booking);
                     // SendSMS(Booking, saveaction);
                 }
+                if (saveaction == SaveAction.ApproveChangeCar)
+                {
+                    dataRow["Status"] = "ON SCHEDULE";
+                    dataRow["LastModifiedBy"] = userName;
+                    dataRow["LastModifiedDateTime"] = Mydate;
+                    ClearBookingAdmin(ds);
+                    SaveBookingAdmin(ds, userName);
+
+                    SendEmailChangeCar(Convert.ToString(Booking.EmployeeName), Convert.ToString(Booking.AdminCarType), Convert.ToString(Booking.AdminCarLicensePlate), Convert.ToString(Booking.AdminRemark));                    
+                }
                 if (saveaction == SaveAction.FinishByDriver)
                 {
                     dataRow["Status"] = "FINISH";
@@ -302,9 +325,9 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 }
 
                 localdbSetting.SimpleSaveDataTable(ds.Tables["User"], "SELECT * FROM [dbo].[Booking]");
-                if (saveaction != SaveAction.ApproveByAdmin)
+                if (saveaction != SaveAction.ApproveByAdmin && saveaction != SaveAction.ApproveChangeCar)
                 {
-                    localdbSetting.SimpleSaveDataTable(ds.Tables["Admin"], "SELECT * FROM [dbo].[BookingAdmin]");
+                        localdbSetting.SimpleSaveDataTable(ds.Tables["Admin"], "SELECT * FROM [dbo].[BookingAdmin]");
                 }
                 localdbSetting.SimpleSaveDataTable(ds.Tables["Driver"], "SELECT * FROM [dbo].[BookingDriver]");
                 //SaveDetail(ds, saveaction);
@@ -465,6 +488,54 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 mm.Body = mm.Body + "Regards,<br>MNC Leasing CARPOOL Auto Notification</body>";
                 mm.Subject = "CARPOOL - Approve";
                 
+                smtp.Port = 25;
+                smtp.Host = "172.31.215.100";//"zsmtp.mnc-cloud.xyz";//"27.0.198.70"; //for gmail host  
+                smtp.EnableSsl = false;
+                smtp.UseDefaultCredentials = false;
+                smtp.Credentials = new NetworkCredential("no-reply@mncleasing.com", "Welcome.21");
+                smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
+                smtp.EnableSsl = true;
+                ServicePointManager.ServerCertificateValidationCallback = delegate (object s, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) { return true; };
+                smtp.Send(mm);
+            }
+            catch (Exception e)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine("Unable to send email. Error : " + e);
+            }
+        }
+
+        public void SendEmailChangeCar(string EmployeeName, string CarType, string PlatNo, string Remark)
+        {
+            try
+            {
+                string recipient = getRecipient(EmployeeName);
+                string carName = getCarName(PlatNo);
+                SmtpClient smtp = new SmtpClient();
+                MailMessage mm = new MailMessage();
+
+                mm.From = new MailAddress("no-reply@mncleasing.com", "Admin CARPOOL");
+                mm.To.Add(new MailAddress(recipient));
+                mm.To.Add(new MailAddress("arief.syamsudin@mncgroup.com"));
+                mm.To.Add(new MailAddress("garry.florence@mncgroup.com"));
+                mm.IsBodyHtml = true;
+                mm.Body = @"<head><style>body {font-family: arial; font-size: 12px;}</style></head>";
+                mm.Body = mm.Body + "<body>";
+                mm.Body = mm.Body + "Dear " + EmployeeName + ",<br><br>";
+                mm.Body = mm.Body + "Terdapat Perubahan Kendaraan Mobil oleh tim GA.<br>";
+                mm.Body = mm.Body + "Kendaraan Mobil dapat segera diambil dengan detail berikut:<br><br>";
+                mm.Body = mm.Body + "<table border=1 width=800><tr style=font - weight: bold; text - align:center;>";
+                mm.Body = mm.Body + "<td width=100>Jenis Mobil</td>";
+                mm.Body = mm.Body + "<td width=10>No. Plat</td>";
+                mm.Body = mm.Body + "<td width=100>Remarks</td></tr>";
+                mm.Body = mm.Body + "<tr><td style=text - align:center;>" + carName + "</td>";
+                mm.Body = mm.Body + "<td style=text - align:center;>" + PlatNo + "</td>";
+                mm.Body = mm.Body + "<td style=text - align:left;>" + Remark + "</td></tr>";
+                mm.Body = mm.Body + "</table><br><br>";
+                mm.Body = mm.Body + "Apabila ada pertanyaan silahkan hubungi tim GA.<br><br>";
+                mm.Body = mm.Body + "Regards,<br>MNC Leasing CARPOOL Auto Notification</body>";
+                mm.Subject = "CARPOOL - Perubahan Kendaraan";
+
                 smtp.Port = 25;
                 smtp.Host = "172.31.215.100";//"zsmtp.mnc-cloud.xyz";//"27.0.198.70"; //for gmail host  
                 smtp.EnableSsl = false;

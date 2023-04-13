@@ -16,6 +16,9 @@
                 case "ONSCHEDULE_LIST":
                     apcOnSchedule.Show();
                     break;
+                case "CHANGECAR_LIST":
+                    apcChangeCar.Show();
+                    break;
                 case "APPROVAL_LIST":
                     apcApproval.Show();
                     break;
@@ -130,6 +133,14 @@
             switch (e.buttonID) {
                 case "btnShowSchedule":
                     cplMain.PerformCallback("ONSCHEDULE;ONSCHEDULE");
+                    break;
+            }
+        }
+
+        function gvChangeCar_CustomButtonClick(s, e) {
+            switch (e.buttonID) {
+                case "btnShowChangeCar":
+                    cplMain.PerformCallback("CHANGECAR;CHANGECAR");
                     break;
             }
         }
@@ -368,6 +379,101 @@
             </dx:PopupControlContentControl>
         </ContentCollection>
     </dx:ASPxPopupControl>
+    <dx:ASPxPopupControl ID="apcChangeCar" ClientInstanceName="apcChangeCar" runat="server" CloseAction="CloseButton" Modal="True" Theme="Office2010Blue" Width="1200px"
+        PopupHorizontalAlign="WindowCenter" AutoUpdatePosition="true" ShowCloseButton="true" PopupVerticalAlign="WindowCenter" HeaderText="" AllowDragging="True" PopupAnimationType="Fade" EnableViewState="False">
+        <SettingsAdaptivity Mode="OnWindowInnerWidth" MaxHeight="100%" MaxWidth="100%"/>
+        <ContentCollection>
+            <dx:PopupControlContentControl runat="server">
+                <dx:ASPxFormLayout runat="server">
+                    <Items>
+                        <dx:LayoutItem ShowCaption="False" Width="100%">
+                            <LayoutItemNestedControlCollection>
+                                <dx:LayoutItemNestedControlContainer>
+                                    <dx:ASPxGridView 
+                                        ID="gvChangeCar"
+                                        ClientInstanceName="gvChangeCar"
+                                        runat="server"
+                                        Width="100%"
+                                        AutoGenerateColumns="False"
+                                        EnableCallBacks="true"
+                                        EnablePagingCallbackAnimation="true"
+                                        EnableTheming="True" 
+                                        OnInit="gvChangeCar_Init" OnDataBinding="gvChangeCar_DataBinding" OnFocusedRowChanged="gvChangeCar_FocusedRowChanged" OnCustomCallback="gvChangeCar_CustomCallback"
+                                        Theme="Office2010Blue" Font-Size="Small" Font-Names="Calibri" KeyFieldName="DocKey">
+                                        <SettingsAdaptivity AdaptivityMode="HideDataCellsWindowLimit" AllowOnlyOneAdaptiveDetailExpanded="True" HideDataCellsAtWindowInnerWidth="700"></SettingsAdaptivity>
+                                        <ClientSideEvents CustomButtonClick="function(s, e) { gvChangeCar_CustomButtonClick(s, e); }"/>
+                                        <Settings ShowFilterRow="false" ShowGroupPanel="False" ShowFilterRowMenu="true" ShowFilterBar="Auto" ShowHeaderFilterButton="true" ShowFooter="true" />
+                                        <SettingsBehavior AllowFocusedRow="True" AllowSelectByRowClick="True" EnableRowHotTrack="true" EnableCustomizationWindow="true" AllowEllipsisInText="true" />
+                                        <SettingsDataSecurity AllowDelete="False" AllowEdit="False" AllowInsert="False" />
+                                        <SettingsSearchPanel Visible="True" />
+                                        <SettingsFilterControl ViewMode="VisualAndText" AllowHierarchicalColumns="true" ShowAllDataSourceColumns="true" MaxHierarchyDepth="1" />
+                                        <SettingsLoadingPanel Mode="Disabled" />
+                                        <SettingsPager PageSize="10"></SettingsPager>
+                                        <SettingsResizing ColumnResizeMode="Control" Visualization="Live" />
+                                        <Columns>
+                                            <dx:GridViewBandColumn Caption="Header">
+                                                <HeaderStyle Font-Bold="true" HorizontalAlign="Center"/>
+                                                <Columns>
+                                                    <dx:GridViewDataTextColumn Name="colDocKey" Caption="DocKey" FieldName="DocKey" ReadOnly="True" ShowInCustomizationForm="true" Visible="false" VisibleIndex="0">
+                                                    </dx:GridViewDataTextColumn>
+                                                    <dx:GridViewDataTextColumn Name="colDocNo" Caption="Document No." FieldName="DocNo" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="1" Width="10%">
+                                                        <HeaderStyle Font-Bold="true" />
+                                                    </dx:GridViewDataTextColumn>
+                                                    <dx:GridViewDataDateColumn Name="colDocDate" Caption="Document Date" FieldName="DocDate" ReadOnly="True" ShowInCustomizationForm="true" PropertiesDateEdit-DisplayFormatString="dd/MM/yyyy" Visible="true" VisibleIndex="2" Width="10%">
+                                                        <HeaderStyle Font-Bold="true" />
+                                                    </dx:GridViewDataDateColumn>
+                                                    <dx:GridViewDataTextColumn Name="colEmployeeName" Caption="Employee Name" FieldName="EmployeeName" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="3" Width="10%">
+                                                        <HeaderStyle Font-Bold="true" />
+                                                    </dx:GridViewDataTextColumn>
+                                                    <dx:GridViewDataTextColumn Name="colEmployeeCompanyName" Caption="Company Name" FieldName="EmployeeCompanyName" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="4" Width="10%">
+                                                        <HeaderStyle Font-Bold="true" />
+                                                    </dx:GridViewDataTextColumn>
+                                                </Columns>
+                                            </dx:GridViewBandColumn>
+                                            <dx:GridViewBandColumn Caption="Address">
+                                                <HeaderStyle Font-Bold="true" HorizontalAlign="Center"/>
+                                                <Columns>
+                                                    <dx:GridViewDataTextColumn Name="colFrom" Caption="From" FieldName="RequestPickAddress" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="5" Width="10%">
+                                                <HeaderStyle Font-Bold="true" />
+                                            </dx:GridViewDataTextColumn>
+                                            <dx:GridViewDataTextColumn Name="colTo" Caption="To" FieldName="RequestDestAddress" ReadOnly="True" ShowInCustomizationForm="true" Visible="true" VisibleIndex="6" Width="10%">
+                                                <HeaderStyle Font-Bold="true" />
+                                            </dx:GridViewDataTextColumn>
+                                                </Columns>
+                                            </dx:GridViewBandColumn>
+                                            <dx:GridViewBandColumn Caption="Action">
+                                                <HeaderStyle Font-Bold="true" HorizontalAlign="Center"/>
+                                                <Columns>
+                                                    <dx:GridViewCommandColumn ButtonType="Button" VisibleIndex="7" Caption=" " Width="6%">
+                                                        <HeaderStyle Font-Bold="true" />
+                                                        <CustomButtons>
+                                                        <dx:GridViewCommandColumnCustomButton ID="btnShowChangeCar" Text="Show"></dx:GridViewCommandColumnCustomButton>
+                                                        </CustomButtons>
+                                                    </dx:GridViewCommandColumn>
+                                                   <%-- <dx:GridViewCommandColumn ButtonType="Button" VisibleIndex="8" Caption=" " Width="6%">
+                                                        <HeaderStyle Font-Bold="true" />
+                                                        <CustomButtons>
+                                                        <dx:GridViewCommandColumnCustomButton ID="btnReject" Text="Reject"></dx:GridViewCommandColumnCustomButton>
+                                                        </CustomButtons>
+                                                    </dx:GridViewCommandColumn>--%>
+                                                </Columns>
+                                            </dx:GridViewBandColumn>
+                                        </Columns>
+                                        <Styles>
+                                            <AlternatingRow Enabled="True"></AlternatingRow>
+                                        </Styles>
+                                        <Styles AdaptiveDetailButtonWidth="22" Footer-Font-Bold="true"></Styles>
+                                        <SettingsDetail ShowDetailRow="false" />
+                                    </dx:ASPxGridView>
+                                </dx:LayoutItemNestedControlContainer>
+                            </LayoutItemNestedControlCollection>
+                        </dx:LayoutItem>
+                    </Items>
+                </dx:ASPxFormLayout>
+            </dx:PopupControlContentControl>
+        </ContentCollection>
+    </dx:ASPxPopupControl>
+
     <dx:ASPxFormLayout runat="server" ID="FormLayout1" ClientInstanceName="FormLayout1">
         <SettingsAdaptivity AdaptivityMode="SingleColumnWindowLimit" SwitchToSingleColumnAtWindowInnerWidth="800" />
         <Items>
@@ -420,6 +526,16 @@
                                 <dx:ASPxButton ID="btnOnSchedule" ClientInstanceName="btnOnSchedule" runat="server" Text="On Schedule" Width="100%" Theme="Office2010Blue" AutoPostBack="false" ClientVisible="false">
                                     <Border BorderStyle="Outset" BorderWidth="2" BorderColor="#d0dded"/>
                                     <ClientSideEvents Click="function(s,e) { cplMain.PerformCallback('ONSCHEDULE_LIST;' + 'ONSCHEDULE_LIST'); }"/>
+                                </dx:ASPxButton>
+                            </dx:LayoutItemNestedControlContainer>
+                        </LayoutItemNestedControlCollection>
+                    </dx:LayoutItem>
+                     <dx:LayoutItem ShowCaption="False" Width="10%">
+                        <LayoutItemNestedControlCollection>
+                            <dx:LayoutItemNestedControlContainer ID="LayoutItemNestedControlContainer10" runat="server">
+                                <dx:ASPxButton ID="btnChangeCar" ClientInstanceName="btnChangeCar" runat="server" Text="Change Car" Width="100%" Theme="Office2010Blue" AutoPostBack="false" ClientVisible="false">
+                                    <Border BorderStyle="Outset" BorderWidth="2" BorderColor="#d0dded"/>
+                                    <ClientSideEvents Click="function(s,e) { cplMain.PerformCallback('CHANGECAR_LIST;' + 'CHANGECAR_LIST'); }"/>
                                 </dx:ASPxButton>
                             </dx:LayoutItemNestedControlContainer>
                         </LayoutItemNestedControlCollection>

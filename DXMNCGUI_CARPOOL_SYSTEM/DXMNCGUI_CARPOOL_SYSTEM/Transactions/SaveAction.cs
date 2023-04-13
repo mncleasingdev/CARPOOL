@@ -26,5 +26,6 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions
         PickupByDriver,
         RejectByDriver,
         FinishByDriver,
+        ApproveChangeCar
     }
 }

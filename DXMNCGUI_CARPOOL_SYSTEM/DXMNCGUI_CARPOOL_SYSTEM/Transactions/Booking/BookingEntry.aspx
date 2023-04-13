@@ -528,7 +528,7 @@
                     <dx:LayoutItem ShowCaption="True" Caption="Trip Details" Width="40%">
                         <LayoutItemNestedControlCollection>
                             <dx:LayoutItemNestedControlContainer>
-                                <dx:ASPxMemo runat="server" ID="mmTripDetail" ClientInstanceName="mmTripDetail" NullText="Trip Details Address..." Height="50px" HelpText="Please add your trip details if your destination is more than two places."></dx:ASPxMemo>
+                                <dx:ASPxMemo runat="server" ID="mmTripDetail" ClientInstanceName="mmTripDetail" NullText="Trip Details Address..." Height="50px"></dx:ASPxMemo>
                             </dx:LayoutItemNestedControlContainer>
                         </LayoutItemNestedControlCollection>
                     </dx:LayoutItem>

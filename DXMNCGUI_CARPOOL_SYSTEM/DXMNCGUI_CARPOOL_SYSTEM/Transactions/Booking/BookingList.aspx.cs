@@ -55,6 +55,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             get { isValidLogin(false); return (DataTable)HttpContext.Current.Session["myFinishTable" + this.ViewState["_PageID"]]; }
             set { HttpContext.Current.Session["myFinishTable" + this.ViewState["_PageID"]] = value; }
         }
+        protected DataTable myChangeCarTable
+        {
+            get { isValidLogin(false); return (DataTable)HttpContext.Current.Session["myChangeCarTable" + this.ViewState["_PageID"]]; }
+            set { HttpContext.Current.Session["myChangeCarTable" + this.ViewState["_PageID"]] = value; }
+        }
 
         protected void gvMain_Init(object sender, EventArgs e)
         {
@@ -83,6 +88,8 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 gvApprovalList.DataBind();
                 GetFinishTable();
                 gvOnSchedule.DataBind();
+                GetChangeCarTable();
+                gvChangeCar.DataBind();
 
                 if (myApprovalTable.Rows.Count > 0)
                 {
@@ -94,6 +101,10 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     if (myFinishTable.Rows.Count > 0)
                     {
                         btnOnSchedule.Text += " (" + Convert.ToString(myFinishTable.Rows.Count) + ")";
+                    }
+                    if (myChangeCarTable.Rows.Count > 0)
+                    {
+                        btnChangeCar.Text += " (" + Convert.ToString(myChangeCarTable.Rows.Count) + ")";
                     }
                 }
 
@@ -117,6 +128,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             if ((accessright.IsAccessibleByUserID(Email, "IS_GA")) || (accessright.IsAccessibleByUserID(Email, "IS_ADMIN")))
             {
                 btnOnSchedule.ClientVisible = true;
+                btnChangeCar.ClientVisible = true;
             }
         }
 
@@ -138,6 +150,11 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
         {
             string ssql = "exec GetOnScheduleBook ?";
             myFinishTable = myLocalDBSetting.GetDataTable(ssql, false, Email);
+        }
+        protected void GetChangeCarTable()
+        {
+            string ssql = "exec GetDataChangeCar";
+            myChangeCarTable = myLocalDBSetting.GetDataTable(ssql, false, Email);
         }
 
         protected bool ErrorInField(out string strmessageError)
@@ -323,6 +340,19 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     updatedQueryString = "?" + nameValuesSchedule.ToString();
                     ASPxWebControl.RedirectOnCallback("~/Transactions/Booking/BookingEntry.aspx" + updatedQueryString);
                     break;
+                case "CHANGECAR":
+                    var nameValuesChangeCar = HttpUtility.ParseQueryString(Request.QueryString.ToString());
+
+                    DataRow mychangeCarRow = gvChangeCar.GetDataRow(gvChangeCar.FocusedRowIndex);
+                    string updatedQueryString3 = "";
+
+                    nameValuesChangeCar.Set("DocKey", mychangeCarRow["DocKey"].ToString());
+                    updatedQueryString3 = "?" + nameValuesChangeCar.ToString();
+
+                    nameValuesChangeCar.Set("Action", "ChangeCar");
+                    updatedQueryString = "?" + nameValuesChangeCar.ToString();
+                    ASPxWebControl.RedirectOnCallback("~/Transactions/Booking/BookingEntry.aspx" + updatedQueryString);
+                    break;
                 case "APPROVE":
                     SaveApprove(SaveAction.Approve);
                     cplMain.JSProperties["cpAlertMessage"] = "This book has been approved..";
@@ -417,5 +447,34 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             myBookingEntity.Save(UserID, UserName, "BK", saveAction, Convert.ToString(myrow["Status"]),"");
             return bSave;
         }
+        protected void gvChangeCar_Init(object sender, EventArgs e)
+        {
+            isValidLogin(false);
+            if (!IsPostBack)
+            {
+                myDBSetting = dbsetting;
+                myDBSession = dbsession;
+                myLocalDBSetting = localdbsetting;
+                myChangeCarTable = new DataTable();
+                this.myBookingDB = BookingDB.Create(myDBSetting, dbsession, myLocalDBSetting);
+                myChangeCarTable = this.myBookingDB.LoadBrowseTableChangeCar(Email);
+            }
+            gvChangeCar.DataSource = myChangeCarTable;
+            gvChangeCar.DataBind();
+        }
+        protected void gvChangeCar_DataBinding(object sender, EventArgs e)
+        {
+            (sender as ASPxGridView).DataSource = myChangeCarTable;
+        }
+
+        protected void gvChangeCar_FocusedRowChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void gvChangeCar_CustomCallback(object sender, ASPxGridViewCustomCallbackEventArgs e)
+        {
+
+        }        
     }
 }

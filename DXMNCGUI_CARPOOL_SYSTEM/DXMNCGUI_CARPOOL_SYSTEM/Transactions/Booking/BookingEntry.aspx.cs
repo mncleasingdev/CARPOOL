@@ -188,6 +188,13 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     strKey = this.Request.QueryString["DocKey"].ToString();
 
                 }
+                if (this.Request.QueryString["Dockey"] != null && this.Request.QueryString["Action"] == "ChangeCar")
+                {
+                    this.myBookingDB = BookingDB.Create(dbsetting, myDBSession, myLocalDBSetting);
+                    myBookingEntity = this.myBookingDB.View(Convert.ToInt32(this.Request.QueryString["DocKey"]));
+                    strKey = this.Request.QueryString["DocKey"].ToString();
+
+                }
                 SetApplication((BookingEntity)HttpContext.Current.Session["myBookingEntity" + strKey]);
             }
             if (!IsCallback)
@@ -377,7 +384,20 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                     mmAdminRemark.ClientEnabled = true;
                     txtLastKM.ClientEnabled = true;
                 }
+
+                if (this.Request.QueryString["Action"] == "ChangeCar")
+                {
+                    btnFinish.ClientVisible = false;
+                    btnAdminApprove.ClientVisible = true;
+                    btnAdminOnHold.ClientVisible = false;
+                    btnAdminReject.ClientVisible = false;
+                    txtLastKM.ClientEnabled = true;
+                    mmAdminRemark.ClientEnabled = true;                   
+                    luCarType.ClientEnabled = true;                   
+                }
             }
+
+            
 
             if (myAction == DXCAction.Approve)
             {
@@ -978,8 +998,15 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                         cplMain.JSProperties["cplblmessageError"] = strmessageError;
                     }
                     break;
-                case "ADMIN_APPROVE":                    
-                    Save(SaveAction.ApproveByAdmin);
+                case "ADMIN_APPROVE":
+                    if (this.Request.QueryString["Action"] == "ChangeCar")
+                    {
+                        Save(SaveAction.ApproveChangeCar);
+                    }
+                    else
+                    {
+                        Save(SaveAction.ApproveByAdmin);
+                    }
                     cplMain.JSProperties["cpAlertMessage"] = "Transaction has been approved...";
                     cplMain.JSProperties["cplblActionButton"] = "ADMIN_APPROVE";
                     DevExpress.Web.ASPxWebControl.RedirectOnCallback("BookingList.aspx");                                        

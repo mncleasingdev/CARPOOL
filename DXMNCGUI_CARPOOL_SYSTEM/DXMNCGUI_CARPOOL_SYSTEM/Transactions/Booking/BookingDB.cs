@@ -16,6 +16,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
         protected DataTable myBrowseTable;
         protected DataTable myBrowseTableApproval;
         protected DataTable myBrowseTableSchedule;
+        protected DataTable myBrowseTableChangeCar;
         protected DataTable myDataTableAllMaster;
         protected DBRegistry myDBReg;
         internal BookingDB()
@@ -23,6 +24,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             myBrowseTable = new DataTable();
             myBrowseTableApproval = new DataTable();
             myBrowseTableSchedule = new DataTable();
+            myBrowseTableChangeCar = new DataTable();
         }
         public SqlDBSetting DBSetting
         {
@@ -68,6 +70,10 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
         {
             get { return myBrowseTableSchedule; }
         }
+        public DataTable BrowseTableChangeCar
+        {
+            get { return myBrowseTableChangeCar; }
+        }
         public virtual void Sendmail(string strapprovalID, string strapprovalName, BookingEntity Booking, string strsubject, string strbody, SqlDBSetting dbsetting, bool bsender, bool breject, string strrejectnote, string traveltype, Int64 itravelKey)
         {
         }
@@ -84,6 +90,10 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
             return null;
         }
         public virtual DataTable LoadBrowseTableSchedule(string UserName)
+        {
+            return null;
+        }
+        public virtual DataTable LoadBrowseTableChangeCar(string UserName)
         {
             return null;
         }
