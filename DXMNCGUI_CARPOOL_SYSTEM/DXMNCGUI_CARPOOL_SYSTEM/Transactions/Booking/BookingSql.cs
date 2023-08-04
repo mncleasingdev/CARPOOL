@@ -32,7 +32,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 myLocalDBSetting.LoadDataTable(myBrowseTable, @"SELECT CASE WHEN a.approver + '-' + ISNULL(b.DESCS,'') ='IS_GA-' THEN 'GENERAL AFFAIR'
                                                                 ELSE a.approver + ' - ' + ISNULL(b.DESCS,'') END [NextApprover],* 
                                                                 FROM dbo.Booking a
-                                                                left join [172.31.215.2\MSSQLSRVGUI].IFINANCING_GOLIVE.DBO.SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE                                                                
+                                                                left join [MSSQLSRVGUI].IFINANCING_GOLIVE.DBO.SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE                                                                
                                                                 WHERE EmployeeName='" + userID + "' OR b.DESCS='" + userID + "' ORDER BY DocDate DESC", true);
             }
             else
@@ -41,7 +41,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 myLocalDBSetting.LoadDataTable(myBrowseTable, @"SELECT CASE WHEN a.approver + '-' + ISNULL(b.DESCS,'') ='IS_GA-' THEN 'GENERAL AFFAIR'
                                                                 ELSE a.approver + ' - ' + ISNULL(b.DESCS,'') END [NextApprover],* 
                                                                 FROM dbo.Booking a
-                                                                left join [172.31.215.2\MSSQLSRVGUI].IFINANCING_GOLIVE.DBO.SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE                                
+                                                                left join [MSSQLSRVGUI].IFINANCING_GOLIVE.DBO.SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE                                
                                                                 ORDER BY DocDate DESC", true);
             }
 
@@ -51,7 +51,7 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Booking
                 myLocalDBSetting.LoadDataTable(myBrowseTable, @"SELECT CASE WHEN a.approver + '-' + ISNULL(b.DESCS,'') ='IS_GA-' THEN 'GENERAL AFFAIR'
                                                                 ELSE a.approver + ' - ' + ISNULL(b.DESCS, '') END[NextApprover], *
                                                                 FROM dbo.Booking a
-                                                                left join [172.31.215.2\MSSQLSRVGUI].IFINANCING_GOLIVE.DBO.SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE
+                                                                left join [MSSQLSRVGUI].IFINANCING_GOLIVE.DBO.SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE
                                                                 WHERE EmployeeName =? OR Department =?
                                                                 ORDER BY DocDate DESC", true, userID, department);
             }

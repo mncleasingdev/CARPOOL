@@ -17,13 +17,13 @@ namespace DXMNCGUI_CARPOOL_SYSTEM.Transactions.Settlement
             if (!bViewAll)
             {
                 myLocalDBSetting.LoadDataTable(myBrowseTable, @"SELECT a.approver + ' - ' + ISNULL(b.DESCS,'') [NextApprover],* FROM Settlement a
-                                                                LEFT JOIN [172.31.215.2\MSSQLSRVGUI].IFINANCING_GOLIVE.DBO.SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE
+                                                                LEFT JOIN [MSSQLSRVGUI].IFINANCING_GOLIVE.DBO.SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE
                                                                 WHERE CreatedBy='" + userName + "' OR B.DESCS='" + userName + "' AND BookNo is not null ORDER BY DocDate DESC", true);
             }
             else
             {
                 myLocalDBSetting.LoadDataTable(myBrowseTable, @"SELECT a.approver + ' - ' + ISNULL(b.DESCS,'') [NextApprover],* FROM Settlement a
-                                                                LEFT JOIN [172.31.215.2\MSSQLSRVGUI].IFINANCING_GOLIVE.DBO.SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE
+                                                                LEFT JOIN [MSSQLSRVGUI].IFINANCING_GOLIVE.DBO.SYS_TBLEMPLOYEE B ON A.APPROVER = b.CODE
                                                                 WHERE BookNo is not null ORDER BY DocDate DESC", true);
             }
             DataColumn[] keyHeader = new DataColumn[1];
