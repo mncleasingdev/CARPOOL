@@ -22,9 +22,9 @@
         {
             switch (cplMain.cpCallbackParam)
             {
-                case "OPEN_MAP":
-                    apcMap.Show();
-                    break;
+                //case "OPEN_MAP":
+                //    apcMap.Show();
+                //    break;
                 case "SUBMIT":                   
                     apcalert.SetContentHtml(cplMain.cpAlertMessage);
                     apcalert.Show();
@@ -204,8 +204,8 @@
             gvPersonDetail.GetEditor("colJabatan").SetValue(s.GetSelectedItem().GetColumnText('Jabatan'));
         }
     </script>
-    <script type="text/javascript" src="https://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0&amp;s=1"></script>
-    <script>
+    <%--<script type="text/javascript" src="https://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0&amp;s=1"></script>--%>
+   <%-- <script>
         var map = (function () {
             var bingMap = null;
             var mapElementID = "myMap";
@@ -252,7 +252,7 @@
             }
             map.showMap();
         }
-    </script>
+    </script>--%>
     <dx:ASPxHiddenField runat="server" ID="HiddenField" ClientInstanceName="HiddenField"/>
     <dx:ASPxPopupControl ID="apcconfirm" ClientInstanceName="apcconfirm" runat="server" Modal="True" Theme="MetropolisBlue" EnableCallbackAnimation="true"
         PopupHorizontalAlign="WindowCenter" PopupVerticalAlign="WindowCenter" HeaderText="we need your confirmation.." AllowDragging="False" PopupAnimationType="Fade" EnableViewState="False" CloseAction="CloseButton">
@@ -339,7 +339,7 @@
             </dx:PopupControlContentControl>
         </ContentCollection>
     </dx:ASPxPopupControl>
-    <dx:ASPxPopupControl ID="apcMap" runat="server" Width="400px" Height="400px" Modal="true"
+    <%--<dx:ASPxPopupControl ID="apcMap" runat="server" Width="400px" Height="400px" Modal="true"
         ShowPinButton="True" ShowRefreshButton="True" ShowCollapseButton="True" ShowMaximizeButton="True"
         ClientInstanceName="apcMap" PopupElementID="popupArea" ShowOnPageLoad="false"
         PopupVerticalAlign="TopSides" PopupHorizontalAlign="LeftSides"
@@ -354,7 +354,7 @@
                 </div>
             </dx:PopupControlContentControl>
         </ContentCollection>
-    </dx:ASPxPopupControl>
+    </dx:ASPxPopupControl>--%>
     <dx:ASPxFormLayout ID="ASPxFormLayout1" runat="server" BackColor="WhiteSmoke">
         <SettingsAdaptivity AdaptivityMode="SingleColumnWindowLimit" SwitchToSingleColumnAtWindowInnerWidth="800" />
         <Items>
